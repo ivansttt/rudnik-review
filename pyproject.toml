@@ -3,7 +3,7 @@
 # backend builds it with no download (the gate has no network). No dependency: the standard library and the registry are all it needs.
 [project]
 name = "rudnik-review"
-version = "0.1.23109"
+version = "0.1.23125"
 description = "Code review on a developer's machine: the analysers and a second-model LLM review"
 readme = "README.md"   # review/root/'s, staged beside this file as the release repository's root holds them (bin/review-release)
 license = "MIT"

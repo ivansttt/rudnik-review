@@ -18,7 +18,7 @@ flowchart LR
 The same check stands at three doors, and only something new you brought is ever sent back.
 
 ## Install, once a machine
-You need git with access to this repository, and uv (https://docs.astral.sh/uv). macOS, Linux and Windows, less the analysers its Needs exclude.
+You need git and uv (https://docs.astral.sh/uv). macOS, Linux and Windows, less the analysers its Needs exclude.
 
     uv tool install git+https://github.com/ivansttt/rudnik-review
 
@@ -36,7 +36,7 @@ saw none). Codex: open `/hooks` once and trust the hook `init` installed, and ag
 
 ```mermaid
 flowchart LR
-  a[You are invited] --> b["uv tool install ..."] --> c[init] --> d["init github, once a repository"]
+  a[You have git and uv] --> b["uv tool install ..."] --> c[init] --> d["init github, once a repository"]
   d --> e[rudnik-review] --> f["fmt --all, once"] --> g[Commit] --> h[Work as before]
 ```
 Ten minutes, once, with each language's Needs below in place: after that you work as you always did.

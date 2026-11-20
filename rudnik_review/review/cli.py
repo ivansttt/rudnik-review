@@ -489,7 +489,10 @@ def setup(a: argparse.Namespace, only: list[str] | None = None) -> int:
     return 0
 
 
-def setup_and_check(_: argparse.Namespace) -> int:
+def set_up_lacking(a: argparse.Namespace) -> None:
+    """What the repository's plan lacks, set up quietly in one line; nothing said when nothing lacks. The bare command's start, and init's
+    end (spec 2043, 20 Nov 2026: the .claude/settings.json init wrote called for trivy, which setup never installed, so every check said
+    `not checked` and a clean change exited 2)."""
     os.chdir(repository())
     wanted, registry = shallow(plan(".", snapshot()), False)[0], tools()
     every = [n for n in wanted["tools"] if installable(registry[n])]
@@ -497,7 +500,11 @@ def setup_and_check(_: argparse.Namespace) -> int:
         print(f"setting up for {', '.join(wanted['stacks'])}: {', '.join(lacking)}")
         # each tool's own line is the one above, a tool with no way here check's closing line; a failure is still raised
         with open(os.devnull, "w", encoding="utf-8") as quiet, redirect_stdout(quiet):
-            setup(_, lacking)
+            setup(a, lacking)
+
+
+def setup_and_check(a: argparse.Namespace) -> int:
+    set_up_lacking(a)
     return check(parser().parse_args(["check"]))
 
 
@@ -1011,6 +1018,7 @@ def init(a: argparse.Namespace) -> int:
         print(
             f"AI Assistant: paste into Settings | Tools | AI Assistant | Model Context Protocol (MCP): {servers}"
         )
+    set_up_lacking(a)
     if changed:
         raise Refused(f"changed here, so left as they are: {', '.join(changed)}")
     return 0
