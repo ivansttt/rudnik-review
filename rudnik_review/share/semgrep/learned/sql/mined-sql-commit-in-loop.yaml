@@ -1,0 +1,13 @@
+rules:
+  - id: sql-commit-in-loop
+    metadata: {"rule": "sql-commit-in-loop", "evidence": ["https://github.com/apache/superset/pull/20346#discussion_r915039462"]}
+    languages: [python]
+    severity: WARNING
+    message: session.commit() inside a per-item migration loop.
+    patterns:
+      - pattern-inside: |
+          for $X in $Y:
+            ...
+      - pattern-either:
+          - pattern: session.commit()
+          - pattern: db.session.commit()

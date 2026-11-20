@@ -1,0 +1,15 @@
+rules:
+  - id: java-null-instead-of-empty
+    metadata: {"rule": "java-null-instead-of-empty", "evidence": ["https://github.com/apache/lucene/pull/15653#discussion_r3079625332", "https://github.com/apache/lucene/pull/15574#discussion_r3110570263"]}
+    languages: [java]
+    message: Returns null for an empty collection instead of an empty (non-null) result.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          if ($C.isEmpty()) {
+            return null;
+          }
+      - pattern: |
+          if ($C.size() == 0) {
+            return null;
+          }

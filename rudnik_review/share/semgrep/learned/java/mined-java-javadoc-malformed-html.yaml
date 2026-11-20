@@ -1,0 +1,8 @@
+rules:
+  - id: java-javadoc-malformed-html
+    metadata: {"rule": "java-javadoc-malformed-html", "evidence": ["https://github.com/netty/netty/pull/10050#discussion_r385750335"]}
+    languages:
+      - regex
+    message: Javadoc comment contains an <a href> attribute with an unclosed double quote
+    severity: ERROR
+    pattern-regex: '<a\s+href="[^"]*>'

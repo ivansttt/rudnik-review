@@ -1,0 +1,11 @@
+rules:
+  - id: sql-context-manager-returned-after-exit
+    metadata: {"rule": "sql-context-manager-returned-after-exit", "evidence": ["https://github.com/apache/superset/pull/21943#discussion_r1014735512"]}
+    languages: [python]
+    severity: WARNING
+    message: Resource returned after its context manager exits
+    patterns:
+      - pattern: |
+          with ... as $X:
+            ...
+            return $X

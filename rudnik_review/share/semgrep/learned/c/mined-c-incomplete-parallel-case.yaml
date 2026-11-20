@@ -1,0 +1,29 @@
+rules:
+  - id: c-incomplete-parallel-case
+    metadata: {"rule": "c-incomplete-parallel-case", "evidence": ["https://github.com/systemd/systemd/pull/40303#discussion_r2693966696"]}
+    languages:
+      - c
+    message: >-
+      The "auto-" mode is added for one color depth but not its sibling
+      depths. Add matching entries for every value in the table.
+    severity: WARNING
+    patterns:
+      - pattern: '"auto-16"'
+      - pattern-inside: |
+          $TYPE $T[$N] = {
+            ...,
+            "16",
+            ...,
+            "256",
+            ...,
+            "24bit",
+            ...,
+          };
+      - pattern-not-inside: |
+          $TYPE $T[$N] = {
+            ...,
+            "auto-256",
+            ...,
+            "auto-24bit",
+            ...,
+          };

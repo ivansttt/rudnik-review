@@ -1,0 +1,14 @@
+rules:
+  - id: java-timeout-test-unbounded
+    metadata: {"rule": "java-timeout-test-unbounded", "evidence": ["https://github.com/apache/kafka/pull/23931#discussion_r4365068677"]}
+    languages: [java]
+    message: Test asserts a timeout/error but is not wrapped in assertTimeout, so it passes even if the call blocks for the full internal timeout.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          assertThrows(ExecutionException.class, () -> $CALL)
+      - metavariable-regex:
+          metavariable: $CALL
+          regex: '(?s).*timeoutMs\(0\).*\.get\(\)'
+      - pattern-not-inside: |
+          assertTimeout($DURATION, () -> assertThrows(ExecutionException.class, () -> $INNER))

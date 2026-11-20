@@ -1,0 +1,23 @@
+rules:
+  - id: php-int-cast-truncation-validation
+    metadata: {"rule": "php-int-cast-truncation-validation", "evidence": ["https://github.com/laravel/framework/pull/61474#discussion_r3950899170"]}
+    languages:
+      - php
+    message: >-
+      A value cast to int is only guarded for being negative or non-positive, so
+      a positive fractional value truncates to 0 and takes the default or zero
+      path.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          $X = (int) $E;
+          ...
+          if ($X < 0) {
+            ...
+          }
+      - pattern: |
+          $X = (int) $E;
+          ...
+          if ($X <= 0) {
+            ...
+          }

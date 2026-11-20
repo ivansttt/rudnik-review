@@ -1,0 +1,17 @@
+rules:
+  - id: java-catch-masks-exception
+    metadata: {"rule": "java-catch-masks-exception", "evidence": ["https://github.com/netty/netty/pull/15919#discussion_r2800720058", "https://github.com/netty/netty/pull/15919#discussion_r2800722911"]}
+    languages: [java]
+    message: A fallible acquire inside a try whose catch cleanup can throw masks the original exception.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          try {
+            ...
+            $X.retain();
+            ...
+          } catch (Exception $E) {
+            ...
+            $X.release();
+            ...
+          }

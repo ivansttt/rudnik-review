@@ -1,0 +1,11 @@
+rules:
+  - id: csharp-roslyn-order-dependent-concurrent-state
+    metadata: {"rule": "csharp-roslyn-order-dependent-concurrent-state", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67313#discussion_r3441310019", "https://github.com/dotnet/aspnetcore/pull/67313#discussion_r3441318108"]}
+    languages: [csharp]
+    message: Order-dependent state shared across concurrent Roslyn analysis callbacks is non-deterministic; iterate a block's operations in source order instead.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: new ConcurrentStack<$T>(...)
+          - pattern: new ConcurrentBag<$T>(...)
+          - pattern: new ConcurrentQueue<$T>(...)

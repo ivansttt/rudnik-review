@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-uncompiled-test-snippet
+    metadata: {"rule": "kotlin-uncompiled-test-snippet", "evidence": ["https://github.com/detekt/detekt/pull/2671#discussion_r422625773", "https://github.com/detekt/detekt/pull/2556#discussion_r401115210"]}
+    languages: [kotlin]
+    message: Test lints source without compiling it; use compileAndLint
+    severity: WARNING
+    pattern: $SUBJECT.lint($CODE)

@@ -1,0 +1,10 @@
+rules:
+  - id: java-stale-secondary-index
+    metadata: {"rule": "java-stale-secondary-index", "evidence": ["https://github.com/apache/kafka/pull/24093#discussion_r4481885882"]}
+    languages:
+      - java
+    message: Replacing an entry in a primary map does not clear the old entry from a secondary index map keyed by a value derived from that entry, leaving stale data.
+    severity: ERROR
+    pattern: |
+      $PRIMARY.put($KEY, $VALUE);
+      $SECONDARY.put($VALUE.$DERIVED(...), $KEY);

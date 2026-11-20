@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-interop-errno-wrong-exception
+    metadata: {"rule": "csharp-interop-errno-wrong-exception", "evidence": ["https://github.com/dotnet/runtime/pull/136630#discussion_r4563966915"]}
+    languages: [csharp]
+    message: Throw IOException with the path for interop errno failures, not Win32Exception.
+    severity: INFO
+    pattern: |
+      throw new Win32Exception($ERRNO);

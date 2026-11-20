@@ -1,0 +1,10 @@
+rules:
+  - id: java-random-size-no-minimum
+    metadata: {"rule": "java-random-size-no-minimum", "evidence": ["https://github.com/apache/lucene/pull/13597#discussion_r1686443455"]}
+    languages:
+      - java
+    message: Random count with no lower bound may be too small to exercise the tested path
+    severity: WARNING
+    patterns:
+      - pattern: |
+          int $N = random().nextInt($B);

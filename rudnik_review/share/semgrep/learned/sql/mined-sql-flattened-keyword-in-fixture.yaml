@@ -1,0 +1,7 @@
+rules:
+  - id: sql-flattened-keyword-in-fixture
+    metadata: {"rule": "sql-flattened-keyword-in-fixture", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/6786#discussion_r2060142438", "https://github.com/sqlfluff/sqlfluff/pull/6756#discussion_r2019456794"]}
+    languages: [yaml]
+    severity: WARNING
+    message: 'Fixture YAML flattens a keyword/operator segment to a bare scalar instead of nesting it under a child mapping, so capitalisation rules do not apply.'
+    pattern-regex: '(?m)^[ \t]*(alias_operator|binary_operator):[ \t]*\S'

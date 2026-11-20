@@ -1,0 +1,17 @@
+rules:
+  - id: csharp-bitwise-in-boolean-condition
+    metadata: {"rule": "csharp-bitwise-in-boolean-condition", "evidence": ["https://github.com/dotnet/runtime/pull/136782#discussion_r4463958325", "https://github.com/dotnet/runtime/pull/136782#discussion_r4463959980"]}
+    languages: [csharp]
+    severity: WARNING
+    message: Bitwise & or | is used as a logical operator in a boolean condition; use && or || so the right operand short-circuits.
+    pattern-either:
+      - pattern: |
+          if ($A & $B)
+          {
+            ...
+          }
+      - pattern: |
+          if ($A | $B)
+          {
+            ...
+          }

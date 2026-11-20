@@ -1,0 +1,11 @@
+rules:
+  - id: sql-validation-raises-wrong-error
+    metadata: {"rule": "sql-validation-raises-wrong-error", "evidence": ["https://github.com/apache/superset/pull/24839#discussion_r1304570617", "https://github.com/apache/superset/pull/24839#discussion_r1304570969"]}
+    languages: [python]
+    message: Validation failure uses a Failed error instead of an Invalid error
+    severity: WARNING
+    patterns:
+      - pattern: exceptions.append($ERR)
+      - metavariable-regex:
+          metavariable: $ERR
+          regex: .*FailedError.*

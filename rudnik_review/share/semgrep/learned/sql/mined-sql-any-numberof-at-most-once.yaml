@@ -1,0 +1,9 @@
+rules:
+  - id: sql-any-numberof-at-most-once
+    metadata: {"rule": "sql-any-numberof-at-most-once", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/7393#discussion_r2724022085", "https://github.com/sqlfluff/sqlfluff/pull/7393#discussion_r2724030986", "https://github.com/sqlfluff/sqlfluff/pull/7311#discussion_r2611209399", "https://github.com/sqlfluff/sqlfluff/pull/6597#discussion_r1928870627"]}
+    languages: [python]
+    message: "AnyNumberOf/AnySetOf used for options that may each appear at most once; use Sequence with optional=True"
+    severity: WARNING
+    pattern-either:
+      - pattern: AnyNumberOf(...)
+      - pattern: AnySetOf(...)

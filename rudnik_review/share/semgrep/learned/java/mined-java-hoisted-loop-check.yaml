@@ -1,0 +1,14 @@
+rules:
+  - id: java-hoisted-loop-check
+    metadata: {"rule": "java-hoisted-loop-check", "evidence": ["https://github.com/apache/lucene/pull/14709#discussion_r2107247589"]}
+    languages:
+      - java
+    message: "A per-iteration guard is executed once before the loop instead of being re-evaluated at the start of each iteration"
+    severity: WARNING
+    pattern: |
+      if ($X != null) {
+        $X.$M();
+      }
+      for (...) {
+        ...
+      }

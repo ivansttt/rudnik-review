@@ -1,0 +1,14 @@
+rules:
+  - id: csharp-symbol-identity-by-string
+    metadata: {"rule": "csharp-symbol-identity-by-string", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67530#discussion_r3506287210", "https://github.com/dotnet/aspnetcore/pull/67530#discussion_r3508399351", "https://github.com/dotnet/aspnetcore/pull/67228#discussion_r3472535505", "https://github.com/dotnet/aspnetcore/pull/62511#discussion_r2176135104"]}
+    languages: [csharp]
+    message: >-
+      Identify Roslyn types/symbols by symbol identity, not name strings.
+      Comparing a short `.Name` or `ToDisplayString()` output is ambiguous and
+      fragile; resolve the symbol and compare it with SymbolEqualityComparer.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $X.Name == $NAME
+          - pattern: $X.ToDisplayString() == $NAME
+          - pattern: ImmutableHashSet.Create("$NAME", ...)

@@ -1,0 +1,3 @@
+# Spec 1727: SQL's formatter, in the repository's own dialect; `rudnik-review fmt` adds `--dialect {engine}` only where sqlfluff finds none.
+[desktop.sqlfluff]
+fmt = [["sqlfluff", "format", "{files}"]]

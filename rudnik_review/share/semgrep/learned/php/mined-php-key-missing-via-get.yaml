@@ -1,0 +1,12 @@
+rules:
+  - id: php-key-missing-via-get
+    metadata: {"rule": "php-key-missing-via-get", "evidence": ["https://github.com/laravel/framework/pull/54499#discussion_r1946376919"]}
+    languages: [php]
+    severity: WARNING
+    message: 'Key presence is derived from the value, so a stored null or falsy value is treated as missing; check key existence instead.'
+    patterns:
+      - pattern-either:
+          - pattern: |
+              return ! $this->get($...ARGS);
+          - pattern: |
+              return $this->get($...ARGS) === null;

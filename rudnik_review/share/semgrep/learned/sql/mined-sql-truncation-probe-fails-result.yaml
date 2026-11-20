@@ -1,0 +1,7 @@
+rules:
+  - id: sql-truncation-probe-fails-result
+    metadata: {"rule": "sql-truncation-probe-fails-result", "evidence": ["https://github.com/apache/superset/pull/44604#discussion_r4160493677"]}
+    languages: [python]
+    severity: WARNING
+    message: Truncation probe lets a driver error discard the materialized result.
+    pattern: return $R == 0 and bool($FETCH)

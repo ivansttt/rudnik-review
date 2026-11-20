@@ -1,0 +1,12 @@
+rules:
+  - id: csharp-ignored-interop-error
+    metadata: {"rule": "csharp-ignored-interop-error", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67912#discussion_r3755305718"]}
+    languages:
+      - csharp
+    severity: WARNING
+    message: >-
+      Result of native/interop call is ignored. Check the return value so a
+      failed epoll_ctl does not leave the operation silently wedged waiting
+      for an event that was never registered.
+    patterns:
+      - pattern: $NATIVE.epoll_ctl(...);

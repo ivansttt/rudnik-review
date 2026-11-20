@@ -1,0 +1,7 @@
+rules:
+  - id: swift-lossy-path-string-roundtrip
+    metadata: {"rule": "swift-lossy-path-string-roundtrip", "evidence": ["https://github.com/apple/swift-nio/pull/3508#discussion_r2798010509", "https://github.com/apple/swift-nio/pull/3508#discussion_r2798049266", "https://github.com/apple/swift-nio/pull/3322#discussion_r2235568871", "https://github.com/apple/swift-nio/pull/3322#discussion_r2235594469"]}
+    languages: [swift]
+    severity: WARNING
+    message: Path built by round-tripping another path or path component through its `.string` property, which is lossy; build the path from components instead
+    pattern: $F($X.string)

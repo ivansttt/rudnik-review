@@ -1,0 +1,9 @@
+rules:
+  - id: sql-schema-rebuild-drops-constraints
+    metadata: {"rule": "sql-schema-rebuild-drops-constraints", "evidence": ["https://github.com/apache/superset/pull/38714#discussion_r2952242894"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Reconstructing a Pydantic field via Annotated forwards only the description and drops constraint metadata (ge, le, min_length, pattern, etc.).
+    pattern: |
+      Annotated[$BASE, Field(description=$DESC)]

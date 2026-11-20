@@ -1,0 +1,13 @@
+rules:
+  - id: csharp-ioptions-registration-null-check
+    metadata: {"rule": "csharp-ioptions-registration-null-check", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60724#discussion_r1990339407"]}
+    languages: [csharp]
+    message: >-
+      GetService(typeof(IOptions<T>)) is always non-null because the default
+      IOptions<T> is always registered. Inspect the options Value or its contents
+      instead of branching on its presence.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $SVCS.GetService(typeof(IOptions<$T>)) is not null
+          - pattern: $SVCS.GetService(typeof(IOptions<$T>)) != null

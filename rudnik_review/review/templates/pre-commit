@@ -1,0 +1,5 @@
+#!/bin/sh
+# rudnik-review: a new blocking finding in what is staged stops the commit. A check that cannot run stops nothing.
+command -v rudnik-review >/dev/null || exit 0
+rudnik-review check --staged
+[ $? -ne 1 ]

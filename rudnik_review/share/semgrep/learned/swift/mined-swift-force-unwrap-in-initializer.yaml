@@ -1,0 +1,14 @@
+rules:
+  - id: swift-force-unwrap-in-initializer
+    metadata: {"rule": "swift-force-unwrap-in-initializer", "evidence": ["https://github.com/apple/swift-nio/pull/3047#discussion_r1912925190"]}
+    languages:
+      - swift
+    message: Initializer force-unwraps a failable value instead of being failable.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          init(...) {
+            ...
+            self = $X!
+            ...
+          }

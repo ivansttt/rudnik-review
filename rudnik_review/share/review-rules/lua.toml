@@ -1,0 +1,84 @@
+[[rule]]
+id = "lua-cache-key-missing-param"
+tier = "info"
+title = "Cache key omits a parameter that affects the cached value"
+look_for = "a cache or hash key built by concatenating fields omits a value (like zoom) that changes the computed result, so distinct results collide on one key"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/16346#discussion_r4522884620", "fix" = "d1dab43947f6c9b87a479e4c61b081b1b33ec339"}]
+measured = {}
+trigger = "hash|tostring"
+question = "Does the new cache key omit a parameter that affects the cached value, so different values share one key?"
+examples = ["@@ -527,23 +529,71 @@ function KoptInterface:renderOptimizedPage(doc, pageno, rect, zoom, rotation, hi\n     self:getContextHash(doc, pageno, bbox, hash_list)\n     local hash = table.concat(hash_list, \"|\")\n \n-    local cached = DocCache:check(hash, TileCacheItem)\n-    if not cached then\n-        if hinting then\n-            CanvasContext:enableCPUCores(2)\n+    -- Rendering the whole page at a high zoom can ask for a bitmap far larger than\n+    -- the device can allocate: in \"content\" zoom mode the zoom factor is derived\n+    -- from the used bbox, so a page whose content is a small speck gets a huge\n+    -- factor, and unlike Document:renderPage we would render the full page instead\n+    -- of the visible part. Fall back to the visible part in that case.\n+    local page_size = Document.getPageDimensions(doc, pageno, zoom, rotation)\n+    local whole_page_fits = DocCache:willAccept(page_size.w * page_size.h * (doc.render_color and 4 or 1) + 512)\n+    local hash_excerpt\n+    if not whole_page_fits then\n+        if not rect then\n+            logger.warn(\"optimized page too large and no render region was specified, we won't render the page at all!\")\n+            return\n         end\n+        logger.dbg(\"Attempting to render only part of the page:\", rect)\n+        hash_excerpt = hash .. \"|\" .. tostring(rect)", "@@ -543,7 +543,10 @@ function KoptInterface:renderOptimizedPage(doc, pageno, rect, zoom, rotation, hi\n             return\n         end\n         logger.dbg(\"Attempting to render only part of the page:\", rect)\n+        -- NOTE: The zoom isn't part of the base hash, and the rect alone doesn't\n+        -- always disambiguate it (e.g., it's at the page origin right after a zoom\n+        -- change), so it has to be part of the excerpt key (c.f., Document:getPagePartHash).\n+        hash_excerpt = hash..\"|\"..tostring(rect)..\"|\"..zoom\n     end\n \n     local cached = DocCache:check(hash, TileCacheItem)"]
+semgrep = "semgrep/learned/lua/mined-lua-cache-key-missing-param.yaml"
+proposed = "error"
+
+[[rule]]
+id = "lua-mark-outside-guard"
+tier = "info"
+title = "Bookkeeping marked updated outside the guard that performs the change"
+look_for = "a bookkeeping assignment (marking a collection updated) sits outside the conditional that guards whether the change happened, so untouched entries get marked too"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/16039#discussion_r3976880022", "fix" = "e4e4ca0a7822b3dfb1409697ddc7143fc873cd69"}, {"url" = "https://github.com/koreader/koreader/pull/16039#discussion_r3976882017", "fix" = "e4e4ca0a7822b3dfb1409697ddc7143fc873cd69"}]
+measured = {}
+trigger = "updated"
+question = "Is the bookkeeping assignment outside the conditional guard, so it runs even when the change did not happen?"
+examples = ["@@ -801,4 +808,88 @@ function CalibreWireless:isCalibreAtLeast(x, y, z)\n     return semanticVersion(v[1], v[2], v[3]) >= semanticVersion(x, y, z)\n end\n \n+function CalibreWireless:getCollections(arg)\n+    local collections = {}\n+    for collection_name, collection in pairs(ReadCollection.coll) do\n+        local files = rapidjson.array()\n+        for file in pairs(collection) do\n+            table.insert(files, file)\n+        end\n+        collections[collection_name] = files\n+    end\n+    self:sendJsonData(\"OK\", {collections = collections})\n+end\n+\n+function CalibreWireless:updateCollections(arg)\n+    if not arg or type(arg) ~= \"table\" then\n+        logger.warn(\"CalibreWireless: invalid UPDATE_COLLECTIONS payload\")\n+        return\n+    end\n+\n+    local updated_collections = {}\n+\n+    -- Remove collections first so that membership changes cannot recreate\n+    -- a collection which Calibre explicitly wants removed.\n+    if arg.remove_collections then\n+        for _, coll_name in ipairs(arg.remove_collections) do\n+            if ReadCollection.coll[coll_name] then\n+                ReadCollection:removeCollection(coll_name)\n+            end\n+            updated_collections[coll_name] = true", "@@ -834,8 +834,8 @@ function CalibreWireless:updateCollections(arg)\n         for _, coll_name in ipairs(arg.remove_collections) do\n             if ReadCollection.coll[coll_name] then\n                 ReadCollection:removeCollection(coll_name)\n+                updated_collections[coll_name] = true\n             end\n         end\n     end\n "]
+semgrep = "semgrep/learned/lua/mined-lua-mark-outside-guard.yaml"
+proposed = "error"
+
+[[rule]]
+id = "lua-nil-check-ignores-false"
+tier = "info"
+title = "Nil check treats false as a value instead of a decline"
+look_for = "a decline or absence check compares a result to nil where a false return also means declined, so false is mishandled as a value"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/16264#discussion_r4308580473", "fix" = "6e536f67bdc44dddfa0ab858ca7694caca07db68"}]
+measured = {}
+trigger = "nil"
+question = "Does the check compare a return value to nil when a false return also signals declined or absent and should stop processing?"
+examples = ["@@ -122,6 +122,7 @@ local function callPlugin(plugin, handler_name, ...)\n         return\n     end\n     logger.dbg(\"language plugin\", handler_name, \"returned\", ret)\n+    if ret[1] == nil then return end -- handler declined, try the next plugin", "@@ -122,7 +122,7 @@ local function callPlugin(plugin, handler_name, ...)\n         return\n     end\n     logger.dbg(\"language plugin\", handler_name, \"returned\", ret)\n+    if not ret[1] then return end -- handler declined, try the next plugin\n     return ret\n end\n "]
+semgrep = "semgrep/learned/lua/mined-lua-nil-check-ignores-false.yaml"
+proposed = "error"
+
+[[rule]]
+id = "lua-blocking-os-execute"
+tier = "info"
+title = "Slow shell command run in the foreground blocks the UI"
+look_for = "an os.execute call runs a slow shell command in the foreground without a trailing &, blocking the UI thread"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/16320#discussion_r4405967893", "fix" = "1c6f1444163638676aec1f74934893e8c57521ce"}]
+measured = {}
+trigger = "os.execute|sync"
+question = "Does the os.execute call run a slow command without backgrounding it with &, so it blocks the UI?"
+examples = ["@@ -107,13 +107,16 @@ function CoverImage:cleanUpImage()\n         os.remove(self.cover_image_path)\n     elseif isFileOk(self.cover_image_path) then\n         ffiutil.copyFile(self.cover_image_fallback_path, self.cover_image_path)\n-        self:updatePocketBookBootLogo()\n+        self:updatePocketBookBootLogo(true)\n     end\n end\n \n-function CoverImage:updatePocketBookBootLogo()\n+function CoverImage:updatePocketBookBootLogo(enable_sync)\n     if Device.isPocketBook() then\n         logger.dbg(\"CoverImage: updating PocketBook boot logo from\", self.cover_image_path)\n+        if enable_sync then\n+            os.execute(\"sync\")", "@@ -111,14 +111,11 @@ function CoverImage:cleanUpImage()\n     end\n end\n \n+function CoverImage:updatePocketBookBootLogo()\n     if Device.isPocketBook() then\n         logger.dbg(\"CoverImage: updating PocketBook boot logo from\", self.cover_image_path)\n         -- iv2sh is run in background because it can be very slow and would block KOReader.\n+        os.execute(\"(sync && iv2sh WriteStartupLogo \" .. util.shell_escape({self.cover_image_path}) .. \") &\")\n     end\n end\n "]
+semgrep = "semgrep/learned/lua/mined-lua-blocking-os-execute.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "lua-wrong-capability-gate"
+tier = "info"
+title = "Feature gated on a proxy capability that excludes devices needing it"
+look_for = "a feature is gated on one capability check (touch) that does not match the feature's actual requirement, excluding devices that need it via another capability"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/15854#discussion_r3754829402", "fix" = "4c281d96b85b398b50185e8bb9d4aa08964c63b5"}]
+measured = {}
+trigger = "Device|isTouchDevice"
+question = "Does the guard use a proxy capability check that excludes devices which also need the feature?"
+examples = ["@@ -946,8 +954,8 @@ function InputDialog:_addScrollButtons(nav_bar)\n         row = self.buttons[1]\n     end\n     if nav_bar then -- Add the Home & End buttons\n-        -- Also add Keyboard hide/show button if we can\n-        if self.fullscreen and not self.readonly then\n+        -- Also add Keyboard hide/show button if we can -- not without touch, where a key does it.\n+        if self.fullscreen and not self.readonly and Device:isTouchDevice() then", "@@ -954,8 +960,9 @@ function InputDialog:_addScrollButtons(nav_bar)\n         row = self.buttons[1]\n     end\n     if nav_bar then -- Add the Home & End buttons\n+        -- Also add Keyboard hide/show button if we can -- not where a key already does it.\n+        local has_keyboard_toggle_key = Device:hasScreenKB() or Device:hasSymKey()\n+        if self.fullscreen and not self.readonly and not has_keyboard_toggle_key then\n             table.insert(row, {\n                 text = self.keyboard_visible and \"↓⌨\" or \"↑⌨\",\n                 id = \"keyboard\","]
+semgrep_asks = 1
+proposed = "error"
+
+[[rule]]
+id = "lua-cache-key-empty-fallback"
+tier = "info"
+title = "Cache key falls back to empty instead of the effective default"
+look_for = "a lookup or cache key falls back to an empty placeholder instead of the resolved effective default value, giving the default case a distinct wrong key"
+stack = "lua"
+evidence = [{"url" = "https://github.com/koreader/koreader/pull/16214#discussion_r4244943028", "fix" = "09cd9a303e2651d1a4b70d560949e382d4e4f8a9"}]
+measured = {}
+trigger = "cache|lang"
+question = "Does the key default to an empty placeholder instead of the resolved effective default value?"
+examples = ["@@ -17,14 +18,107 @@ local BookList = Menu:extend{\n \n BookList.strcoll = ffiUtil.strcoll\n \n+BookList.leading_articles = {\n+    af = { \"'n\", \"die\" },\n+    de = { \"der\", \"die\", \"das\", \"den\", \"ein\", \"eine\", \"einen\", \"dem\", \"des\", \"einem\", \"eines\" },\n+    el = { \"o\", \"i\", \"to\", \"ta\", \"tus\", \"tis\", \"'enas\", \"'mia\", \"'ena\", \"'enan\" },\n+    en = { \"a\", \"the\", \"an\" },\n+    eo = { \"la\", \"l'\" },\n+    es = { \"el\", \"la\", \"lo\", \"los\", \"las\", \"un\", \"una\", \"unos\", \"unas\" },\n+    fr = { \"le\", \"la\", \"l'\", \"les\", \"un\", \"une\", \"des\", \"de la\", \"de\", \"d'\" },\n+    hu = { \"a\", \"az\", \"egy\" },\n+    it = { \"lo\", \"il\", \"l'\", \"la\", \"gli\", \"i\", \"le\", \"uno\", \"un\", \"una\", \"un'\",\n+           \"dei\", \"degli\", \"delle\", \"del\", \"della\", \"dello\", \"dell'\" },\n+    nl = { \"de\", \"het\", \"een\", \"'n\", \"'s\", \"ene\", \"ener\", \"enes\", \"den\", \"der\", \"des\", \"'t\" },\n+    pl = {},\n+    pt = { \"a\", \"o\", \"os\", \"as\", \"um\", \"uns\", \"uma\", \"umas\" },\n+    ro = { \"un\", \"o\", \"nişte\" },\n+    sv = { \"en\", \"ett\", \"det\", \"den\", \"de\" },\n+    tr = { \"bir\" },\n+}\n+\n+local leading_article_prefixes = {}\n+\n+local function getLeadingArticlePrefixes(lang)\n+    if lang then\n+        lang = lang:lower():match(\"^%a+\")\n+        lang = lang and IsoLanguage:getBCPLanguageTag(lang)\n+    else\n+        lang = G_reader_settings:readSetting(\"language\", \"en\"):lower():match(\"^%a+\")\n+    end\n+    if not BookList.leading_articles[lang] then\n+        lang = \"en\"\n+    end\n+    local prefixes = leading_article_prefixes[lang]\n+    if not prefixes then\n+        prefixes = {}\n+        for _, article in ipairs(BookList.leading_articles[lang]) do\n+            if article:sub(-1) == \"'\" then\n+                local stem = article:sub(1, -2)\n+                table.insert(prefixes, article)\n+                table.insert(prefixes, stem .. \"\\u{2019}\") -- right single quotation mark\n+                table.insert(prefixes, stem .. \"\\u{00B4}\") -- acute accent\n+            else\n+                table.insert(prefixes, article .. \" \")\n+            end\n+        end\n+        leading_article_prefixes[lang] = prefixes\n+    end\n+    return prefixes\n+end\n+\n+function BookList.getSortTitle(str, lang)\n+    local start = str:match(\"^%s*()\")\n+    local lower_str = str:lower()\n+    for _, prefix in ipairs(getLeadingArticlePrefixes(lang)) do\n+        if lower_str:sub(start, start + #prefix - 1) == prefix then\n+            local rest = str:sub(start + #prefix):match(\"^%s*(.-)$\")\n+            if rest ~= \"\" then\n+                return rest\n+            end\n+        end\n+    end\n+    return str\n+end\n+\n+function BookList.getStringCompareFunc(compare_func)\n+    compare_func = compare_func or BookList.strcoll\n+    if not G_reader_settings:isTrue(\"sort_ignore_articles\") then\n+        return compare_func\n+    end\n+    local sort_titles = {}\n+    local function getSortTitle(str, lang)\n+        local cache_id = lang or \"\"", "@@ -88,11 +95,11 @@ function BookList.getStringCompareFunc(compare_func)\n     end\n     local sort_titles = {}\n     local function getSortTitle(str, lang)\n+        lang = getArticleLanguage(lang)\n+        local cache = sort_titles[lang]\n         if not cache then\n             cache = {}\n+            sort_titles[lang] = cache\n         end\n         local sort_title = cache[str]\n         if not sort_title then"]
+semgrep = "semgrep/learned/lua/mined-lua-cache-key-empty-fallback.yaml"
+proposed = "warning"
+

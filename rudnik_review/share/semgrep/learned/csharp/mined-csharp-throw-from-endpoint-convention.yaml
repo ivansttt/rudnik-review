@@ -1,0 +1,18 @@
+rules:
+  - id: csharp-throw-from-endpoint-convention
+    metadata: {"rule": "csharp-throw-from-endpoint-convention", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68066#discussion_r3734751284"]}
+    languages:
+      - csharp
+    severity: ERROR
+    message: >-
+      Do not throw from endpoint conventions that run during endpoint enumeration.
+      An exception thrown here fails EndpointDataSource enumeration for every endpoint
+      in the application, not just the misconfigured one. Log the problem instead.
+    patterns:
+      - pattern: |
+          throw new InvalidOperationException(...)
+      - pattern-either:
+          - pattern-inside: |
+              $BUILDER.Add(...)
+          - pattern-inside: |
+              $BUILDER.Finally(...)

@@ -1,0 +1,7 @@
+rules:
+  - id: java-bitset-size-instead-of-length
+    metadata: {"rule": "java-bitset-size-instead-of-length", "evidence": ["https://github.com/apache/kafka/pull/23883#discussion_r4346546937"]}
+    languages: [java]
+    message: BitSet.size() returns the rounded-up capacity, not the logical element count
+    severity: WARNING
+    pattern: $BITSET.clear($START, $BITSET.size())

@@ -1,0 +1,8 @@
+rules:
+  - id: c-unnecessary-lock
+    metadata: {"rule": "c-unnecessary-lock", "evidence": ["https://github.com/bitcoin/bitcoin/pull/32528#discussion_r2100898080"]}
+    languages: [cpp]
+    message: Notification callback acquires a mutex it did not previously hold, risking deadlock
+    severity: WARNING
+    patterns:
+      - pattern: LOCK(chainman().GetMutex());

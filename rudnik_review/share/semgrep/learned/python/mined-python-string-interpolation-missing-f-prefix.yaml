@@ -1,0 +1,9 @@
+rules:
+  - id: python-string-interpolation-missing-f-prefix
+    metadata: {"rule": "python-string-interpolation-missing-f-prefix", "evidence": ["https://github.com/pydantic/pydantic/pull/10432#discussion_r1763688799"]}
+    severity: WARNING
+    languages: [python]
+    message: String literal contains a {placeholder} but is missing the f prefix, so it is emitted literally.
+    patterns:
+      - pattern-regex: |
+          (?<![fF])["'][^"']*\{[A-Za-z_][A-Za-z0-9_.]*\}[^"']*["']

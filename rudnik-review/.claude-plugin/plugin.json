@@ -1,0 +1,10 @@
+{
+ "name": "rudnik-review",
+ "version": "0.1.23109",
+ "author": {
+  "name": "rudnik"
+ },
+ "description": "Claude cannot finish while the review finds a new defect; needs rudnik-review on the PATH",
+ "license": "MIT",
+ "homepage": "https://github.com/ivansttt/rudnik-review"
+}

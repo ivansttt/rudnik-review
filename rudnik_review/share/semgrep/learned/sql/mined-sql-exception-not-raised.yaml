@@ -1,0 +1,12 @@
+rules:
+  - id: sql-exception-not-raised
+    metadata: {"rule": "sql-exception-not-raised", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3942#discussion_r1020765822"]}
+    languages: [python]
+    message: Exception constructed but never raised
+    severity: WARNING
+    patterns:
+      - pattern: $EXC(...)
+      - pattern-not-inside: raise $EXC(...)
+      - metavariable-regex:
+          metavariable: $EXC
+          regex: ^(NotImplementedError|ValueError|TypeError|RuntimeError|KeyError)$

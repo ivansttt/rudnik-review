@@ -1,0 +1,16 @@
+rules:
+  - id: sql-unconditional-coercion-before-branch
+    metadata: {"rule": "sql-unconditional-coercion-before-branch", "evidence": ["https://github.com/apache/superset/pull/42053#discussion_r3718431371"]}
+    languages:
+      - typescript
+    message: >-
+      Value is normalized unconditionally before an early-return branch that
+      returns it unchanged, so that branch also loses the original data.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          const $NORM = $COERCE($ARGS);
+          ...
+          if ($COND) {
+            return $NORM;
+          }

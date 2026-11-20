@@ -1,0 +1,10 @@
+rules:
+  - id: java-specific-absence-not-empty
+    metadata: {"rule": "java-specific-absence-not-empty", "evidence": ["https://github.com/apache/kafka/pull/23542#discussion_r4068277035"]}
+    languages: [java]
+    severity: INFO
+    message: Asserting specific items are absent instead of asserting the collection is empty lets other unexpected items pass.
+    patterns:
+      - pattern-either:
+          - pattern: assertFalse($COLLECTION.contains($ITEM))
+          - pattern: assertTrue(!$COLLECTION.contains($ITEM))

@@ -1,0 +1,16 @@
+rules:
+- id: sql-hardcoded-instead-of-config-reference
+  metadata: {"rule": "sql-hardcoded-instead-of-config-reference", "evidence": ["https://github.com/apache/superset/pull/21806#discussion_r997168166", "https://github.com/apache/superset/pull/21806#discussion_r997168353"]}
+  languages:
+  - yaml
+  message: Hardcoded value where a Helm values/config reference is available; use the config key so overrides are not silently ignored.
+  severity: WARNING
+  patterns:
+  - pattern-either:
+    - pattern: |
+        image: $VALUE
+    - pattern: |
+        imagePullPolicy: $VALUE
+  - metavariable-regex:
+      metavariable: $VALUE
+      regex: '^(?!.*\{\{).*$'

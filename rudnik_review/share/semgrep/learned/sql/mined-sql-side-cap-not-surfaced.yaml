@@ -1,0 +1,7 @@
+rules:
+  - id: sql-side-cap-not-surfaced
+    metadata: {"rule": "sql-side-cap-not-surfaced", "evidence": ["https://github.com/apache/superset/pull/44604#discussion_r4137074761"]}
+    languages: [python]
+    severity: WARNING
+    message: Cursor-side limit applied without a truncated signal.
+    pattern: fetch_cursor = _LimitedCursor($C, $LIMIT)

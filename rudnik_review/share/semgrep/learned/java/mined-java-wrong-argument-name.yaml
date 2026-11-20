@@ -1,0 +1,17 @@
+rules:
+  - id: java-wrong-argument-name
+    metadata: {"rule": "java-wrong-argument-name", "evidence": ["https://github.com/netty/netty/pull/13791#discussion_r1492314501"]}
+    languages: [java]
+    message: Exception message or cause names the wrong argument.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          class $C {
+            ...
+            $FTYPE $FNAME;
+            ...
+          }
+      - pattern: |
+          throw new $EXC("$MSG", $CAUSE);
+      - metavariable-comparison:
+          comparison: str($MSG) == str($FNAME)

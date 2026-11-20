@@ -1,0 +1,11 @@
+rules:
+  - id: java-timestamp-overflow
+    metadata: {"rule": "java-timestamp-overflow", "evidence": ["https://github.com/apache/kafka/pull/21080#discussion_r2945833633"]}
+    languages: [java]
+    message: Adding a sentinel constant to a current time overflows to a negative value
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $FUNC(Long.MAX_VALUE, $NOW)
+          - pattern: Long.MAX_VALUE + $X
+          - pattern: $X + Long.MAX_VALUE

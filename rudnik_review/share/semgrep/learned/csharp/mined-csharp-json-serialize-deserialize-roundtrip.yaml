@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-json-serialize-deserialize-roundtrip
+    metadata: {"rule": "csharp-json-serialize-deserialize-roundtrip", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61313#discussion_r2050185829"]}
+    languages: [csharp]
+    severity: INFO
+    message: Value is serialized to a string and immediately deserialized
+    patterns:
+      - pattern: JsonSerializer.Deserialize(JsonSerializer.Serialize(...), ...)

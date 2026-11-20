@@ -1,0 +1,25 @@
+rules:
+  - id: java-nan-validation-bypass
+    metadata: {"rule": "java-nan-validation-bypass", "evidence": ["https://github.com/apache/lucene/pull/14412#discussion_r2019386671"]}
+    languages:
+      - java
+    message: >-
+      Floating-point validation uses a strict inequality ($X < $Y or $X > $Y).
+      Both comparisons are false when $X is NaN, so NaN slips past the check and
+      an invalid value is accepted. Reject NaN explicitly, e.g. with
+      `if (!($X >= $Y))`.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if ($X < $Y) {
+                ...
+                throw new $EXCEPTION(...);
+                ...
+              }
+          - pattern: |
+              if ($X > $Y) {
+                ...
+                throw new $EXCEPTION(...);
+                ...
+              }

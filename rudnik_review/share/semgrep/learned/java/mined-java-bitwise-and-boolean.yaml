@@ -1,0 +1,9 @@
+rules:
+  - id: java-bitwise-and-boolean
+    metadata: {"rule": "java-bitwise-and-boolean", "evidence": ["https://github.com/apache/lucene/pull/12885#discussion_r1421010600"]}
+    languages: [java]
+    message: Bitwise & or | used between boolean operands instead of short-circuit && or ||.
+    severity: WARNING
+    pattern-either:
+      - pattern: $A & $B
+      - pattern: $A | $B

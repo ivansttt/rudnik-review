@@ -1,0 +1,13 @@
+rules:
+  - id: java-off-by-one-length-check
+    metadata: {"rule": "java-off-by-one-length-check", "evidence": ["https://github.com/apache/lucene/pull/15116#discussion_r2296287990"]}
+    languages:
+      - java
+    message: "Length or remaining-bytes check is off by one: it compares the still-available bytes against a constant that already includes an already-consumed byte."
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $X.length() - $Y >= $Z
+      - metavariable-regex:
+          metavariable: $Z
+          regex: ^[A-Za-z_$][A-Za-z0-9_$]*$

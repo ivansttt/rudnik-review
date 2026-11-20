@@ -1,0 +1,8 @@
+rules:
+  - id: sql-unicode-identifier-folding
+    metadata: {"rule": "sql-unicode-identifier-folding", "evidence": ["https://github.com/apache/superset/pull/46009#discussion_r4495845753"]}
+    message: SQL identifiers are normalized with full Unicode case mapping via Dialect.normalize_identifier (str.upper/lower/casefold) instead of the dialect's per-character identifier folding
+    languages:
+      - python
+    severity: ERROR
+    pattern: $DIALECT.normalize_identifier

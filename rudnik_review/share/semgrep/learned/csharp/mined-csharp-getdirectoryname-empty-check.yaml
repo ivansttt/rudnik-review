@@ -1,0 +1,14 @@
+rules:
+  - id: csharp-getdirectoryname-empty-check
+    metadata: {"rule": "csharp-getdirectoryname-empty-check", "evidence": ["https://github.com/dotnet/runtime/pull/132780#discussion_r3865053432", "https://github.com/dotnet/runtime/pull/132780#discussion_r3865060223"]}
+    languages: [csharp]
+    severity: WARNING
+    message: The result of Path.GetDirectoryName is used as a directory path without first checking that it is non-empty.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $T $DIR = Path.GetDirectoryName($SRC);
+              Combine($DIR, ...);
+          - pattern: |
+              $T $DIR = Path.GetDirectoryName($SRC);
+              Path.Combine($DIR, ...);

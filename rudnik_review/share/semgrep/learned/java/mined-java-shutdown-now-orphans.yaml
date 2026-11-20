@@ -1,0 +1,12 @@
+rules:
+  - id: java-shutdown-now-orphans
+    metadata: {"rule": "java-shutdown-now-orphans", "evidence": ["https://github.com/apache/kafka/pull/23964#discussion_r4393140595"]}
+    languages: [java]
+    message: >-
+      shutdownNow() interrupts running tasks and discards queued tasks whose futures
+      are never completed. Use shutdown() followed by awaitTermination() when tasks
+      must finish gracefully (e.g. reads that must not be interrupted mid-I/O).
+    severity: WARNING
+    pattern-either:
+      - pattern: $EXEC.shutdownNow(...)
+      - pattern: ThreadUtils.shutdownExecutorServiceQuietly(...)

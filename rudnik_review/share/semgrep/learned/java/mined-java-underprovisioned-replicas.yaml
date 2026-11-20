@@ -1,0 +1,12 @@
+rules:
+  - id: java-underprovisioned-replicas
+    metadata: {"rule": "java-underprovisioned-replicas", "evidence": ["https://github.com/apache/kafka/pull/22369#discussion_r3301096032", "https://github.com/apache/kafka/pull/22306#discussion_r3260492550"]}
+    languages: [java]
+    severity: WARNING
+    message: Test cluster has fewer brokers than the replication factor required by an internal topic it relies on.
+    patterns:
+      - pattern: |
+          private static final int $NAME = 2;
+      - metavariable-regex:
+          metavariable: $NAME
+          regex: .*BROKER.*

@@ -1,0 +1,13 @@
+rules:
+- id: sql-decode-failure-swallowed-into-pass
+  metadata: {"rule": "sql-decode-failure-swallowed-into-pass", "evidence": ["https://github.com/apache/superset/pull/44465#discussion_r4059904867"]}
+  message: >-
+    get_screenshot_blankness_metrics called without raise_on_decode_error=True
+    swallows image decode failures into is_blank=False, approving corrupted
+    screenshots instead of rejecting them.
+  severity: ERROR
+  languages:
+  - python
+  patterns:
+  - pattern: get_screenshot_blankness_metrics(...)
+  - pattern-not: get_screenshot_blankness_metrics(..., raise_on_decode_error=True, ...)

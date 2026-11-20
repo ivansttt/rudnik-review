@@ -1,0 +1,17 @@
+rules:
+  - id: sql-dispatch-name-shadowing
+    metadata: {"rule": "sql-dispatch-name-shadowing", "evidence": ["https://github.com/apache/superset/pull/43337#discussion_r3817481837"]}
+    languages:
+      - python
+    severity: WARNING
+    message: |
+      hasattr dispatch over a module treats helper and internal names
+      (helpers, imported submodules) as built-in symbols, so a configured
+      callable named after a helper is invoked as the wrong object. Dispatch
+      only names in the module's __all__ before falling back to the configured
+      operations map.
+    patterns:
+      - pattern: hasattr($MODULE, $OPERATION)
+      - metavariable-regex:
+          metavariable: $OPERATION
+          regex: ^[A-Za-z_][A-Za-z0-9_]*$

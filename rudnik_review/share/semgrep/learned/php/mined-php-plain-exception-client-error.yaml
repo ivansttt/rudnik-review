@@ -1,0 +1,15 @@
+rules:
+  - id: php-plain-exception-client-error
+    metadata: {"rule": "php-plain-exception-client-error", "evidence": ["https://github.com/matomo-org/matomo/pull/25693#discussion_r4494270256", "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619283", "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619515", "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619768", "https://github.com/matomo-org/matomo/pull/25571#discussion_r4507656997", "https://github.com/matomo-org/matomo/pull/25070#discussion_r3774870675"]}
+    languages: [php]
+    message: >-
+      A client or validation error in an HTTP API context is thrown as a plain
+      Exception, so it is logged as an uncaught server error (5xx) instead of
+      returning a 4xx response. Throw a 4xx HttpCodeException (e.g.
+      BadRequestException, NoPrivilegesException, PluginNotFoundException)
+      instead.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: 'throw new Exception(...);'
+          - pattern: 'throw new \Exception(...);'

@@ -1,0 +1,12 @@
+rules:
+  - id: python-test-unnecessary-import-version-gate
+    metadata: {"rule": "python-test-unnecessary-import-version-gate", "evidence": ["https://github.com/pandas-dev/pandas/pull/66358#discussion_r3691857859", "https://github.com/pandas-dev/pandas/pull/66358#discussion_r3691860803", "https://github.com/pandas-dev/pandas/pull/66358#discussion_r3691861412"]}
+    languages: [python]
+    message: Test pins a minimum library version the test does not require.
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: $X.skip_if_no($LIB, min_version=$V)
+          - pattern: $X.skip_if_no($LIB, min_version=$V, ...)
+          - pattern: pytest.importorskip($LIB, $VERSION)
+          - pattern: pytest.importorskip($LIB, $VERSION, ...)

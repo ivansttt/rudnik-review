@@ -1,0 +1,14 @@
+rules:
+  - id: kotlin-busy-wait-spin
+    metadata: {"rule": "kotlin-busy-wait-spin", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/3595#discussion_r1097579847"]}
+    languages: [kotlin]
+    message: Busy-wait spin loop on a non-blocking receive
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          while (true) {
+            ...
+          }
+      - pattern-either:
+          - pattern: $X.tryReceive()
+          - pattern: $X.tryPoll()

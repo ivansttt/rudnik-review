@@ -1,0 +1,27 @@
+rules:
+  - id: swift-dropped-promise-on-early-exit
+    metadata: {"rule": "swift-dropped-promise-on-early-exit", "evidence": ["https://github.com/apple/swift-nio/pull/2531#discussion_r1344244162"]}
+    languages:
+      - swift
+    severity: ERROR
+    message: >
+      Promise left unfulfilled on an early-exit write path. An early `break` or
+      `return` skips the write that would forward or complete the associated
+      promise (e.g. a zero-length write), leaking it. Forward the write (even a
+      zero-length one) down the pipeline or complete the promise before exiting.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if $COND {
+                ...
+                break
+              }
+              ...
+              $WRITE(..., promise: $PROMISE)
+          - pattern: |
+              if $COND {
+                ...
+                return
+              }
+              ...
+              $WRITE(..., promise: $PROMISE)

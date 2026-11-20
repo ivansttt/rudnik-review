@@ -1,0 +1,7 @@
+rules:
+  - id: javascript-type-assertion-over-declaration
+    metadata: {"rule": "javascript-type-assertion-over-declaration", "evidence": ["https://github.com/vercel/next.js/pull/98588#discussion_r3993191572"]}
+    languages: [typescript]
+    message: Type assertion added instead of fixing the underlying type declaration
+    severity: INFO
+    pattern: $EXPR as typeof $VAR & $REST

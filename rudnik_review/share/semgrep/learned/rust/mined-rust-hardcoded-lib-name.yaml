@@ -1,0 +1,7 @@
+rules:
+  - id: rust-hardcoded-lib-name
+    metadata: {"rule": "rust-hardcoded-lib-name", "evidence": ["https://github.com/rust-lang/rust/pull/159717#discussion_r3638683093"]}
+    languages: [rust]
+    message: use the platform-aware library naming helper instead of a hardcoded filename
+    pattern-regex: '"(lib)?[A-Za-z_][A-Za-z0-9_]*\.(rlib|so|dylib|dll)"'
+    severity: INFO

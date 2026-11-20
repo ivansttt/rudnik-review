@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-trystatement-ancestor-guard
+    metadata: {"rule": "csharp-trystatement-ancestor-guard", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67530#discussion_r3506305581", "https://github.com/dotnet/aspnetcore/pull/67530#discussion_r3508364514"]}
+    languages: [csharp]
+    message: A call is treated as exception-guarded by checking any TryStatementSyntax ancestor without verifying the call is inside the try body and that the try has a catch clause.
+    severity: ERROR
+    pattern-either:
+      - pattern: "!$X.Syntax.Ancestors().OfType<TryStatementSyntax>().Any()"
+      - pattern: "IsInsideTryBlockWithCatch($X.Syntax)"

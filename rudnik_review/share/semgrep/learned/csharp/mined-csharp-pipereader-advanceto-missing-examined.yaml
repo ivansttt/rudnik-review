@@ -1,0 +1,18 @@
+rules:
+  - id: csharp-pipereader-advanceto-missing-examined
+    metadata: {"rule": "csharp-pipereader-advanceto-missing-examined", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61631#discussion_r2056855355"]}
+    languages: [csharp]
+    severity: WARNING
+    message: "PipeReader.AdvanceTo should pass the examined position when waiting for more data to avoid busy-spinning on the same bytes."
+    patterns:
+      - pattern: |
+          $READER.AdvanceTo($START)
+      - pattern-not-inside: |
+          if ($COND)
+          {
+            ...
+          }
+          else
+          {
+            ...
+          }

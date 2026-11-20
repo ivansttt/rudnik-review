@@ -1,0 +1,7 @@
+rules:
+  - id: sql-hardcoded-path-separator
+    metadata: {"rule": "sql-hardcoded-path-separator", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/688#discussion_r559203628"]}
+    pattern: $X.split("/")
+    languages: [python]
+    message: Use os.path.splitext(os.path.basename(...)) or pathlib instead of splitting a path on a hardcoded separator.
+    severity: WARNING

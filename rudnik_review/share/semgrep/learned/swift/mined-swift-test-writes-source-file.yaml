@@ -1,0 +1,9 @@
+rules:
+  - id: swift-test-writes-source-file
+    metadata: {"rule": "swift-test-writes-source-file", "evidence": ["https://github.com/apple/swift-nio/pull/2923#discussion_r1799604949"]}
+    languages:
+      - swift
+    message: A test opens its own source file for writing.
+    severity: WARNING
+    patterns:
+      - pattern: FilePath(#filePath)

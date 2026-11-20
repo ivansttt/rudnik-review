@@ -1,0 +1,11 @@
+rules:
+  - id: sql-locale-region-dropped
+    metadata: {"rule": "sql-locale-region-dropped", "evidence": ["https://github.com/apache/superset/pull/34565#discussion_r3131686244"]}
+    languages: [python]
+    message: >-
+      Locale/language tag normalization splits on '_' and keeps only the base part,
+      dropping the region sub-tag (e.g. zh_TW vs zh_CN) and conflating distinct
+      language packs.
+    severity: WARNING
+    patterns:
+      - pattern: $X.replace("-", "_").split("_")[0]

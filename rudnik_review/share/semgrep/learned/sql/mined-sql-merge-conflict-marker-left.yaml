@@ -1,0 +1,7 @@
+rules:
+  - id: sql-merge-conflict-marker-left
+    metadata: {"rule": "sql-merge-conflict-marker-left", "evidence": ["https://github.com/apache/superset/pull/19168#discussion_r833423664"]}
+    pattern-regex: '^(<<<<<<<|>>>>>>>)'
+    message: Merge conflict marker left in the committed file
+    languages: [generic]
+    severity: WARNING

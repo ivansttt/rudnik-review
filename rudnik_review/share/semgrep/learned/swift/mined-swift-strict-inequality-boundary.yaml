@@ -1,0 +1,9 @@
+rules:
+  - id: swift-strict-inequality-boundary
+    metadata: {"rule": "swift-strict-inequality-boundary", "evidence": ["https://github.com/apple/swift-nio/pull/2745#discussion_r1751643749"]}
+    languages: [swift]
+    message: Strict inequality used at a size boundary where the boundary value must be allowed
+    severity: ERROR
+    pattern-either:
+      - pattern: $CAPACITY > self.readableBytes
+      - pattern: self.readableBytes < $CAPACITY

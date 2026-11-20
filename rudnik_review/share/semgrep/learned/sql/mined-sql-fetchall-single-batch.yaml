@@ -1,0 +1,7 @@
+rules:
+  - id: sql-fetchall-single-batch
+    metadata: {"rule": "sql-fetchall-single-batch", "evidence": ["https://github.com/apache/superset/pull/44604#discussion_r4160493692"]}
+    languages: [python]
+    severity: WARNING
+    message: Bounded fetchall issues a single fetchmany and stops on a short batch.
+    pattern: return self.fetchmany($N)

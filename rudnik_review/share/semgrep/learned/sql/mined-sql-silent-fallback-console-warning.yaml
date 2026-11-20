@@ -1,0 +1,8 @@
+rules:
+  - id: sql-silent-fallback-console-warning
+    metadata: {"rule": "sql-silent-fallback-console-warning", "evidence": ["https://github.com/apache/superset/pull/39906#discussion_r3254358762", "https://github.com/apache/superset/pull/39906#discussion_r3254368922"]}
+    languages: [typescript, javascript]
+    message: degraded fallback surfaced only via console.warn instead of to the user
+    severity: WARNING
+    patterns:
+      - pattern: console.warn(...)

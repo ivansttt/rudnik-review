@@ -1,0 +1,14 @@
+# Dead code (spec 1644, 11 Nov 2026; the kit's bar since 27 Sep: "delete before you add"): a helper a change stopped calling is dead against
+# the code it did not touch, so vulture is a whole tool, reading every tracked *.py. ruff sees an unused import or variable in one file, never a
+# function another module stopped calling. At 60: vulture 2.16 rates every unused function, class, method and variable 60% (at 80 it named
+# none); its unused import is ruff's F401 and findings.py drops it. It runs in the tree's root, where it reads the project's own
+# [tool.vulture] in pyproject.toml. Blocks nothing until spec 1626 measures it, so a 60% guess stops no build.
+[[tool]]
+name = "vulture"
+version = "2.16"
+stacks = ["python"]
+globs = ["*.py"]
+whole = true
+cmd = ["vulture", "--min-confidence", "60", "{files}"]
+adapter = "vulture"
+blocks = []

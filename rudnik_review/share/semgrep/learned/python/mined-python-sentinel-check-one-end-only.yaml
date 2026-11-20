@@ -1,0 +1,17 @@
+rules:
+  - id: python-sentinel-check-one-end-only
+    metadata: {"rule": "python-sentinel-check-one-end-only", "evidence": ["https://github.com/pandas-dev/pandas/pull/65840#discussion_r3385324627"]}
+    languages:
+      - python
+    message: >-
+      A check for a sentinel at the ends of a sorted sequence inspects only one
+      end, but the sentinel can sort to either end. Check both ends.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if len($ARR) and $FUNC($ARR[-1]):
+                  ...
+          - pattern: |
+              if len($ARR) and $FUNC($ARR[0]):
+                  ...

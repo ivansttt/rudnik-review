@@ -1,0 +1,13 @@
+rules:
+  - id: swift-partial-write-offset-not-advanced
+    metadata: {"rule": "swift-partial-write-offset-not-advanced", "evidence": ["https://github.com/apple/swift-nio/pull/1408#discussion_r383290135"]}
+    languages: [swift]
+    severity: ERROR
+    message: >-
+      pwrite is called with a fixed offset that is not advanced by the number
+      of bytes already written on a partial write.
+    patterns:
+      - pattern: off_t($OFFSET)
+      - metavariable-regex:
+          metavariable: $OFFSET
+          regex: '^[A-Za-z_][A-Za-z0-9_]*$'

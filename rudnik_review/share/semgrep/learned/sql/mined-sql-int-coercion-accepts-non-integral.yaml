@@ -1,0 +1,15 @@
+rules:
+  - id: sql-int-coercion-accepts-non-integral
+    metadata: {"rule": "sql-int-coercion-accepts-non-integral", "evidence": ["https://github.com/apache/superset/pull/43017#discussion_r3913214453"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      int() coerces a value without rejecting bool, float, or non-decimal strings, so malformed metadata can silently resolve to a different row.
+    patterns:
+      - pattern: return int($X)
+      - pattern-inside: |
+          try:
+            ...
+          except (TypeError, ValueError):
+            ...

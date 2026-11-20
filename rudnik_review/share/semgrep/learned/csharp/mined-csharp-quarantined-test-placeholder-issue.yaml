@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-quarantined-test-placeholder-issue
+    metadata: {"rule": "csharp-quarantined-test-placeholder-issue", "evidence": ["https://github.com/dotnet/aspnetcore/pull/66294#discussion_r3073678898", "https://github.com/dotnet/aspnetcore/pull/66294#discussion_r3073679303"]}
+    languages:
+      - csharp
+    message: QuarantinedTest attribute uses a placeholder issue URL instead of a real issue number.
+    severity: WARNING
+    patterns:
+      - pattern-regex: 'QuarantinedTest\("[^"]*#[^0-9]'

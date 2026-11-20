@@ -1,0 +1,7 @@
+rules:
+  - id: sql-partial-output-assertion
+    metadata: {"rule": "sql-partial-output-assertion", "evidence": ["https://github.com/apache/superset/pull/36136#discussion_r2550694488", "https://github.com/apache/superset/pull/36136#discussion_r2550704704"]}
+    languages: [python]
+    severity: WARNING
+    message: Assert the exact expected output instead of substring membership
+    pattern: assert "$X" in $Y

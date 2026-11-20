@@ -1,0 +1,41 @@
+rules:
+  - id: csharp-cancel-before-waiting-task
+    metadata: {"rule": "csharp-cancel-before-waiting-task", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60806#discussion_r2034101517"]}
+    languages:
+      - csharp
+    message: Dispose the PeriodicTimer or cancel the CancellationTokenSource before waiting on the task it terminates, otherwise the loop awaiting the timer/token can never exit and the block hangs forever.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $TASK.Wait(...);
+              ...
+              $TIMER.Dispose();
+          - pattern: |
+              $TASK.Result;
+              ...
+              $TIMER.Dispose();
+          - pattern: |
+              $TASK.GetAwaiter().GetResult();
+              ...
+              $TIMER.Dispose();
+          - pattern: |
+              $TASK.Wait(...);
+              ...
+              $CTS.Cancel();
+          - pattern: |
+              $TASK.Result;
+              ...
+              $CTS.Cancel();
+          - pattern: |
+              $TASK.GetAwaiter().GetResult();
+              ...
+              $CTS.Cancel();
+          - pattern: |
+              try { $TASK.Wait(...); } catch { }
+              ...
+              $TIMER.Dispose();
+          - pattern: |
+              try { $TASK.Wait(...); } catch { }
+              ...
+              $CTS.Cancel();

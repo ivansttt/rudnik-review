@@ -1,0 +1,20 @@
+rules:
+  - id: csharp-dispose-in-finally
+    metadata: {"rule": "csharp-dispose-in-finally", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67912#discussion_r3755107993", "https://github.com/dotnet/aspnetcore/pull/63321#discussion_r2283746521", "https://github.com/dotnet/aspnetcore/pull/61325#discussion_r2064066246"]}
+    languages:
+      - csharp
+    message: Dispose resources in a finally block when a preceding call can throw.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: $X.Dispose();
+          - pattern: Marshal.FreeHGlobal($ARG);
+      - pattern-not-inside: |
+          try
+          {
+            ...
+          }
+          finally
+          {
+            ...
+          }

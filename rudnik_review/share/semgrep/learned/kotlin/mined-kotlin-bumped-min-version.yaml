@@ -1,0 +1,11 @@
+rules:
+  - id: kotlin-bumped-min-version
+    metadata: {"rule": "kotlin-bumped-min-version", "evidence": ["https://github.com/detekt/detekt/pull/6065#discussion_r1181985251", "https://github.com/detekt/detekt/pull/5743#discussion_r1095111378"]}
+    languages:
+      - kotlin
+    message: >-
+      A version constant marked as the minimum supported version was bumped to a newer version while the actual minimum support floor stayed unchanged.
+    severity: WARNING
+    patterns:
+      - pattern-regex: '(?i)^\s*[A-Za-z0-9_.-]*min(?:imum|supported|support)?[A-Za-z0-9_.-]*\s*=\s*"[^"]*[0-9]+\.[0-9]+\.[0-9]+[^"]*"'
+      - pattern-not-regex: '[0-9]+\.[0]+\.[0]+"'

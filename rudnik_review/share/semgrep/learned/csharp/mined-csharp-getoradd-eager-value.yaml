@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-getoradd-eager-value
+    metadata: {"rule": "csharp-getoradd-eager-value", "evidence": ["https://github.com/dotnet/aspnetcore/pull/57972#discussion_r1769345769"]}
+    languages: [csharp]
+    message: Pass the value factory to GetOrAdd so the value is not computed when the key already exists
+    severity: INFO
+    patterns:
+      - pattern: $DICT.GetOrAdd($KEY, $FACTORY(...))

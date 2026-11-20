@@ -1,0 +1,7 @@
+rules:
+  - id: go-reflect-elem-panic
+    metadata: {"rule": "go-reflect-elem-panic", "evidence": ["https://github.com/kubernetes/kubernetes/pull/139561#discussion_r4088139972"]}
+    languages: [go]
+    message: reflect.Value.Elem panics on a non-pointer value; check Kind first.
+    severity: WARNING
+    pattern: reflect.ValueOf($X).Elem()

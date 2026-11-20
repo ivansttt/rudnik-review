@@ -1,0 +1,11 @@
+rules:
+  - id: sql-duplicate-join-on-filtered-table
+    metadata: {"rule": "sql-duplicate-join-on-filtered-table", "evidence": ["https://github.com/apache/superset/pull/37865#discussion_r2794217731"]}
+    languages:
+      - python
+    message: |
+      query.join(...) adds a join to a table the base filter already joins,
+      duplicating the join and changing the result. Use a subquery filter
+      instead, e.g. query.filter(SqlaTable.database_id.in_(select(...))).
+    severity: WARNING
+    pattern: $Q.join($TABLE, ...)

@@ -1,0 +1,16 @@
+rules:
+  - id: java-vector-tail-bounds
+    metadata: {"rule": "java-vector-tail-bounds", "evidence": ["https://github.com/apache/lucene/pull/13636#discussion_r1706268616"]}
+    languages:
+      - java
+    message: Vectorized loop iterates to the raw count in steps of the vector species width without a scalar path or loopBound, risking out-of-bounds access.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          for ($I = 0; $I < $COUNT; $I += $SPECIES.length(), ...) {
+            ...
+          }
+      - pattern-not: |
+          for (...; $I < loopBound; $I += $SPECIES.length(), ...) {
+            ...
+          }

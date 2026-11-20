@@ -1,0 +1,15 @@
+rules:
+  - id: java-exposes-parser-internals
+    metadata: {"rule": "java-exposes-parser-internals", "evidence": ["https://github.com/apache/flink/pull/27256#discussion_r2549227381", "https://github.com/apache/flink/pull/27256#discussion_r2549255345", "https://github.com/apache/flink/pull/27256#discussion_r2549257851"]}
+    languages: [java]
+    message: Public API exposes parser AST node types instead of plain values
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          public SqlCharStringLiteral $METHOD(...) { ... }
+      - pattern: |
+          public SqlNode $METHOD(...) { ... }
+      - pattern: |
+          OperationConverterUtils.getComment(...)
+      - pattern: |
+          OperationConverterUtils.getProperties(...)

@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-json-scalar-parse-gate
+    metadata: {"rule": "csharp-json-scalar-parse-gate", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65037#discussion_r2741986391"]}
+    languages: [javascript]
+    message: "Don't gate JSON parsing on a leading { or [ character; scalar JSON values are skipped."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: "$X[0] === '{' || $X[0] === '['"
+          - pattern: "($X[0] === '{' || $X[0] === '[')"

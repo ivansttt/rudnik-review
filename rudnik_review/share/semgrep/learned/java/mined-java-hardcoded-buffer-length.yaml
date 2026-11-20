@@ -1,0 +1,11 @@
+rules:
+  - id: java-hardcoded-buffer-length
+    metadata: {"rule": "java-hardcoded-buffer-length", "evidence": ["https://github.com/netty/netty/pull/10498#discussion_r477460991", "https://github.com/netty/netty/pull/10498#discussion_r477461428"]}
+    languages: [java]
+    message: Hardcoded byte count instead of the buffer's readableBytes()
+    severity: INFO
+    patterns:
+      - pattern: $BUF.readBytes($OUT, $N)
+      - metavariable-regex:
+          metavariable: $N
+          regex: ^(16|24)$

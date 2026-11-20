@@ -1,0 +1,7 @@
+rules:
+  - id: java-platform-default-charset
+    metadata: {"rule": "java-platform-default-charset", "evidence": ["https://github.com/netty/netty/pull/11001#discussion_r573739041"]}
+    languages: [java]
+    message: "Use an explicit Charset instead of the platform default"
+    severity: INFO
+    pattern: $S.getBytes()

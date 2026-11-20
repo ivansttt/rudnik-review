@@ -1,0 +1,10 @@
+rules:
+  - id: python-chmod-path-symlink-race
+    metadata: {"rule": "python-chmod-path-symlink-race", "evidence": ["https://github.com/pypa/pip/pull/13070#discussion_r1840582677"]}
+    languages:
+      - python
+    severity: INFO
+    message: chmod on the file's path/name without follow_symlinks=False allows a symlink to be swapped in between write and chmod; use the open file descriptor.
+    patterns:
+      - pattern: os.chmod($F.name, ...)
+      - pattern-not: os.chmod($F.name, ..., follow_symlinks=False)

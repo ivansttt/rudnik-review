@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-free-library-cached-pointers
+    metadata: {"rule": "csharp-free-library-cached-pointers", "evidence": ["https://github.com/dotnet/runtime/pull/135902#discussion_r4345219888"]}
+    languages:
+      - cpp
+    message: >-
+      Function pointers obtained from GetProcAddress are cached, but the library
+      handle is then freed with FreeLibrary, leaving the cached pointers pointing
+      into unloaded memory.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          $PTR = reinterpret_cast<$TYPE>(GetProcAddress($MODULE, $NAME));
+          ...
+          FreeLibrary($MODULE);

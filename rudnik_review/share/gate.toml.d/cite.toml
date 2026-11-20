@@ -1,0 +1,13 @@
+# The kit's own citation checker (spec 1568, 11 Nov 2026; owner, 9 Nov: every claim checked): each footnote's quote is found in its stored
+# copy (.sources/<sha>.txt, staged by steps.analysis) or in the code file it cites. A whole tool: every tracked report and doc, whatever the
+# change, so a branch that changes the code under an unchanged doc's quote of it is red. cite-name only warns: a name may be fine to quote.
+# Every change to cite.py bumps this version and cite.VERSION with it (the base cache key).
+[[tool]]
+name = "cite"
+version = "1.1.0"
+stacks = ["prose"]
+globs = ["reports/*.md", "docs/*.md"]
+whole = true
+cmd = ["cite", "check", "{files}"]
+adapter = "cite"
+blocks = ["cite-copy", "cite-quote", "cite-long", "cite-undefined", "cite-uncited"]

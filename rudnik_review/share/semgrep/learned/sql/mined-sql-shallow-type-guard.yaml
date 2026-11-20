@@ -1,0 +1,19 @@
+rules:
+  - id: sql-shallow-type-guard
+    metadata: {"rule": "sql-shallow-type-guard", "evidence": ["https://github.com/apache/superset/pull/45761#discussion_r4392754784", "https://github.com/apache/superset/pull/44180#discussion_r4034938687"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      This type guard tests only the top-level value, so nested occurrences of
+      the forbidden type are silently accepted or coerced.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if isinstance($X, $T):
+                  ...
+                  raise $E
+                  ...
+          - pattern: |
+              if isinstance($X, $T) and $COND:
+                  ...

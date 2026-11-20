@@ -1,0 +1,12 @@
+rules:
+  - id: sql-fix-built-from-raw-segment
+    metadata: {"rule": "sql-fix-built-from-raw-segment", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3747#discussion_r950712439", "https://github.com/sqlfluff/sqlfluff/pull/3747#discussion_r950712713"]}
+    languages:
+      - python
+    message: Lint fix composes replacement SQL from a raw CodeSegment instead of typed segments (KeywordSegment, SymbolSegment, WhitespaceSegment)
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          LintFix.replace(...)
+      - pattern: |
+          CodeSegment(...)

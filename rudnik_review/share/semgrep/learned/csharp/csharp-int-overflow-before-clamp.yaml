@@ -1,0 +1,23 @@
+rules:
+  - id: csharp-int-overflow-before-clamp
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      The int sum or product overflows (wraps negative) before Math.Min clamps it to int.MaxValue, so the clamp never helps;
+      widen an operand first, (long)a + b, and cast the clamped result back.
+    patterns:
+      - pattern-either:
+          - pattern: Math.Min($E, int.MaxValue)
+          - pattern: Math.Min(int.MaxValue, $E)
+          - pattern: Math.Min($E, Int32.MaxValue)
+          - pattern: Math.Min(Int32.MaxValue, $E)
+      - metavariable-pattern:
+          metavariable: $E
+          patterns:
+            - pattern-either:
+                - pattern: $A + $B
+                - pattern: $A * $B
+            - pattern-not: (long)$X + $Y
+            - pattern-not: $X + (long)$Y
+            - pattern-not: (long)$X * $Y
+            - pattern-not: $X * (long)$Y

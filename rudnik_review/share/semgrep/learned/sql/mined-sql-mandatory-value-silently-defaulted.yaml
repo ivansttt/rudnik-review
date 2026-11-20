@@ -1,0 +1,12 @@
+rules:
+  - id: sql-mandatory-value-silently-defaulted
+    metadata: {"rule": "sql-mandatory-value-silently-defaulted", "evidence": ["https://github.com/apache/superset/pull/24176#discussion_r1217941345"]}
+    languages:
+      - python
+    message: A required value is silently substituted with a default instead of failing validation.
+    severity: ERROR
+    patterns:
+      - pattern: $VALUE = $CALL(...) or $DEFAULT
+      - metavariable-regex:
+          metavariable: $DEFAULT
+          regex: ^[A-Z][A-Za-z0-9_.]*$

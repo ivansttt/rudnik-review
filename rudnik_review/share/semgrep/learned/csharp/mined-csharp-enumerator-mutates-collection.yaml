@@ -1,0 +1,28 @@
+rules:
+  - id: csharp-enumerator-mutates-collection
+    metadata: {"rule": "csharp-enumerator-mutates-collection", "evidence": ["https://github.com/dotnet/aspnetcore/pull/64749#discussion_r2634962687"]}
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      A custom enumerator's Current getter or MoveNext mutates the collection
+      being enumerated, which causes InvalidOperationException when the type is
+      used in a foreach loop.
+    patterns:
+      - pattern-either:
+          - pattern: $COLLECTION.Remove(...)
+          - pattern: $COLLECTION.Clear(...)
+      - pattern-either:
+          - pattern-inside: |
+              bool MoveNext(...)
+              {
+                ...
+              }
+          - patterns:
+              - pattern-inside: |
+                  $RET $FUNC()
+                  {
+                    ...
+                  }
+              - metavariable-regex:
+                  metavariable: $FUNC
+                  regex: get_Current

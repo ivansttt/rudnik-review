@@ -1,0 +1,9 @@
+rules:
+  - id: php-int-cast-before-validation
+    metadata: {"rule": "php-int-cast-before-validation", "evidence": ["https://github.com/matomo-org/matomo/pull/25032#discussion_r3768577294"]}
+    languages: [php]
+    message: Value cast to int before it is validated; invalid non-numeric strings silently become 0.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $ID = self::normalizeIdSegment($ID);

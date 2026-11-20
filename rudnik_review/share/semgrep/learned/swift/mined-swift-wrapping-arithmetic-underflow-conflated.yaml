@@ -1,0 +1,8 @@
+rules:
+  - id: swift-wrapping-arithmetic-underflow-conflated
+    metadata: {"rule": "swift-wrapping-arithmetic-underflow-conflated", "evidence": ["https://github.com/apple/swift-nio/pull/2543#discussion_r1351686334"]}
+    languages: [swift]
+    message: "Wrapping arithmetic plus a sign check conflates underflow with overflow"
+    severity: WARNING
+    patterns:
+      - pattern-regex: '&\\*'

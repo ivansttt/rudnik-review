@@ -1,0 +1,9 @@
+rules:
+  - id: java-exception-instead-of-runtimeexception
+    metadata: {"rule": "java-exception-instead-of-runtimeexception", "evidence": ["https://github.com/netty/netty/pull/12057#discussion_r802493141", "https://github.com/netty/netty/pull/12057#discussion_r802493954"]}
+    languages:
+      - java
+    message: Use RuntimeException (or a specific unchecked exception) instead of a checked Exception for a programming error or warning
+    severity: INFO
+    patterns:
+      - pattern: new Exception(...)

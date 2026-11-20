@@ -1,0 +1,17 @@
+rules:
+  - id: java-writer-not-closed-before-file-access
+    metadata: {"rule": "java-writer-not-closed-before-file-access", "evidence": ["https://github.com/apache/lucene/pull/15476#discussion_r2640964341"]}
+    languages:
+      - java
+    severity: WARNING
+    message: Index files are modified while the IndexWriter is still open, racing with background merges or pending flushes.
+    patterns:
+      - pattern-inside: |
+          try (BaseDirectoryWrapper $DIR = newDirectory();
+               IndexWriter $W = new IndexWriter($DIR, ...)) {
+            ...
+          }
+      - pattern: |
+          $W.commit();
+          ...
+          $FUNC($DIR);

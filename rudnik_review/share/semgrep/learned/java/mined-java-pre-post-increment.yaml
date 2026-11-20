@@ -1,0 +1,8 @@
+rules:
+  - id: java-pre-post-increment
+    metadata: {"rule": "java-pre-post-increment", "evidence": ["https://github.com/apache/lucene/pull/15585#discussion_r2718698084"]}
+    languages:
+      - java
+    message: Pre-increment (incrementAndGet) is used where post-increment (getAndIncrement) semantics are required, so the first observed value is off by one.
+    severity: WARNING
+    pattern: $COUNTER.incrementAndGet()

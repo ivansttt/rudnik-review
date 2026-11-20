@@ -1,0 +1,49 @@
+rules:
+  - id: csharp-redundant-null-check-guaranteed-nonnull
+    metadata: {"rule": "csharp-redundant-null-check-guaranteed-nonnull", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61166#discussion_r2026766505", "https://github.com/dotnet/aspnetcore/pull/60970#discussion_r2031226229"]}
+    languages: [csharp]
+    message: 'Null check on a value that cannot be null'
+    severity: WARNING
+    pattern-either:
+      - patterns:
+          - pattern-either:
+              - pattern: |
+                  if ($P != null)
+                  {
+                    ...
+                  }
+              - pattern: |
+                  if ($P == null)
+                  {
+                    ...
+                  }
+              - pattern: |
+                  if ($P is null)
+                  {
+                    ...
+                  }
+          - pattern-inside: |
+              class $C
+              {
+                ...
+                $NAME($TYPE $P)
+                {
+                  ...
+                }
+                ...
+              }
+      - patterns:
+          - pattern-either:
+              - pattern: |
+                  if ($V is null)
+                  {
+                    ...
+                  }
+              - pattern: |
+                  if ($V == null)
+                  {
+                    ...
+                  }
+          - pattern-inside: |
+              var $V = $RECEIVER.GetRequiredService<$SERVICE>();
+              ...

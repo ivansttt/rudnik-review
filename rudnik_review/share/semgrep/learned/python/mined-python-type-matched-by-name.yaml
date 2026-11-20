@@ -1,0 +1,10 @@
+rules:
+  - id: python-type-matched-by-name
+    metadata: {"rule": "python-type-matched-by-name", "evidence": ["https://github.com/pydantic/pydantic/pull/8857#discussion_r1496213504"]}
+    languages: [python]
+    message: Type matched by its __name__ string instead of the type object
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: $STR in [$X.__name__ for $Y in $Z]
+          - pattern: $STR in tuple($X.__name__ for $Y in $Z)

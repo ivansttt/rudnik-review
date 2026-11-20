@@ -1,0 +1,17 @@
+rules:
+  - id: php-narrowing-type-hint-breaking
+    metadata: {"rule": "php-narrowing-type-hint-breaking", "evidence": ["https://github.com/laravel/framework/pull/58963#discussion_r2838846151", "https://github.com/laravel/framework/pull/56736#discussion_r2297231217", "https://github.com/laravel/framework/pull/55471#discussion_r2051350233"]}
+    languages:
+      - php
+    message: Adding or narrowing type hints on public or protected methods is a breaking change for subclasses that override them.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              public function $M(..., \Closure $P, ...) { ... }
+          - pattern: |
+              protected function $M(..., \Closure $P, ...) { ... }
+          - pattern: |
+              public function $M(...): $R { ... }
+          - pattern: |
+              protected function $M(...): $R { ... }

@@ -1,0 +1,8 @@
+[desktop.biome]   # spec 1702: Biome's 2.6.6 digests, GitHub's release API on 12 Nov 2026
+release = "biomejs/biome/releases/download/@biomejs/biome@{v}/biome-{os}-{x64}"
+release_windows = "biomejs/biome/releases/download/@biomejs/biome@{v}/biome-win32-{x64}.exe"
+sha256_x86_64 = "69ca8e9ff548091b2bfbd178d6f73142b483a5257b07854de702c68fb7f8c06b"
+sha256_aarch64 = "bd0c5860a6220b68ceb82d7a00b7a4ed97fbaf3904eb41bcb897f9ec74af4148"
+sha256_darwin_x86_64 = "b92f74faad4521cff6bc45b54fc3806562d9aa136f8655222f1266e9819526e1"
+sha256_darwin_arm64 = "dec6124a5e3ea475e8625a7a85b5a2ec939c1077624f95b78cfc1cb96199fab1"
+sha256_windows_x86_64 = "d3aac0b55e1b52ce586892b7c64de6bd2fc3774fe5b71129426af92c8a3c0571"

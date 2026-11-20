@@ -1,0 +1,13 @@
+rules:
+  - id: python-unknown-value-filtered-to-none
+    metadata: {"rule": "python-unknown-value-filtered-to-none", "evidence": ["https://github.com/home-assistant/core/pull/190347#discussion_r4523788341"]}
+    languages:
+      - python
+    message: >-
+      Unknown enum or status value silently filtered to None. Returning None for
+      any value not in the known options list hides new or undocumented values
+      instead of surfacing them.
+    severity: WARNING
+    pattern: |
+      if (options := $OBJ.options) and $VALUE not in options:
+          return None

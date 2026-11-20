@@ -1,0 +1,10 @@
+rules:
+  - id: swift-static-var-recomputed
+    metadata: {"rule": "swift-static-var-recomputed", "evidence": ["https://github.com/apple/swift-nio/pull/3462#discussion_r2614526882", "https://github.com/apple/swift-nio/pull/3462#discussion_r2614527780", "https://github.com/apple/swift-nio/pull/3462#discussion_r2614528383"]}
+    languages: [swift]
+    message: A computed static var whose value is invariant is recomputed on every access; use static let.
+    severity: INFO
+    pattern: |
+      static var $NAME: $TYPE? {
+        ...
+      }

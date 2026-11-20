@@ -1,0 +1,15 @@
+rules:
+  - id: sql-rolling-deploy-contract
+    metadata: {"rule": "sql-rolling-deploy-contract", "evidence": ["https://github.com/apache/superset/pull/43458#discussion_r3874287485"]}
+    languages:
+      - ts
+    message: >-
+      New payload discriminator `is_access_denial` is checked without a legacy
+      fallback on `extra.datasource`; during a rolling deploy older pods still
+      return the old payload shape and the request-access UI disappears.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($OBJ.extra?.is_access_denial) {
+            ...
+          }

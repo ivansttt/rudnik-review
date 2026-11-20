@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-bounded-join-then-dispose
+    metadata: {"rule": "csharp-bounded-join-then-dispose", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67912#discussion_r3755305716"]}
+    languages:
+      - csharp
+    message: >-
+      Thread.Join with a timeout does not guarantee the thread has exited;
+      resources the thread may still be using must not be freed until its exit
+      is verified.
+    severity: ERROR
+    patterns:
+      - pattern: $THREAD.Join($TIMEOUT)
+      - metavariable-regex:
+          metavariable: $TIMEOUT
+          regex: '^[0-9]+$'

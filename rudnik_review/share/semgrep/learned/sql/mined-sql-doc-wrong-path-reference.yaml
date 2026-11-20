@@ -1,0 +1,8 @@
+rules:
+  - id: sql-doc-wrong-path-reference
+    metadata: {"rule": "sql-doc-wrong-path-reference", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1403#discussion_r708791417", "https://github.com/sqlfluff/sqlfluff/pull/1403#discussion_r708791643", "https://github.com/sqlfluff/sqlfluff/pull/1403#discussion_r708791706", "https://github.com/sqlfluff/sqlfluff/pull/1403#discussion_r708791753"]}
+    languages:
+      - generic
+    message: Documentation references a wrong directory or file path.
+    severity: WARNING
+    pattern-regex: '\bdoc\b|docs/src/'

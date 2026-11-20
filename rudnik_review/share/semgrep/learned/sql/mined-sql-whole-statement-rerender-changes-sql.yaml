@@ -1,0 +1,8 @@
+rules:
+  - id: sql-whole-statement-rerender-changes-sql
+    metadata: {"rule": "sql-whole-statement-rerender-changes-sql", "evidence": ["https://github.com/apache/superset/pull/42899#discussion_r4380192288"]}
+    languages: [python]
+    severity: WARNING
+    message: Re-rendering the whole statement rewrites user SQL
+    patterns:
+      - pattern: "SQLScript($SQL, ...).format()"

@@ -1,0 +1,12 @@
+rules:
+  - id: lua-mark-outside-guard
+    metadata: {"rule": "lua-mark-outside-guard", "evidence": ["https://github.com/koreader/koreader/pull/16039#discussion_r3976880022", "https://github.com/koreader/koreader/pull/16039#discussion_r3976882017"]}
+    languages: [lua]
+    message: Bookkeeping assignment sits outside the conditional that guards the change
+    severity: ERROR
+    patterns:
+      - pattern: |
+          if $COND then
+            ...
+          end
+          $TABLE[$KEY] = true

@@ -1,0 +1,9 @@
+rules:
+  - id: python-exit-instead-of-sys-exit
+    metadata: {"rule": "python-exit-instead-of-sys-exit", "evidence": ["https://github.com/pydantic/pydantic/pull/11442#discussion_r1958138876"]}
+    languages:
+      - python
+    message: Use sys.exit() instead of the interactive-only exit() helper.
+    severity: INFO
+    patterns:
+      - pattern: exit(...)

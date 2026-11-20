@@ -1,0 +1,13 @@
+rules:
+  - id: go-stale-value-blocks-shrink
+    metadata: {"rule": "go-stale-value-blocks-shrink", "evidence": ["https://github.com/kubernetes/kubernetes/pull/140809#discussion_r4541284715"]}
+    languages: [go]
+    severity: ERROR
+    message: Recompute values from the new desired state, not a stale copy. UseStatusResources reads the previous API status so max(spec, status) silently ignores reductions to smaller values.
+    patterns:
+      - pattern-inside: |
+          resourcehelper.PodResourcesOptions{
+            ...
+          }
+      - pattern: |
+          UseStatusResources: true

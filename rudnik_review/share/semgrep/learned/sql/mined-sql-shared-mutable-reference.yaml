@@ -1,0 +1,11 @@
+rules:
+  - id: sql-shared-mutable-reference
+    metadata: {"rule": "sql-shared-mutable-reference", "evidence": ["https://github.com/apache/superset/pull/44629#discussion_r4125116370"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Same array reference assigned to multiple fields.
+    patterns:
+      - pattern: $OBJ[$KEY] = $VAR
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: ^[A-Za-z_][A-Za-z0-9_]*$

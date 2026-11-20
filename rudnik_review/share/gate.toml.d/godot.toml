@@ -1,0 +1,66 @@
+# Godot's own GDScript checker (spec 1642, 11 Nov 2026): every warning of the game's Godot at warn level, each a finding. Godot is the
+# pipeline's (pipeline-tools.sh's GV, on PATH in a game's gate through its read-only mount), so `from = "pipeline"`: no image installs or holds it.
+# Found on 4.7.2 that day: `--check-only --script` prints no warning, and a plain run none either; Godot reports a script's warnings only to an
+# active debugger (`-d`), each through the Logger as ERROR_TYPE_WARNING with its code. So the cmd, per project.godot above the changed scripts:
+# copies the project (Godot writes .godot/, .uid and .import files beside what it loads), writes override.cfg there, the project's own with
+# every warning Godot lists set to 1 after it, unless that own one sets it already; imports (a preload of an unimported file fails the script);
+# then loads the scripts under `-d` with a Logger that prints, e.g. on a script with `var unused: int = 1` at line 7:
+#   res://scripts/player.gd:7: UNUSED_VARIABLE: The local variable "unused" is declared but never used in the block. ...
+# and names each by its path in the tree. A parse error stops `-d` at its debug> prompt: the "c" lines on stdin continue it, and the prompt,
+# left on the line the next warning starts, goes. Any fault, as
+# godot not on PATH (a gate without the pipeline's mount), exits 2: a crash with its evidence (spec 1535). Blocks nothing until spec 1626.
+[[tool]]
+name = "godot"
+version = "4.7.2"
+from = "pipeline"
+stacks = ["gdscript"]
+globs = ["*.gd"]
+cmd = ["python3", "-c", '''
+import re, shutil, subprocess, sys, tempfile, traceback
+from pathlib import Path
+LOADER = """extends SceneTree
+
+class Warnings extends Logger:
+    func _log_error(_fn: String, file: String, line: int, code: String, text: String, _ed: bool, type: int, _bt: Array[ScriptBacktrace]) -> void:
+        if type == ERROR_TYPE_WARNING:
+            printraw("%s:%d: %s: %s\\n" % [file, line, code, text])
+
+func _init() -> void:
+    var paths := OS.get_cmdline_user_args()
+    if paths.is_empty():
+        for p in ProjectSettings.get_property_list():
+            if p.name.begins_with("debug/gdscript/warnings/") and p.type == TYPE_INT:
+                print(p.name.trim_prefix("debug/"), "=1")
+    OS.add_logger(Warnings.new())
+    for path in paths:
+        load(path)
+    quit()
+"""
+
+def check(root, files):
+    with tempfile.TemporaryDirectory() as t:
+        copy = shutil.copytree(root, Path(t, "project"), ignore=shutil.ignore_patterns(".git", ".gate-work", "findings"))
+        def godot(*args, **kw):
+            r = subprocess.run(["godot", "--headless", "--path", copy, *args], capture_output=True, text=True, **kw)
+            sys.stderr.write(r.stderr); r.check_returncode(); return r.stdout
+        (copy / "fleet_warnings.gd").write_text(LOADER)
+        own = (copy / "override.cfg").read_text() if (copy / "override.cfg").is_file() else ""
+        keys = ["gdscript/warnings/enable=true", *re.findall(r"^gdscript/warnings/\w+=1$", godot("--script", "res://fleet_warnings.gd"), re.M)]
+        keys = [k for k in keys if not re.search(rf"^{k.split('=')[0]}\s*=", own, re.M)]
+        (copy / "override.cfg").write_text(own + "\n[debug]\n" + "\n".join(keys) + "\n")
+        godot("--import")
+        out = godot("-d", "--script", "res://fleet_warnings.gd", "--", *(f"res://{Path(f).relative_to(root)}" for f in files), input="c\n" * 9999)
+        print(re.sub(r"(?m)^(?:debug> )*res://(\S+?):", lambda m: f"{Path(root, m[1])}:", out), end="")
+
+try:
+    projects = {}
+    for f in sys.argv[1:]:
+        root = next((p for p in Path(f).parents if (p / "project.godot").is_file()), None)
+        projects.setdefault(root, []).append(f)
+    for root, files in projects.items():
+        if root: check(root, files)
+except Exception:
+    traceback.print_exc(); sys.exit(2)
+''', "{files}"]
+adapter = "godot"
+blocks = []

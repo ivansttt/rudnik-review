@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-error-on-missing-dependency
+    metadata: {"rule": "kotlin-error-on-missing-dependency", "evidence": ["https://github.com/detekt/detekt/pull/9208#discussion_r3060910785"]}
+    languages: [kotlin]
+    message: error() thrown when an optional type or dependency is not found
+    severity: WARNING
+    pattern-regex: '\?: error\([^)]*not found'

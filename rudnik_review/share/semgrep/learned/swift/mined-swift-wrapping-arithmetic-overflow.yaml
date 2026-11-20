@@ -1,0 +1,10 @@
+rules:
+  - id: swift-wrapping-arithmetic-overflow
+    metadata: {"rule": "swift-wrapping-arithmetic-overflow", "evidence": ["https://github.com/apple/swift-nio/pull/3252#discussion_r2112009998", "https://github.com/apple/swift-nio/pull/1284#discussion_r353768840"]}
+    languages: [swift]
+    message: "Wrapping arithmetic can silently overflow; use checked operators unless wrapping is intended"
+    pattern-either:
+      - pattern: $X &* $Y
+      - pattern: $X &+ $Y
+      - pattern: $X &- $Y
+    severity: WARNING

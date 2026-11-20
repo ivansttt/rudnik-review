@@ -1,0 +1,10 @@
+# SQL's linter (spec 1249, v3 §5): `{engine}` is the plan's sql engine, sqlfluff's own dialect name (analyze.detect), put there by findings.run.
+# It blocks nothing until spec 1253 turns a rule on with its gate-corpus pair.
+[[tool]]
+name = "sqlfluff"
+version = "4.5.0"
+stacks = ["sql"]
+globs = ["*.sql"]
+cmd = ["sqlfluff", "lint", "--format", "json", "--dialect", "{engine}", "{files}"]
+adapter = "sqlfluff"
+blocks = []

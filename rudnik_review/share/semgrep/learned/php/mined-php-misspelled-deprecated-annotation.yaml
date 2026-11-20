@@ -1,0 +1,8 @@
+rules:
+  - id: php-misspelled-deprecated-annotation
+    metadata: {"rule": "php-misspelled-deprecated-annotation", "evidence": ["https://github.com/laravel/framework/pull/54487#discussion_r1944612767", "https://github.com/laravel/framework/pull/54487#discussion_r1944613413", "https://github.com/laravel/framework/pull/54487#discussion_r1944614193"]}
+    languages: [php]
+    severity: INFO
+    message: '@deprecated is misspelled and will not be recognized as a deprecation.'
+    patterns:
+      - pattern-regex: '@deprected'

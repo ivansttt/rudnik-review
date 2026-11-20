@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-byte-span-endianness
+    metadata: {"rule": "csharp-byte-span-endianness", "evidence": ["https://github.com/dotnet/runtime/pull/137109#discussion_r4497905340"]}
+    languages: [csharp]
+    message: "Reinterpreting bytes as UTF-16 chars and building a string assumes matching endianness; swap bytes on big-endian hosts."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: new string(MemoryMarshal.Cast<byte, char>($B))
+          - pattern: MemoryMarshal.Cast<byte, char>($B).ToString()

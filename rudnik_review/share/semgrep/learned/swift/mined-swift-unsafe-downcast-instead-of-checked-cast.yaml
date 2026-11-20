@@ -1,0 +1,7 @@
+rules:
+  - id: swift-unsafe-downcast-instead-of-checked-cast
+    metadata: {"rule": "swift-unsafe-downcast-instead-of-checked-cast", "evidence": ["https://github.com/apple/swift-nio/pull/1263#discussion_r349603979"]}
+    languages: [swift]
+    message: "unsafeDowncast skips runtime type checking"
+    severity: WARNING
+    pattern: unsafeDowncast(...)

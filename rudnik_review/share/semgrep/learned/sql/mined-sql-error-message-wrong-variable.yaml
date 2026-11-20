@@ -1,0 +1,11 @@
+rules:
+  - id: sql-error-message-wrong-variable
+    metadata: {"rule": "sql-error-message-wrong-variable", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2387#discussion_r789509308"]}
+    languages: [python]
+    message: Error message interpolates the loop container instead of the loop element.
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          for $ELEM in $CONTAINER:
+              ...
+      - pattern: raise $EXC(f"...{$CONTAINER}...")

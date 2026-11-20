@@ -1,0 +1,16 @@
+rules:
+  - id: java-missing-inflight-guard
+    metadata: {"rule": "java-missing-inflight-guard", "evidence": ["https://github.com/apache/kafka/pull/21457#discussion_r2827307209"]}
+    languages:
+      - java
+    severity: ERROR
+    message: >-
+      A ListOffsets request is issued without first checking the in-flight guard
+      (maybeSetPartitionEndOffsetRequest), so a second call can duplicate the
+      request while the first is still pending.
+    pattern: |
+      if ($OBJ.partitionEndOffset($PART, $LEVEL) == null) {
+        ...
+        beginningOrEndOffset(...);
+        ...
+      }

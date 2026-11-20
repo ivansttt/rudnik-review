@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-json-pointer-unescape-order
+    metadata: {"rule": "csharp-json-pointer-unescape-order", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67573#discussion_r3518876219"]}
+    languages: [csharp]
+    message: Percent-unescape a JSON pointer token before decoding its ~0/~1 escapes; replacing escapes inside Uri.UnescapeDataString misses percent-encoded escapes like %7E1.
+    severity: WARNING
+    pattern-either:
+      - pattern: Uri.UnescapeDataString($X.Replace("~1", "/"))
+      - pattern: Uri.UnescapeDataString($X.Replace("~0", "~"))

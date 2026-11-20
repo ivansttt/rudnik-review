@@ -1,0 +1,15 @@
+rules:
+  - id: java-unknown-enum-id
+    metadata: {"rule": "java-unknown-enum-id", "evidence": ["https://github.com/apache/kafka/pull/22615#discussion_r3499195009"]}
+    message: Enum/state lookup from a persisted id (e.g. fromId) can crash on unknown values such as data written by a newer version. Handle unknown ids gracefully instead of throwing.
+    severity: WARNING
+    languages:
+      - java
+    patterns:
+      - pattern: $TYPE.fromId($ID)
+      - pattern-not-inside: |
+          try {
+            ...
+          } catch ($EXC_TYPE $EXC_VAR) {
+            ...
+          }

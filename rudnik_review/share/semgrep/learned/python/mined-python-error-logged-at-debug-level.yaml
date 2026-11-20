@@ -1,0 +1,14 @@
+rules:
+  - id: python-error-logged-at-debug-level
+    metadata: {"rule": "python-error-logged-at-debug-level", "evidence": ["https://github.com/home-assistant/core/pull/189875#discussion_r4505521918"]}
+    languages:
+      - python
+    severity: ERROR
+    message: Failure logged at debug level in an exception handler; a real failure is silent instead of surfaced as an error
+    patterns:
+      - pattern-inside: |
+          try:
+            ...
+          except $EXC as $ERR:
+            ...
+      - pattern: $LOGGER.debug(...)

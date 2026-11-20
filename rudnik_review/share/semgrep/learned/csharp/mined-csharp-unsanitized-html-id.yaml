@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-unsanitized-html-id
+    metadata: {"rule": "csharp-unsanitized-html-id", "evidence": ["https://github.com/dotnet/aspnetcore/pull/64821#discussion_r2686685596"]}
+    languages:
+      - csharp
+    message: The name is emitted directly as an HTML id attribute value without sanitizing characters that require CSS-selector escaping.
+    severity: WARNING
+    pattern: |
+      return NameAttributeValue;

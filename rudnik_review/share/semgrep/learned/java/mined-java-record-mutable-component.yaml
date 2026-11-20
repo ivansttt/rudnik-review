@@ -1,0 +1,11 @@
+rules:
+  - id: java-record-mutable-component
+    metadata: {"rule": "java-record-mutable-component", "evidence": ["https://github.com/apache/lucene/pull/13328#discussion_r1585147534", "https://github.com/apache/lucene/pull/13328#discussion_r1750645534"]}
+    languages: [java]
+    message: Record declares a mutable array component, which breaks record immutability.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          record $R(..., $TYPE[] $COMP, ...) { ... }
+      - pattern: |
+          record $R(..., $TYPE[] $COMP, ...) implements $INTERFACES { ... }

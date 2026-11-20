@@ -1,0 +1,14 @@
+rules:
+  - id: sql-unpluralized-count
+    metadata: {"rule": "sql-unpluralized-count", "evidence": ["https://github.com/apache/superset/pull/44907#discussion_r4170147615"]}
+    message: >-
+      A user-facing string with a count is built with the singular-only
+      translation function t(), producing unpluralized text like "1 items"
+      or "1 keys" that translators cannot fix. Use tn() with singular and
+      plural forms and pass the count twice.
+    languages:
+      - ts
+    severity: WARNING
+    pattern-either:
+      - pattern: t('%s items', ...)
+      - pattern: t('%s keys', ...)

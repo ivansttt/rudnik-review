@@ -1,0 +1,12 @@
+# TOML's formatter (spec 1706, 12 Nov 2026), a formatter alone as shfmt is. PyPI's 0.9.3 wheels are the four `platforms`, none for Linux
+# arm64, where setup says the gap (the vendor's own release is a bare .gz, which fetch does not unpack). It reads the repository's
+# .taplo.toml or taplo.toml.
+[[tool]]
+name = "taplo"
+version = "0.9.3"
+pip = "taplo"
+stacks = ["toml"]
+signals = ["*.toml"]
+globs = ["*.toml"]
+fmt = [["taplo", "fmt", "{files}"]]
+platforms = ["linux/x86_64", "darwin/x86_64", "darwin/arm64", "windows/x86_64"]

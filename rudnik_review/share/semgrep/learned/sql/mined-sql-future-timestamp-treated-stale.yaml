@@ -1,0 +1,25 @@
+rules:
+  - id: sql-future-timestamp-treated-stale
+    metadata: {"rule": "sql-future-timestamp-treated-stale", "evidence": ["https://github.com/apache/superset/pull/43523#discussion_r4197818963", "https://github.com/apache/superset/pull/43523#discussion_r4395661573"]}
+    languages:
+      - python
+    message: >-
+      A negative age beyond the clock-skew tolerance (a timestamp implausibly far
+      in the future) is treated as expired/stale. Fresh entries written by a
+      writer whose clock is ahead of the reader then look stale on every request,
+      are recomputed/rotated, and never converge. Treat far-future timestamps as
+      fresh so they expire only once real age passes the TTL (plus skew).
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          if $AGE < -$TOLERANCE:
+              ...
+              return None
+      - pattern: |
+          if $AGE < -$TOLERANCE:
+              ...
+              return True
+      - pattern: |
+          if $AGE is not None and $AGE < -$TOLERANCE:
+              ...
+              return True

@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-getservice-not-getservices
+    metadata: {"rule": "csharp-getservice-not-getservices", "evidence": ["https://github.com/dotnet/aspnetcore/pull/66692#discussion_r3443978760"]}
+    languages: [csharp]
+    message: Use GetServices<T> to enumerate all registrations of an extension point instead of GetService<T>, which honors only one.
+    severity: WARNING
+    patterns:
+      - pattern: $SP.GetService<$T>()
+      - pattern-not: $SP.GetServices<$T>()

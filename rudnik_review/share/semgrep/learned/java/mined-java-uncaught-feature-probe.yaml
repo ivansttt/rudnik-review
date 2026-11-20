@@ -1,0 +1,15 @@
+rules:
+  - id: java-uncaught-feature-probe
+    metadata: {"rule": "java-uncaught-feature-probe", "evidence": ["https://github.com/netty/netty/pull/11766#discussion_r729676974"]}
+    languages:
+      - java
+    message: >-
+      A native capability probe is called directly in a static field initializer without a
+      try/catch guard, so a probe failure aborts class loading and application startup
+      instead of degrading to unavailable.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          static final boolean $FIELD = fastOpenClient() == 1;
+      - pattern: |
+          static final boolean $FIELD = fastOpenServer() == 1;

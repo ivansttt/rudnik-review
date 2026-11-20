@@ -1,0 +1,12 @@
+rules:
+  - id: sql-regex-overpermissive-quantifier
+    metadata: {"rule": "sql-regex-overpermissive-quantifier", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1574#discussion_r725483345"]}
+    languages: [python]
+    message: "T-SQL hash_prefix lexer regex is too greedy: '[#]+' accepts more than two leading '#' characters"
+    severity: ERROR
+    pattern: |
+      RegexLexer(
+          "hash_prefix",
+          r"[#]+[a-zA-Z0-9_]+",
+          CodeSegment,
+      )

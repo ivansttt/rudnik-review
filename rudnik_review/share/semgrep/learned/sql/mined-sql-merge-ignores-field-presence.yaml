@@ -1,0 +1,15 @@
+rules:
+  - id: sql-merge-ignores-field-presence
+    metadata: {"rule": "sql-merge-ignores-field-presence", "evidence": ["https://github.com/apache/superset/pull/43679#discussion_r3960785460", "https://github.com/apache/superset/pull/43679#discussion_r3960785475"]}
+    languages:
+      - python
+    message: Shallow merge of new config over saved form data does not check model_fields_set to distinguish omitted from empty fields
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              new_form_data.pop("_mcp_warnings", None)
+              merge_table_column_config(existing_form_data, new_form_data)
+          - pattern: |
+              if getattr(parsed_config, "filters", None) == []:
+                  ...

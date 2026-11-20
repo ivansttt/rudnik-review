@@ -1,0 +1,16 @@
+rules:
+  - id: sql-truncation-collapse-misclassified
+    metadata: {"rule": "sql-truncation-collapse-misclassified", "evidence": ["https://github.com/apache/superset/pull/45504#discussion_r4328593762", "https://github.com/apache/superset/pull/45504#discussion_r4337135528"]}
+    languages:
+      - python
+    message: >
+      Row-collapse or truncation classification keys on a coarse signal
+      (hard-coded chart-type set or post-processing operation name) and
+      misclassifies rows.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $CHART.chart_type in {"histogram", "histogram_v2"}
+          - pattern: |
+              [str($STEP["operation"]) for $STEP in $POST if isinstance($STEP, dict) and $STEP.get("operation")]

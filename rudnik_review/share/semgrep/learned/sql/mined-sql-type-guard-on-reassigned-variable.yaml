@@ -1,0 +1,15 @@
+rules:
+  - id: sql-type-guard-on-reassigned-variable
+    metadata: {"rule": "sql-type-guard-on-reassigned-variable", "evidence": ["https://github.com/apache/superset/pull/21729#discussion_r990706488"]}
+    languages:
+      - python
+    message: >-
+      A type or identity guard (is_adhoc_column) is applied to a variable that
+      was reassigned to a derived value, so the guard tests the wrong object
+      instead of the original value.
+    severity: ERROR
+    patterns:
+      - pattern: is_adhoc_column($X)
+      - pattern-inside: |
+          $X = $FUNC(...)
+          ...

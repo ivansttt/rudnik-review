@@ -1,0 +1,7 @@
+rules:
+  - id: sql-nullable-required-column
+    metadata: {"rule": "sql-nullable-required-column", "evidence": ["https://github.com/apache/superset/pull/24701#discussion_r1268648162"]}
+    languages: [python]
+    message: Required column declared nullable
+    severity: WARNING
+    pattern: sa.Column(..., nullable=True)

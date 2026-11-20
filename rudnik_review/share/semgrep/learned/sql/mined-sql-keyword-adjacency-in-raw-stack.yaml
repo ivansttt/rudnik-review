@@ -1,0 +1,9 @@
+rules:
+  - id: sql-keyword-adjacency-in-raw-stack
+    metadata: {"rule": "sql-keyword-adjacency-in-raw-stack", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/489#discussion_r507670469"]}
+    pattern-either:
+      - pattern: $S[-1].name == $X
+      - pattern: $S[-2].name == $X
+    languages: [python]
+    message: Match the structured segment type instead of keyword-name adjacency in the raw stack.
+    severity: WARNING

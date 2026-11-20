@@ -1,0 +1,10 @@
+rules:
+  - id: java-debug-print-leftover
+    metadata: {"rule": "java-debug-print-leftover", "evidence": ["https://github.com/netty/netty/pull/10363#discussion_r444163775"]}
+    languages: [java]
+    message: Debug print statement left in committed code
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: System.out.println(...);
+          - pattern: System.err.println(...);

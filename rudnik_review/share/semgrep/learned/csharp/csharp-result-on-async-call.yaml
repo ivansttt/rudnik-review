@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-result-on-async-call
+    languages: [csharp]
+    severity: WARNING
+    paths:
+      exclude: ["*Tests*", "*Test*", "**/test/**", "**/tests/**"]
+    message: >-
+      .Result / .Wait() blocks on an async method's task (sync over async): under a synchronization context (ASP.NET, UI) the
+      continuation waits for the blocked thread and it deadlocks; await it, or run it with Task.Run(...).GetAwaiter().GetResult().
+    patterns:
+      - pattern-either:
+          - pattern: $X.$M(...).Result
+          - pattern: $X.$M(...).Wait()
+      - metavariable-regex:
+          metavariable: $M
+          regex: ^\w*Async$

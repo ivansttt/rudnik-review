@@ -1,0 +1,10 @@
+rules:
+  - id: sql-unnecessary-deep-clone
+    metadata: {"rule": "sql-unnecessary-deep-clone", "evidence": ["https://github.com/apache/superset/pull/23637#discussion_r1162060785", "https://github.com/apache/superset/pull/23522#discussion_r1153538474"]}
+    languages:
+      - javascript
+      - typescript
+    severity: WARNING
+    message: "Avoid cloneDeep in render/hot paths; use a shallow spread of the mutated field or memoize the clone."
+    pattern: |
+      const $VAR = cloneDeep($ARG)

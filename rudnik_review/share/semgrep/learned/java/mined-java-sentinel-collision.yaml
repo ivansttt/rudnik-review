@@ -1,0 +1,9 @@
+rules:
+  - id: java-sentinel-collision
+    metadata: {"rule": "java-sentinel-collision", "evidence": ["https://github.com/apache/lucene/pull/14331#discussion_r2003974286"]}
+    languages: [java]
+    message: "A lookup whose absent return value collides with a valid stored value; use getOrDefault with a distinct sentinel."
+    severity: WARNING
+    pattern-either:
+      - pattern: $M.indexExists($I)
+      - pattern: $M.indexGet($I)

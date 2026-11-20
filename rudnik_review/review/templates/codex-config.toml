@@ -1,0 +1,3 @@
+[mcp_servers.rudnik-review]
+command = "rudnik-review"
+args = ["mcp"]

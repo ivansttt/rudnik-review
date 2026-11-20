@@ -1,0 +1,27 @@
+# The release repository is the action (spec 1714, 12 Nov 2026): a pull request's job runs the analysers on its change, and a new
+# blocking finding fails it. No model is asked: a runner has no signed-in CLI, and the review ran at the agent's finish.
+name: rudnik-review
+description: The analysers' new findings on a pull request, each on its changed line; a blocking one fails the job
+runs:
+  using: composite
+  steps:
+    # 2002 (19 Nov 2026: every job downloaded every analyser): uv from pipx; the tools cached on the pins and the planned tools setup installs
+    - id: tools
+      shell: bash
+      run: |
+        pipx install uv
+        uv tool install "$GITHUB_ACTION_PATH"
+        venv="$(uv tool dir)/rudnik-review"; python="$venv/bin/python"; [[ ! -d $venv/Scripts ]] || python="$venv/Scripts/python.exe"   # uv's venv on Windows
+        "$python" -I - >> "$GITHUB_OUTPUT" <<'PY'
+        import hashlib, os, rudnik_review.review.cli as cli
+        planned = "\n".join([cli.registry_sum(), *sorted(cli.plan(".", "HEAD")["tools"])])
+        print(f"path={cli.TOOLS}\nkey=rudnik-review-{os.environ['RUNNER_OS']}-{os.environ['RUNNER_ARCH']}-{hashlib.sha256(planned.encode()).hexdigest()}")
+        PY
+    - id: cache
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5.1.0
+      with:
+        path: ${{ steps.tools.outputs.path }}
+        key: ${{ steps.tools.outputs.key }}
+    - run: bash "$GITHUB_ACTION_PATH/action.sh"
+      shell: bash
+      env: { CACHE_HIT: "${{ steps.cache.outputs.cache-hit }}" }

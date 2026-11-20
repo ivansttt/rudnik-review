@@ -1,0 +1,17 @@
+rules:
+  - id: java-test-global-state
+    metadata: {"rule": "java-test-global-state", "evidence": ["https://github.com/netty/netty/pull/17100#discussion_r3701608526", "https://github.com/apache/kafka/pull/21343#discussion_r2717577167"]}
+    message: Test writes to shared static state without isolation; restore the previous value or mark the test isolated.
+    severity: WARNING
+    languages:
+      - java
+    pattern-either:
+      - patterns:
+          - pattern: $CLASS.$SETTER($...ARGS)
+          - metavariable-regex:
+              metavariable: $CLASS
+              regex: ^[A-Z][A-Za-z0-9_]*$
+          - metavariable-regex:
+              metavariable: $SETTER
+              regex: ^set[A-Za-z0-9_]*$
+      - pattern-regex: 'static\s+(final\s+)?(Map|List|Set|Collection|HashMap|ArrayList|HashSet|ConcurrentHashMap|Queue|Deque|LinkedHashMap|TreeMap|ConcurrentMap|CopyOnWriteArrayList)\s*<'

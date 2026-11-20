@@ -1,0 +1,13 @@
+rules:
+  - id: swift-print-in-error-handler
+    metadata: {"rule": "swift-print-in-error-handler", "evidence": ["https://github.com/apple/swift-nio/pull/1534#discussion_r432365163", "https://github.com/apple/swift-nio/pull/1531#discussion_r431748673", "https://github.com/apple/swift-nio/pull/1496#discussion_r417217902"]}
+    languages: [swift]
+    message: print in an error handler or performance-sensitive path
+    severity: WARNING
+    patterns:
+      - pattern: |
+          func errorCaught(...) {
+            ...
+            print(...)
+            ...
+          }

@@ -1,0 +1,18 @@
+rules:
+  - id: sql-unvalidated-request-list-items
+    metadata: {"rule": "sql-unvalidated-request-list-items", "evidence": ["https://github.com/apache/superset/pull/45359#discussion_r4289293188"]}
+    mode: taint
+    languages:
+      - python
+    message: |
+      A list taken from the request body is passed straight into `validate_names`,
+      which assumes every element is a str. A dict, None, or int in the payload
+      raises an unhandled TypeError and returns 500 instead of 400.
+    severity: ERROR
+    pattern-sources:
+      - pattern: $BODY.get($KEY, [])
+    pattern-sinks:
+      - pattern: validate_names($LIST, ...)
+    pattern-sanitizers:
+      - pattern: |
+          [$E for $E in $X if isinstance($E, str)]

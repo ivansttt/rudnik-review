@@ -1,0 +1,16 @@
+rules:
+  - id: sql-inert-sanitizer-wrapper
+    metadata: {"rule": "sql-inert-sanitizer-wrapper", "evidence": ["https://github.com/apache/superset/pull/43202#discussion_r3806930187"]}
+    languages:
+      - python
+    message: >-
+      Sanitizer or escape function $FUNC returns its input unchanged, so callers get silent identity behavior instead of protection.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          def $FUNC($VALUE, ...):
+            ...
+            return $VALUE
+      - metavariable-regex:
+          metavariable: $FUNC
+          regex: .*([Ss]aniti[sz]|[Ee]scape).*

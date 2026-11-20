@@ -1,0 +1,10 @@
+rules:
+  - id: python-int-only-check-misses-float
+    metadata: {"rule": "python-int-only-check-misses-float", "evidence": ["https://github.com/pandas-dev/pandas/pull/70520#discussion_r4234244142"]}
+    languages: [python]
+    message: Numeric check tests only int, missing floats and other numerics
+    patterns:
+      - pattern-either:
+          - pattern: isinstance($X, int)
+          - pattern: isinstance($X, (int, ...))
+    severity: WARNING

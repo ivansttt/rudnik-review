@@ -1,0 +1,9 @@
+rules:
+  - id: kotlin-misleading-replace-with
+    metadata: {"rule": "kotlin-misleading-replace-with", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/2376#discussion_r522089750", "https://github.com/detekt/detekt/pull/5700#discussion_r1072949391"]}
+    languages: [kotlin]
+    message: Deprecated ReplaceWith points to an incorrect replacement
+    severity: WARNING
+    pattern-either:
+      - pattern: ReplaceWith("awaitCancellation()")
+      - pattern: ReplaceWith("BracesOnIfStatements(config)")

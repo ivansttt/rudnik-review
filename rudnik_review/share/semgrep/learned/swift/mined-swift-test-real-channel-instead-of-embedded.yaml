@@ -1,0 +1,11 @@
+rules:
+  - id: swift-test-real-channel-instead-of-embedded
+    metadata: {"rule": "swift-test-real-channel-instead-of-embedded", "evidence": ["https://github.com/apple/swift-nio/pull/1001#discussion_r283665686"]}
+    languages: [swift]
+    message: Test uses real sockets and polling instead of the deterministic EmbeddedChannel.
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: usleep(...)
+          - pattern: ServerBootstrap(...)
+          - pattern: ClientBootstrap(...)

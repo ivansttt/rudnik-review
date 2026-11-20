@@ -1,0 +1,8 @@
+rules:
+  - id: python-proxy-check-for-dataclass-base
+    metadata: {"rule": "python-proxy-check-for-dataclass-base", "evidence": ["https://github.com/pydantic/pydantic/pull/10406#discussion_r1759130920", "https://github.com/pydantic/pydantic/pull/10406#discussion_r1759132218"]}
+    severity: WARNING
+    languages: [python]
+    message: Inferring a dataclass base from __bases__ != (object,) wrongly treats any non-object base as a dataclass; test each base with is_dataclass.
+    patterns:
+      - pattern: $CLS.__bases__ != (object,)

@@ -1,0 +1,7 @@
+rules:
+  - id: sql-hardcoded-z-index
+    metadata: {"rule": "sql-hardcoded-z-index", "evidence": ["https://github.com/apache/superset/pull/38819#discussion_r2981134760", "https://github.com/apache/superset/pull/38819#discussion_r2981137776", "https://github.com/apache/superset/pull/38819#discussion_r2981140854"]}
+    message: Hardcoded z-index magic number; use the theme z-index token (theme.zIndexPopupBase) instead.
+    severity: WARNING
+    languages: [ts]
+    pattern-regex: 'z-index:\s*[0-9]+\s*;|Z_INDEX\s*=\s*[0-9]+'

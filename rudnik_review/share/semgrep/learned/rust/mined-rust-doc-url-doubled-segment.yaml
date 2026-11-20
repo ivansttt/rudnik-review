@@ -1,0 +1,8 @@
+rules:
+  - id: rust-doc-url-doubled-segment
+    metadata: {"rule": "rust-doc-url-doubled-segment", "evidence": ["https://github.com/rust-lang/rust/pull/165522#discussion_r4531997965", "https://github.com/rust-lang/rust/pull/165522#discussion_r4532000346"]}
+    languages:
+      - generic
+    message: Documentation URL repeats a path segment, producing a broken link
+    severity: ERROR
+    pattern-regex: 'https?://[^\s)]*/([^/\s)#]+)/\1/'

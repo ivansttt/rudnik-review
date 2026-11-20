@@ -1,0 +1,10 @@
+rules:
+  - id: java-channel-write-bypasses-context
+    metadata: {"rule": "java-channel-write-bypasses-context", "evidence": ["https://github.com/netty/netty/pull/11849#discussion_r787051318"]}
+    languages: [java]
+    message: "Outbound write issued through the channel bypasses the handler context"
+    severity: WARNING
+    pattern-either:
+      - pattern: $CTX.channel().write(...)
+      - pattern: $CTX.channel().writeAndFlush(...)
+      - pattern: $CTX.channel().flush(...)

@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-cultureinfo-cache-key
+    metadata: {"rule": "csharp-cultureinfo-cache-key", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68347#discussion_r3759771796"]}
+    languages: [csharp]
+    message: "Key long-lived caches on the culture name string, not the CultureInfo object."
+    severity: WARNING
+    patterns:
+      - pattern-regex: '(ConcurrentDictionary|Dictionary|FrozenDictionary)<[^>]*CultureInfo[^>]*>'

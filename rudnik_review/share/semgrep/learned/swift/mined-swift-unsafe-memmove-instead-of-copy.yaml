@@ -1,0 +1,7 @@
+rules:
+  - id: swift-unsafe-memmove-instead-of-copy
+    metadata: {"rule": "swift-unsafe-memmove-instead-of-copy", "evidence": ["https://github.com/apple/swift-nio/pull/2867#discussion_r1756992338"]}
+    languages: [swift]
+    message: "Unsafe memmove where a safe copy API suffices"
+    pattern: memmove(...)
+    severity: WARNING

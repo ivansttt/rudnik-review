@@ -1,0 +1,15 @@
+rules:
+  - id: sql-truthiness-guard-drops-falsy-value
+    metadata: {"rule": "sql-truthiness-guard-drops-falsy-value", "evidence": ["https://github.com/apache/superset/pull/33116#discussion_r2042402087"]}
+    languages:
+      - python
+    message: >-
+      Truthiness guard drops falsy-but-valid values (0, "", False, None, empty
+      collections) when migrating or renaming a key. A value read via
+      `if val := d.pop(key)` is skipped when falsy, so use a membership check
+      instead: `if key in d: d[new] = d.pop(key)`.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if $VAL := $DICT.pop($KEY, ...):
+            ...

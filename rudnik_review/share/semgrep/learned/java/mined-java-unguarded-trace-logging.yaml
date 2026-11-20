@@ -1,0 +1,12 @@
+rules:
+  - id: java-unguarded-trace-logging
+    metadata: {"rule": "java-unguarded-trace-logging", "evidence": ["https://github.com/netty/netty/pull/14718#discussion_r1927125169"]}
+    languages: [java]
+    message: trace-level log call is not guarded by isTraceEnabled
+    severity: INFO
+    patterns:
+      - pattern: $LOG.trace($...ARGS)
+      - pattern-not-inside: |
+          if ($LOG.isTraceEnabled()) {
+            ...
+          }

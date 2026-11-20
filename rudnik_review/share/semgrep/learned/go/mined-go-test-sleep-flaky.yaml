@@ -1,0 +1,13 @@
+rules:
+  - id: go-test-sleep-flaky
+    metadata: {"rule": "go-test-sleep-flaky", "evidence": ["https://github.com/kubernetes/kubernetes/pull/140286#discussion_r3622629506"]}
+    languages: [go]
+    severity: WARNING
+    message: >-
+      Avoid a fixed time.Sleep to wait for an asynchronous operation or metric
+      to update in tests. Poll until the condition holds with a timeout instead
+      (e.g. require.Eventually / gomega.Eventually).
+    paths:
+      include:
+        - "*_test.go"
+    pattern: time.Sleep($DUR)

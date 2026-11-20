@@ -1,0 +1,32 @@
+rules:
+  - id: javascript-nan-bypasses-range-check
+    metadata: {"rule": "javascript-nan-bypasses-range-check", "evidence": ["https://github.com/microsoft/vscode/pull/342816#discussion_r4339297858"]}
+    languages:
+      - javascript
+      - typescript
+    severity: WARNING
+    message: >-
+      A range/bounds check runs before the value is coerced with `| 0`,
+      `Math.floor`, or `parseInt`. NaN passes the comparison checks (NaN < 0 and
+      NaN >= length are both false) and then coerces to 0, defeating the bounds
+      validation.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if ($X < 0 || $X >= $Y.length) {
+                ...
+              }
+              ...
+              $X = $X | 0;
+          - pattern: |
+              if ($X < 0 || $X >= $Y.length) {
+                ...
+              }
+              ...
+              $X = Math.floor($X);
+          - pattern: |
+              if ($X < 0 || $X >= $Y.length) {
+                ...
+              }
+              ...
+              $X = parseInt($X);

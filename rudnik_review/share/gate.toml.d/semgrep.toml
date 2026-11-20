@@ -1,0 +1,15 @@
+# A --config for each rule folder whose globs match a changed file (spec 1838, 16 Nov 2026: loading all six languages' rules took 103 s a
+# check, whatever the change), one for each language the review's books hold rules for (spec 1856). The learned rules (spec 1623, copied in
+# by the Containerfile, spec 1916) are read whole: about 700 small files, and their folders are not their languages. In no `blocks`, their findings
+# are notes until spec 1626's measurement says a rule blocks (spec 1670). --x-rule-validation=none (spec 2009, 19 Nov 2026): checking each
+# rule file in a semgrep-core of its own took 35-42 s of a 34-47 s run; without it 5-10 s, the same findings to the byte, a broken rule still exit 2.
+[[tool]]
+name = "semgrep"
+version = "1.179.0"
+stacks = ["*"]
+globs = ["*.sh", "*.py", "*.cs", "*.java", "*.go", "*.js", "*.jsx", "*.ts", "*.tsx", "*.kt", "*.rs", "*.c", "*.h", "Dockerfile", "Containerfile", "*.yml", "*.yaml"]
+cmd = ["semgrep", "scan", "--json", "--metrics=off", "--disable-version-check", "--x-rule-validation=none", "{configs}", "{files}"]
+configs = { "/opt/semgrep-rules/python" = ["*.py"], "/opt/semgrep-rules/bash" = ["*.sh"], "/opt/semgrep-rules/csharp" = ["*.cs"], "/opt/semgrep-rules/java" = ["*.java"], "/opt/semgrep-rules/go" = ["*.go"], "/opt/semgrep-rules/javascript" = ["*.js", "*.jsx"], "/opt/semgrep-rules/typescript" = ["*.ts", "*.tsx"], "/opt/semgrep-rules/kotlin" = ["*.kt"], "/opt/semgrep-rules/rust" = ["*.rs"], "/opt/semgrep-rules/c" = ["*.c", "*.h"], "/opt/semgrep-rules/dockerfile" = ["Dockerfile", "Containerfile"], "/opt/semgrep-rules/yaml" = ["*.yml", "*.yaml"], "/opt/analysers/semgrep-learned" = ["*"] }
+adapter = "semgrep"
+alone = [".semgrepignore"]
+blocks = []

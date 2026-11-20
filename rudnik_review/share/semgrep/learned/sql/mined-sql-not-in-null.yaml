@@ -1,0 +1,10 @@
+rules:
+  - id: sql-not-in-null
+    metadata: {"rule": "sql-not-in-null", "evidence": ["https://github.com/apache/superset/pull/45451#discussion_r4323296952"]}
+    languages: [python]
+    message: "NOT IN against a subquery that can return NULL evaluates to NULL for every row and silently empties the result; use NOT EXISTS or filter NULLs."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $COL.notin_($SUB)
+          - pattern: $COL.not_in($SUB)

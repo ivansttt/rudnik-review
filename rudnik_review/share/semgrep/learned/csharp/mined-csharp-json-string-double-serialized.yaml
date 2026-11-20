@@ -1,0 +1,12 @@
+rules:
+  - id: csharp-json-string-double-serialized
+    metadata: {"rule": "csharp-json-string-double-serialized", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61246#discussion_r2022913058", "https://github.com/dotnet/aspnetcore/pull/61246#discussion_r2023018043"]}
+    languages: [csharp]
+    severity: WARNING
+    message: |
+      A property that already holds a serialized JSON string (ArgsJson) is placed
+      on an object that is then itself serialized to JSON, double-encoding the JSON.
+    patterns:
+      - pattern-either:
+          - pattern: JsonSerializer.Serialize(this, $CTX)
+          - pattern: ArgsJson = $JSON

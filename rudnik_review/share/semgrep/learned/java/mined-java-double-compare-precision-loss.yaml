@@ -1,0 +1,10 @@
+rules:
+  - id: java-double-compare-precision-loss
+    metadata: {"rule": "java-double-compare-precision-loss", "evidence": ["https://github.com/apache/lucene/pull/15653#discussion_r3079675830"]}
+    languages: [java]
+    message: Comparing boxed numeric values by converting to double loses precision for large integral values.
+    severity: WARNING
+    pattern-either:
+      - pattern: Double.compare($A.doubleValue(), $B.doubleValue())
+      - pattern: Double.compare($A.doubleValue(), $B)
+      - pattern: Double.compare($A, $B.doubleValue())

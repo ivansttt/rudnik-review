@@ -1,0 +1,10 @@
+rules:
+  - id: go-sleep-ignores-context
+    metadata: {"rule": "go-sleep-ignores-context", "evidence": ["https://github.com/cilium/cilium/pull/42874#discussion_r2581309264"]}
+    languages:
+      - go
+    message: >-
+      Respect context cancellation instead of sleeping a fixed duration.
+      Wait on ctx.Done() (with an optional time.After fallback) rather than calling time.Sleep.
+    severity: WARNING
+    pattern: time.Sleep($DURATION)

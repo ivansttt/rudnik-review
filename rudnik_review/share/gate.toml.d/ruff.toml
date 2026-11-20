@@ -1,0 +1,22 @@
+[[tool]]
+name = "ruff"
+version = "0.16.10"
+stacks = ["python"]
+globs = ["*.py"]
+# spec 1625 (owner, 11 Nov 2026): a function a change adds carries its annotations. ruff runs ANN only when selected, so the cmd selects it
+# whatever the project's own ruff.toml says; only new findings count (spec 1237), so old untyped code blocks nothing until a change touches it.
+# spec 1931 (owner, 18 Nov 2026): the rule holds where the project annotates, half its functions or more; elsewhere findings.new drops ANN.
+# spec 1641 (owner, 11 Nov 2026: "I want it ALL lifted"): it selects every rule but the families the check catalogue found mostly noise or
+# another owner has: docstrings and headers, layout (ruff format), naming, style, print (the kit's CLIs print by design), size (lizard),
+# unused callback arguments. The project's ruff.toml still sets paths, per-file ignores and the target version.
+# spec 1894 (release scorecard, 17 Nov 2026: all 51 of sqlite-utils' Python false alarms were in tests): a test file's assert and magic
+# numbers are pytest's way, so S101 and PLR2004 skip it, beside the project's own ignores; ANN stays there too, the owner's call (spec 1625).
+# spec 2012 (scorecard v8, 19 Nov 2026: 7 of 9 Python and Go false alarms): parametrize's shape, broad raises and builtin names skip it too (65% -> 100%).
+cmd = ["ruff", "check", "--select", "ALL", "--ignore", "D,DOC,CPY,COM,Q,W,E1,E2,E3,E501,ISC001,N,PTH,EM,FBT,TD,FIX,ERA,T20,C90,PLR09,ARG",
+       "--config", "lint.extend-per-file-ignores = {'**/{tests/**,test_*.py,*_test.py,conftest.py}' = ['S101', 'PLR2004', 'PT006', 'PT007', 'PT011', 'B017', 'A001', 'A002']}",
+       "--output-format", "json", "{files}"]
+adapter = "ruff"
+alone = ["ruff.toml", ".ruff.toml", "pyproject.toml"]
+blocks = ["F401", "F811", "F821", "F822", "F841", "F632", "RUF100", "ANN001", "ANN201", "ANN202", "ANN204", "ANN206"]
+fix = [["ruff", "check", "--fix-only", "{files}"], ["ruff", "format", "{files}"]]
+fix_config = ["ruff.toml", ".ruff.toml"]

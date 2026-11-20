@@ -1,0 +1,9 @@
+rules:
+  - id: python-config-flow-discovery-error-not-aborted
+    metadata: {"rule": "python-config-flow-discovery-error-not-aborted", "evidence": ["https://github.com/home-assistant/core/pull/189806#discussion_r4480215128"]}
+    message: Discovery config-flow step stores validation errors on self and proceeds to a confirmation form instead of aborting when validation fails.
+    severity: WARNING
+    languages:
+      - python
+    pattern: |
+      $DEVICE, self.$ERRORS = await self._async_validate(...)

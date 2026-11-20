@@ -1,0 +1,24 @@
+rules:
+  - id: java-finally-masks-exception
+    metadata: {"rule": "java-finally-masks-exception", "evidence": ["https://github.com/apache/kafka/pull/23791#discussion_r4269047764", "https://github.com/apache/flink/pull/29344#discussion_r4153360811", "https://github.com/apache/lucene/pull/16696#discussion_r4061804507"]}
+    languages:
+      - java
+    message: Operation in a finally block or try-with-resources can throw and mask the original exception
+    severity: WARNING
+    pattern-either:
+      - patterns:
+          - pattern-inside: |
+              try {
+                ...
+              } finally {
+                ...
+              }
+          - pattern-either:
+              - pattern: $X.close()
+              - pattern: close()
+              - pattern: $X.shutdown()
+              - pattern: shutdown()
+      - pattern: |
+          try ($TYPE $RESOURCE = ...) {
+            ...
+          }

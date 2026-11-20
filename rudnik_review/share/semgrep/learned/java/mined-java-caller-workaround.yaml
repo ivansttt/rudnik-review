@@ -1,0 +1,11 @@
+rules:
+  - id: java-caller-workaround
+    metadata: {"rule": "java-caller-workaround", "evidence": ["https://github.com/apache/kafka/pull/24146#discussion_r4516935905", "https://github.com/apache/kafka/pull/24072#discussion_r4449102094"]}
+    languages:
+      - java
+    message: Call site filters or nulls the result of a called method to compensate for a defect inside that method instead of fixing the method itself.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.$METHOD(...).stream().filter(...).toList()
+          - pattern: $OBJ.$FIELD = null

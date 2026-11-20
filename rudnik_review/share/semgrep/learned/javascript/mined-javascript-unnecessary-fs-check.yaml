@@ -1,0 +1,10 @@
+rules:
+  - id: javascript-unnecessary-fs-check
+    metadata: {"rule": "javascript-unnecessary-fs-check", "evidence": ["https://github.com/microsoft/TypeScript/pull/64909#discussion_r4342906053", "https://github.com/microsoft/TypeScript/pull/64909#discussion_r4342906073", "https://github.com/microsoft/TypeScript/pull/64909#discussion_r4342906086"]}
+    languages:
+      - go
+    message: Filesystem existence check where an in-memory cache lookup would suffice
+    severity: WARNING
+    pattern-either:
+      - pattern: $FS.DirectoryExists($PATH)
+      - pattern: $RECV.expandRealpathAliases($CHANGE, $FS)

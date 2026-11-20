@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-request-dependent-response-cache-headers
+    metadata: {"rule": "csharp-request-dependent-response-cache-headers", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68066#discussion_r3734751322"]}
+    languages: [csharp]
+    message: "Response body built from request headers is returned without Cache-Control/Vary; set Cache-Control: no-store (or private) and Vary: Host."
+    severity: WARNING
+    patterns:
+      - pattern: |
+          return TypedResults.Json($RESPONSE, ...);
+      - pattern-not-inside: |
+          {
+            ...
+            $CTX.Response.Headers.CacheControl = $VALUE;
+            ...
+          }

@@ -1,0 +1,13 @@
+# Spec 1881 (17 Nov 2026): TruffleHog asks each secret's provider whether it works. A verified one, a live key, is the one finding that must
+# never land; one it could not check (no net, its provider down) is unknown, a note, and gitleaks still blocks every secret there.
+[[tool]]
+name = "trufflehog"
+version = "3.99.9"
+sha256_x86_64 = "12050095c8063bf4d34f9f6cbce6ba9fa8d0deea9d503d0570364feba093658e"
+sha256_aarch64 = "778b1913196dc9b9234e8fd366f64387efeb08c01930a1d2110dcb2ffd07e68b"
+stacks = ["*"]
+globs = ["*"]
+cmd = ["trufflehog", "filesystem", "--json", "--no-update", "--results=verified,unknown", "{files}"]
+adapter = "trufflehog"
+blocks = ["trufflehog-verified"]
+network = true  # it asks each secret's provider, as osv-scanner asks api.osv.dev (spec 1777)

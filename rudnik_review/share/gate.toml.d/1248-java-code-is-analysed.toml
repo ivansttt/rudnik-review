@@ -1,0 +1,62 @@
+# The Java analysers (spec 1248, 11 Nov 2026: v3 §5, §7), each naming its image: agent-jvm, which share/agent-jvm/Containerfile builds on agent-base
+# from the versions here, and a box builds only once a plan selects one of them. agent-base's installer and toolbox-check skip a tool of another image.
+# Error Prone (with NullAway) and Infer run through the project's build, taking no {files}; SpotBugs on the classes it compiles, {files}' alone. `jars` are
+# Maven Central coordinates beside a tool. CPD is PMD's copy-paste detector, from PMD's distribution: its own tool, as it writes no SARIF. Each blocks nothing until spec 1253 turns a rule on with its gate-corpus pair.
+[agent-jvm]
+jdk = "21.0.13+9"   # Temurin's
+
+[[tool]]
+name = "error-prone"
+version = "2.52.0"
+jars = ["com.uber.nullaway:nullaway:0.14.3", "org.checkerframework:dataflow-nullaway:4.3.1", "org.jspecify:jspecify:1.0.1", "io.github.eisop:dataflow-errorprone:3.41.0-eisop1"]
+image = "agent-jvm"
+stacks = ["java"]
+globs = ["*.java"]
+cmd = ["error-prone"]
+adapter = "javac"
+builds = true
+blocks = []
+
+[[tool]]
+name = "infer"
+version = "1.3.0"
+image = "agent-jvm"
+stacks = ["java"]
+globs = ["*.java"]
+cmd = ["infer"]
+adapter = "infer"
+builds = true
+blocks = []
+
+[[tool]]
+name = "spotbugs"
+version = "4.9.8"
+jars = ["com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0"]
+image = "agent-jvm"
+stacks = ["java"]
+globs = ["*.java"]
+cmd = ["spotbugs", "{files}"]
+adapter = "sarif"
+builds = true
+blocks = []
+
+[[tool]]   # its files after -d: PMD 7 takes none bare (14 Nov 2026: every kafka replay "crashed" on its usage error)
+# Its ruleset is quickstart, CloseResource allowing the in-memory streams and less PreserveStackTrace (spec 2004, 19 Nov 2026: both flagged approved code)
+name = "pmd"
+version = "7.17.0"
+image = "agent-jvm"
+stacks = ["java"]
+globs = ["*.java"]
+cmd = ["pmd", "check", "--no-progress", "--no-fail-on-violation", "--format", "sarif", "--rulesets", "/opt/analysers/pmd.xml", "-d", "{files}"]
+adapter = "sarif"
+blocks = []
+
+[[tool]]
+name = "cpd"
+version = "7.17.0"
+image = "agent-jvm"
+stacks = ["java"]
+globs = ["*.java"]
+cmd = ["cpd", "--no-fail-on-violation", "--language", "java", "--minimum-tokens", "100", "--format", "xml", "{files}"]
+adapter = "cpd"
+blocks = []

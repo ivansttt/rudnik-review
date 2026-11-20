@@ -1,0 +1,18 @@
+rules:
+  - id: sql-migration-unbatched-mass-update
+    metadata: {"rule": "sql-migration-unbatched-mass-update", "evidence": ["https://github.com/apache/superset/pull/34762#discussion_r2289794998", "https://github.com/apache/superset/pull/24020#discussion_r1192940737"]}
+    message: Data migration loops over a potentially large table via session.query(...) without batching or per-row failure handling.
+    languages:
+      - python
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              for $ROW in session.query($MODEL):
+                ...
+          - pattern: |
+              for $ROW in session.query($MODEL).all():
+                ...
+          - pattern: |
+              for $ROW in session.query($MODEL).filter(...):
+                ...

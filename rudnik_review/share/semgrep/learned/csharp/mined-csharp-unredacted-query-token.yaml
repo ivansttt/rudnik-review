@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-unredacted-query-token
+    metadata: {"rule": "csharp-unredacted-query-token", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68824#discussion_r3873539323"]}
+    languages: [csharp]
+    message: Redaction list omits access_token, leaking bearer tokens in exported URLs.
+    severity: WARNING
+    pattern-regex: '"X-Goog-Signature"\s*;'

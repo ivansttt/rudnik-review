@@ -1,0 +1,14 @@
+rules:
+  - id: csharp-pointer-hash-code
+    metadata: {"rule": "csharp-pointer-hash-code", "evidence": ["https://github.com/dotnet/runtime/pull/134783#discussion_r4124272460"]}
+    languages: [csharp]
+    severity: WARNING
+    message: Returning a pointer/handle-derived value directly as a hash code clusters aligned values into the same buckets.
+    patterns:
+      - pattern-inside: |
+          public override int GetHashCode()
+          {
+            ...
+          }
+      - pattern: |
+          return $H.GetHashCode();

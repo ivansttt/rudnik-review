@@ -1,0 +1,9 @@
+rules:
+  - id: java-flaky-counter-assertion
+    metadata: {"rule": "java-flaky-counter-assertion", "evidence": ["https://github.com/apache/lucene/pull/14417#discussion_r2015817265", "https://github.com/apache/lucene/pull/14417#discussion_r2015830947", "https://github.com/apache/lucene/pull/14417#discussion_r2015832195"]}
+    languages: [java]
+    message: "Asserting an exact value of a counter that background activity also increments is flaky; assert a lower bound instead."
+    severity: WARNING
+    pattern-either:
+      - pattern: assertEquals($EXPECTED, $OBJ.getSegmentInfosCounter())
+      - pattern: assertEquals($EXPECTED, $OBJ.getSegmentInfosCounter(), $MSG)

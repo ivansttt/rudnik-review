@@ -1,0 +1,7 @@
+rules:
+  - id: sql-gha-expression-missing-dollar
+    metadata: {"rule": "sql-gha-expression-missing-dollar", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1863#discussion_r745635839"]}
+    languages: [yaml]
+    message: GitHub Actions expression missing the leading $
+    severity: WARNING
+    pattern-regex: ': *\{\{'

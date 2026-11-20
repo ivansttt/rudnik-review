@@ -1,0 +1,28 @@
+rules:
+  - id: csharp-arraypool-rent-leak
+    metadata: {"rule": "csharp-arraypool-rent-leak", "evidence": ["https://github.com/dotnet/aspnetcore/pull/70227#discussion_r4538475222"]}
+    languages: [csharp]
+    severity: ERROR
+    message: >
+      A buffer rented from ArrayPool is returned only on a success path, so a
+      throw between the rent and the return leaks the buffer. Wrap the use in
+      try/finally and return the buffer in the finally block.
+    patterns:
+      - pattern: |
+          throw $EXCEPTION;
+      - pattern-inside: |
+          $RET $METHOD(...) {
+            ...
+            $TYPE $NAME = $ANYEXPR;
+            ...
+          }
+      - metavariable-pattern:
+          metavariable: $ANYEXPR
+          language: generic
+          pattern-regex: ArrayPool.*\.Shared\.Rent
+      - pattern-not-inside: |
+          try {
+            ...
+          } finally {
+            ...
+          }

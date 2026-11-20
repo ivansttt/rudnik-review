@@ -1,0 +1,7 @@
+rules:
+  - id: sql-migration-nonportable-column-construct
+    metadata: {"rule": "sql-migration-nonportable-column-construct", "evidence": ["https://github.com/apache/superset/pull/37816#discussion_r2931053026"]}
+    languages: [python]
+    severity: WARNING
+    message: Column construct unsupported by MySQL or SQLite.
+    pattern: sa.Identity()

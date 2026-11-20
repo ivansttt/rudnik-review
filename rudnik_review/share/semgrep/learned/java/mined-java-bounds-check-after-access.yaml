@@ -1,0 +1,12 @@
+rules:
+  - id: java-bounds-check-after-access
+    metadata: {"rule": "java-bounds-check-after-access", "evidence": ["https://github.com/netty/netty/pull/10132#discussion_r397662022"]}
+    languages: [java]
+    severity: WARNING
+    message: Index is accessed before the length check that should guard it
+    patterns:
+      - pattern-either:
+          - pattern: '$X.charAt($I) != $V || $X.length() < $N'
+          - pattern: '$X.charAt($I) == $V || $X.length() < $N'
+          - pattern: '$X.charAt($I) != $V && $X.length() < $N'
+          - pattern: '$X.charAt($I) == $V && $X.length() < $N'

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# The C# analysers as the gate runs them in agent-dotnet (spec 1247, 11 Nov 2026), on the solutions in the working folder (or, with none, its
+# projects); the image links this file as roslyn and inspectcode, and inspectcode takes no file list. roslyn builds each with the SDK's .NET analysers
+# at latest-All and the fragment's analyser packages, each project's ErrorLog a SARIF run; inspectcode is ReSharper's InspectCode on each,
+# restored. Each prints one SARIF log on stdout and the build's output on stderr; exit 2 is a run that wrote no SARIF (a --restore that failed too): the gate says the
+# analyser crashed, never that the code is clean. `roslyn --restore` is the image build's: the packages into the offline fallback folder.
+set -uo pipefail
+D=/opt/dotnet pins=/opt/dotnet/pins.toml T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
+# On a developer's machine (spec 1860, 17 Nov 2026) the SDK is theirs and the pins the 1247 fragment the wheel and the kit both keep beside
+# share/agent-dotnet; restore fills their own NuGet cache, and the tree is the throwaway one rudnik-review check unpacks the change into.
+# The image is its pins.toml, not the folder: a developer's SDK may live in /opt/dotnet too. Their DOTNET_ROOT's dotnet goes first on PATH, else
+# the folder their dotnet names beside its first SDK: a version manager's shim (mise, asdf) resolves to the manager (spec 1930, 18 Nov 2026).
+[[ -f $pins ]] || { D=${DOTNET_ROOT:-$(dotnet --list-sdks | sed -n '1s/^[^[]*\[\(.*\)\/sdk\]$/\1/p')} PATH=$D:$PATH
+  pins=$(dirname "$(readlink -f "$0")")/../gate.toml.d/1247-csharp-and-unity-code-is-analysed.toml; }
+# The packages by a props file written here, imported before each project's own: a Directory.Packages.props would turn on central package
+# management, under which every project's own versioned PackageReference fails restore (NU1008). $(...) is MSBuild's, not the shell's.
+# A project that manages its versions centrally itself takes each by VersionOverride (spec 1929, 18 Nov 2026); the condition sits on the item, as
+# MSBuild reads every property of every import, Directory.Packages.props's too, before any item, though this props comes first.
+# shellcheck disable=SC2016
+python3 -c 'import sys, tomllib; g = tomllib.load(open(sys.argv[1], "rb"))["agent-dotnet"]
+print("<Project><PropertyGroup><ErrorLog Condition=\"\x27$(RoslynSarif)\x27 != \x27\x27\">$(RoslynSarif)/$(MSBuildProjectName).$(TargetFramework).$([System.Guid]::NewGuid().ToString(\"N\")).sarif,version=2.1</ErrorLog>",
+      "</PropertyGroup><ItemGroup>", *(f"<PackageReference Include=\"{p}\" {k}=\"{v}\" PrivateAssets=\"all\" Condition=\"\x27$(ManagePackageVersionsCentrally)\x27 {o} \x27true\x27\" />"
+      for p, v in (a.rsplit(":", 1) for a in g["analysers"]) for k, o in (("Version", "!="), ("VersionOverride", "=="))), "</ItemGroup></Project>")' "$pins" > "$T/analysers.props" || exit 2
+# Neither query is analysis, nor a project's warnings-as-errors (specs 1981, 1997, 19 Nov 2026): an old SourceLink fails with no .git, NuGet's audit a restore, Scrutor's own warnings-as-errors its build.
+analysers=(-p:CustomBeforeMicrosoftCommonProps="$T/analysers.props" -p:AnalysisLevel=latest-All -p:EnableSourceControlManagerQueries=false -p:NuGetAudit=false -p:TreatWarningsAsErrors=false -p:WarningsAsErrors=)
+# The corpus's run (ANALYSE_ONLINE, spec 1783) has the network, so restore reaches nuget.org beside the fallback folder, its packages kept here;
+# its tree is read-only, so the build runs on a copy here, its output on stdout as ever.
+if [[ -n ${ANALYSE_ONLINE:-} ]]; then export NUGET_PACKAGES=$T/packages; cp -r . "$T/tree" && chmod -R u+w "$T/tree" && cd "$T/tree" || exit 2; fi
+targets=()   # read line by line, not by mapfile: macOS's bash 3.2 has none
+for kind in '*.sln' '*.slnx' '*.csproj'; do (( ${#targets[@]} )) || while IFS= read -r s; do targets+=("$s"); done < <(find . -name "$kind" -not -path '*/.*' | sort); done
+# Given files (spec 2021, 19 Nov 2026: Newtonsoft.Json's every solution, 498 s under load for one file), roslyn builds, each once, every project in each
+# file's nearest folder in the working folder that holds one (two side by side may both compile it), else every solution; cd reads [ as no glob, and a project is named as find names it.
+[[ ${1:-} == [^-]* ]] && while IFS= read -r s; do nearest+=("$s"); done < <(for f; do ( shopt -s nullglob; r=$PWD; cd -- "$(dirname -- "$f")" &&
+  until p=("$PWD"/*.csproj); (( ${#p[@]} )) || [[ $PWD != "$r"/* ]]; do cd .. || exit; done && (( ${#p[@]} )) && [[ $PWD/ == "$r"/* ]] &&
+  printf './%s\n' "${p[@]#"$r"/}" ) || printf '%s\n' "${targets[@]}"; done | sort -u) && targets=("${nearest[@]}")
+case $(basename "$0")/${1:-} in
+  roslyn/--version) dotnet "$D"/sdk/*/Roslyn/bincore/csc.dll -version; exit ;;
+  inspectcode/--version) ls "$D/tools/.store/jetbrains.resharper.globaltools"; exit ;;
+  roslyn/--restore) dotnet new classlib -o "$T/seed" >/dev/null && dotnet restore "$T/seed" "${analysers[@]}" --packages "$D/packages"; exit ;;
+  roslyn/*) for s in "${targets[@]}"; do dotnet build "$s" --no-incremental "${analysers[@]}" -p:RoslynSarif="$T" >&2; done ;;
+  inspectcode/)   # its uris are the solution folder's: made the working folder's, as findings.run matches a path by its end
+    for i in "${!targets[@]}"; do s=${targets[i]}
+      dotnet restore "$s" >&2 && "$D/tools/jb" inspectcode "$s" --no-build --format=Sarif --output="$T/$i.json" >&2 &&
+        jq --arg d "$(dirname "$s")/" '(.runs[].results[]?.locations[]?.physicalLocation.artifactLocation | select(.uriBaseId == "solutionDir"))
+          |= {uri: ($d + .uri)}' "$T/$i.json" > "$T/$i.sarif"; done ;;
+  *) echo "analyse: run as roslyn or inspectcode" >&2; exit 2 ;;
+esac
+shopt -s nullglob; logs=("$T"/*.sarif); (( ${#logs[@]} )) || exit 2
+# One run (specs 1895, 2004, 17 and 19 Nov 2026): each compile writes its own log, as a second build of one framework left a shorter log over the
+# first's tail; a finding they share is one result, at the most severe level (none is SARIF's warning); ruleIndex goes, as each numbers its own.
+jq -s '{version: "2.1.0", runs: [{tool: .[0].runs[0].tool, results: [.[].runs[].results[]? | del(.ruleIndex)] | group_by([.ruleId, .locations,
+  .message.text]) | map(max_by((.level // "warning") as $l | ["none", "note", "warning", "error"] | index($l)))}]}' "${logs[@]}"

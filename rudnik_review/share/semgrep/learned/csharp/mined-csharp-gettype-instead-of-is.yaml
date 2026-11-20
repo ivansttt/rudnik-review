@@ -1,0 +1,28 @@
+rules:
+  - id: csharp-gettype-instead-of-is
+    metadata: {"rule": "csharp-gettype-instead-of-is", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65772#discussion_r3110673445"]}
+    languages:
+      - csharp
+    message: Prefer an `is T` type pattern over comparing GetType() with typeof(T) and then casting to T; the comparison needlessly invokes reflection.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          if ($X.GetType() == typeof($T)) {
+            ...
+          }
+      - pattern: |
+          if (typeof($T) == $X.GetType()) {
+            ...
+          }
+      - pattern: |
+          var $LOCAL = $X.GetType();
+          ...
+          if ($LOCAL == typeof($T)) {
+            ...
+          }
+      - pattern: |
+          var $LOCAL = $X.GetType();
+          ...
+          if (typeof($T) == $LOCAL) {
+            ...
+          }

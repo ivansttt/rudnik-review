@@ -1,0 +1,15 @@
+rules:
+  - id: python-tempfile-text-without-encoding
+    metadata: {"rule": "python-tempfile-text-without-encoding", "evidence": ["BugsInPy black-21: encoding='utf8' on NamedTemporaryFile"]}
+    languages: [python]
+    severity: WARNING
+    message: A temporary file opened in text mode without encoding= uses the locale's encoding; non-ASCII text fails on a non-UTF-8 locale.
+    patterns:
+      - pattern-either:
+          - pattern: tempfile.NamedTemporaryFile(..., mode=$M, ...)
+          - pattern: tempfile.TemporaryFile(..., mode=$M, ...)
+          - pattern: tempfile.SpooledTemporaryFile(..., mode=$M, ...)
+          - pattern: NamedTemporaryFile(..., mode=$M, ...)
+      - pattern-not: $T(..., encoding=$E, ...)
+      - metavariable-regex: {metavariable: $M, regex: "^['\"][^b'\"]*['\"]$"}
+      - focus-metavariable: $M

@@ -1,0 +1,12 @@
+rules:
+  - id: java-unbounded-preallocation
+    metadata: {"rule": "java-unbounded-preallocation", "evidence": ["https://github.com/apache/kafka/pull/22326#discussion_r3618423430"]}
+    languages: [java]
+    severity: WARNING
+    message: Pre-allocating an array sized by a user-configurable value can exhaust memory.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $TYPE $X = new $T[$SIZE];
+          - pattern: |
+              $TYPE $X = new $T[$SIZE][];

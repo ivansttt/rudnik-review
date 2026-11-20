@@ -1,0 +1,7 @@
+rules:
+  - id: python-scalar-allowlist-instead-of-list-like
+    metadata: {"rule": "python-scalar-allowlist-instead-of-list-like", "evidence": ["https://github.com/pandas-dev/pandas/pull/71086#discussion_r4264281946"]}
+    languages: [python]
+    message: Test for list-like values instead of a scalar allowlist
+    pattern: is_scalar($X)
+    severity: WARNING

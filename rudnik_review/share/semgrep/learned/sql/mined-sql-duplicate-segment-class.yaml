@@ -1,0 +1,13 @@
+rules:
+  - id: sql-duplicate-segment-class
+    metadata: {"rule": "sql-duplicate-segment-class", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2349#discussion_r787564640", "https://github.com/sqlfluff/sqlfluff/pull/2290#discussion_r788784079"]}
+    languages: [python]
+    message: New segment class duplicates an existing segment. Reuse it or override with replace=True.
+    severity: WARNING
+    pattern-either:
+      - pattern: Ref("InsertIntoAliasExpressionSegment", optional=True)
+      - patterns:
+          - pattern: |
+              @$DIALECT.segment()
+              class InsertTableStatement(BaseSegment):
+                ...

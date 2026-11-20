@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-remove-surrounding-mismatch
+    metadata: {"rule": "kotlin-remove-surrounding-mismatch", "evidence": ["https://github.com/detekt/detekt/pull/3769#discussion_r633142419", "https://github.com/detekt/detekt/pull/3768#discussion_r631580013"]}
+    languages: [kotlin]
+    message: "removeSurrounding(\"*\") strips only when both a prefix and suffix are present; use removePrefix(\"*\").removeSuffix(\"*\") to strip optional wildcards independently"
+    severity: WARNING
+    pattern: $X.removeSurrounding("*")

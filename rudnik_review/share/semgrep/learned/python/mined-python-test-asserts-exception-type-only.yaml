@@ -1,0 +1,10 @@
+rules:
+  - id: python-test-asserts-exception-type-only
+    metadata: {"rule": "python-test-asserts-exception-type-only", "evidence": ["https://github.com/home-assistant/core/pull/191826#discussion_r4553015512", "https://github.com/pydantic/pydantic/pull/8947#discussion_r1521576442"]}
+    languages: [python]
+    message: Test asserts only the exception type. Bind the exception with `as err` and assert its distinguishing fields (e.g. translation_key, translation_domain, message), or pass a `match=` pattern to pytest.raises.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          with pytest.raises($EXC):
+            ...

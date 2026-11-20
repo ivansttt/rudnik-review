@@ -1,0 +1,32 @@
+rules:
+  - id: java-unstable-api-on-package-private
+    metadata: {"rule": "java-unstable-api-on-package-private", "evidence": ["https://github.com/netty/netty/pull/15433#discussion_r2183176716", "https://github.com/netty/netty/pull/15433#discussion_r2183177018", "https://github.com/netty/netty/pull/15433#discussion_r2183177936", "https://github.com/netty/netty/pull/15433#discussion_r2183178604", "https://github.com/netty/netty/pull/15433#discussion_r2183179330", "https://github.com/netty/netty/pull/15433#discussion_r2183179505", "https://github.com/netty/netty/pull/15433#discussion_r2183180197", "https://github.com/netty/netty/pull/15433#discussion_r2183180440"]}
+    languages:
+      - java
+    message: API-stability annotation applied to a non-public type has no effect and misleads readers into thinking the type is part of the public API.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @$ANN
+              class $NAME { ... }
+          - pattern: |
+              @$ANN
+              interface $NAME { ... }
+          - pattern: |
+              @$ANN
+              enum $NAME { ... }
+          - pattern: |
+              @$ANN
+              record $NAME(...) { ... }
+      - metavariable-regex:
+          metavariable: $ANN
+          regex: (UnstableApi|Beta|PublicApi|PublicEvolving|ExperimentalApi)
+      - pattern-not: |
+          public class $NAME { ... }
+      - pattern-not: |
+          public interface $NAME { ... }
+      - pattern-not: |
+          public enum $NAME { ... }
+      - pattern-not: |
+          public record $NAME(...) { ... }

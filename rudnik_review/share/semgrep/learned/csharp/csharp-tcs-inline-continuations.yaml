@@ -1,0 +1,12 @@
+rules:
+  - id: csharp-tcs-inline-continuations
+    languages: [csharp]
+    severity: WARNING
+    paths:
+      exclude: ["*Tests*", "*Test*", "**/test/**", "**/tests/**"]
+    message: >-
+      A TaskCompletionSource made without TaskCreationOptions.RunContinuationsAsynchronously runs its awaiters' continuations inline
+      on the thread that calls SetResult/SetException, which can deadlock or stall that thread; pass the option.
+    pattern-either:
+      - pattern: new TaskCompletionSource<$T>()
+      - pattern: new TaskCompletionSource()

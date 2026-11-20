@@ -1,0 +1,13 @@
+rules:
+  - id: csharp-concurrentdictionary-check-then-act
+    metadata: {"rule": "csharp-concurrentdictionary-check-then-act", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60806#discussion_r2033872161"]}
+    languages: [csharp]
+    message: Use TryAdd/GetOrAdd/AddOrUpdate instead of a non-atomic ContainsKey-then-assign on a ConcurrentDictionary.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($D.ContainsKey($K)) {
+            ...
+            $D[$K] = $V;
+            ...
+          }

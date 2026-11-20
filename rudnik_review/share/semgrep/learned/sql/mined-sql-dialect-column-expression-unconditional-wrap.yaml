@@ -1,0 +1,10 @@
+rules:
+  - id: sql-dialect-column-expression-unconditional-wrap
+    metadata: {"rule": "sql-dialect-column-expression-unconditional-wrap", "evidence": ["https://github.com/apache/superset/pull/45793#discussion_r4393778828"]}
+    languages: [python]
+    message: column_expression wraps the column expression unconditionally
+    severity: WARNING
+    patterns:
+      - pattern: |
+          def column_expression(self, $ARG):
+              return func.$FUNC($ARG)

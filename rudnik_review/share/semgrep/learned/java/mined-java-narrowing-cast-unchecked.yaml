@@ -1,0 +1,7 @@
+rules:
+  - id: java-narrowing-cast-unchecked
+    metadata: {"rule": "java-narrowing-cast-unchecked", "evidence": ["https://github.com/apache/lucene/pull/12841#discussion_r1404355350"]}
+    languages: [java]
+    message: Narrowing cast from a wider integer to int without Math.toIntExact silently truncates.
+    severity: INFO
+    pattern: (int) $X[$I]

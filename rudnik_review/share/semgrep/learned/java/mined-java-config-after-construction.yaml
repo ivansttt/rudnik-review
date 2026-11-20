@@ -1,0 +1,16 @@
+rules:
+- id: java-config-after-construction
+  metadata: {"rule": "java-config-after-construction", "evidence": ["https://github.com/apache/lucene/pull/13592#discussion_r1725906610"]}
+  languages: [java]
+  message: Setter on a configuration object is called after the object it configures has been constructed, so the setting is silently ignored.
+  severity: WARNING
+  patterns:
+  - pattern: |
+      $CONFIG = new $CFG(...);
+      ...
+      new $WRITER(..., $CONFIG, ...);
+      ...
+      $CONFIG.$SETTER(...);
+  - metavariable-regex:
+      metavariable: $SETTER
+      regex: "^set"

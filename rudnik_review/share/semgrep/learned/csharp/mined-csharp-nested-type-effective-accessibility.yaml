@@ -1,0 +1,19 @@
+rules:
+  - id: csharp-nested-type-effective-accessibility
+    metadata: {"rule": "csharp-nested-type-effective-accessibility", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67993#discussion_r3736853167"]}
+    languages:
+      - csharp
+    severity: WARNING
+    message: >
+      Type accessibility is classified using only the type's own
+      DeclaredAccessibility/IsFileLocal without walking ContainingType. A public
+      type nested inside a file-local or private container is therefore treated
+      as accessible.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $X.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Internal)
+          - pattern: |
+              $X is INamedTypeSymbol { IsFileLocal: true }
+      - pattern-not-inside: |
+          while (...) { ... $A = $B.ContainingType; ... }

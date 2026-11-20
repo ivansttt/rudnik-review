@@ -1,0 +1,9 @@
+rules:
+  - id: python-dead-none-branch-for-type-narrowing
+    metadata: {"rule": "python-dead-none-branch-for-type-narrowing", "evidence": ["https://github.com/home-assistant/core/pull/192098#discussion_r4544250737"]}
+    languages: [python]
+    message: Runtime None branch exists only for the type checker
+    pattern: |
+      if ($X := asyncio.current_task()) is None:
+        ...
+    severity: INFO

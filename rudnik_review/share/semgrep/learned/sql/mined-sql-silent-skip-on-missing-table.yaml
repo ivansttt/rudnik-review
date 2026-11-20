@@ -1,0 +1,22 @@
+rules:
+  - id: sql-silent-skip-on-missing-table
+    metadata: {"rule": "sql-silent-skip-on-missing-table", "evidence": ["https://github.com/apache/superset/pull/33155#discussion_r2048749652"]}
+    message: >-
+      Migration/schema helper logs and returns (silently skips) when a required
+      table or object is missing instead of raising, hiding a real misconfiguration.
+    severity: ERROR
+    languages:
+      - python
+    patterns:
+      - pattern: |
+          if not $CHECK(...):
+              ...
+              $LOG(...)
+              ...
+              return
+      - metavariable-regex:
+          metavariable: $CHECK
+          regex: has_table|has_column|has_index|table_exists|column_exists|index_exists|object_exists
+      - metavariable-regex:
+          metavariable: $LOG
+          regex: (logger|log)\.(info|debug|warning)

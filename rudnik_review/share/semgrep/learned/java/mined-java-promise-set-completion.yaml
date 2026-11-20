@@ -1,0 +1,9 @@
+rules:
+  - id: java-promise-set-completion
+    metadata: {"rule": "java-promise-set-completion", "evidence": ["https://github.com/netty/netty/pull/17321#discussion_r3863380023"]}
+    languages: [java]
+    severity: WARNING
+    message: Completing a promise with setSuccess/setFailure throws IllegalStateException if it is already complete; prefer trySuccess/tryFailure when the promise may already be done.
+    pattern-either:
+      - pattern: $PROMISE.setSuccess($X)
+      - pattern: $PROMISE.setFailure($X)

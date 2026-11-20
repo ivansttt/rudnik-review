@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-hardcoded-host-config-key
+    metadata: {"rule": "csharp-hardcoded-host-config-key", "evidence": ["https://github.com/dotnet/aspnetcore/pull/63856#discussion_r3576317835", "https://github.com/dotnet/aspnetcore/pull/63856#discussion_r3576318381"]}
+    languages: [csharp]
+    severity: WARNING
+    message: Use the named configuration key constant instead of hardcoding the key string.
+    pattern-regex: '--environment='

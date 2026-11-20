@@ -1,0 +1,13 @@
+rules:
+  - id: python-options-key-uses-attribute-enum
+    metadata: {"rule": "python-options-key-uses-attribute-enum", "evidence": ["https://github.com/home-assistant/core/pull/192277#discussion_r4551572409"]}
+    message: Entity registry options key uses a capability/state attribute enum member instead of the dedicated options constant, so the option is silently ignored
+    severity: ERROR
+    languages:
+      - python
+    patterns:
+      - pattern: |
+          {..., $ENUM.$MEMBER: $VALUE, ...}
+      - metavariable-regex:
+          metavariable: $ENUM
+          regex: ".*(CapabilityAttribute|StateAttribute)$"

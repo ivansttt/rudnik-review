@@ -1,0 +1,9 @@
+rules:
+  - id: rust-test-missing-revision
+    metadata: {"rule": "rust-test-missing-revision", "evidence": ["https://github.com/rust-lang/rust/pull/164767#discussion_r4358597590"]}
+    languages: [generic]
+    message: "UI test sets a compile flag for only one configuration without a @ revisions directive covering the default or alternate mode; add revisions so the regression is checked in both modes."
+    severity: WARNING
+    patterns:
+      - pattern-regex: '^\s*//\s*@compile-flags:'
+      - pattern-not-regex: '^\s*//\s*@\s*\[[^\]]+\]\s*compile-flags:'

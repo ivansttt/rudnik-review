@@ -1,0 +1,10 @@
+rules:
+  - id: c-identical-test-defaults
+    metadata: {"rule": "c-identical-test-defaults", "evidence": ["https://github.com/bitcoin/bitcoin/pull/34329#discussion_r2792863991"]}
+    languages: [cpp]
+    message: >-
+      Test constructs two entities it must tell apart with the same default CService value;
+      use distinct non-default addresses or ports so a mixup between them would still fail.
+    severity: WARNING
+    pattern: |
+      const CService $ADDR{};

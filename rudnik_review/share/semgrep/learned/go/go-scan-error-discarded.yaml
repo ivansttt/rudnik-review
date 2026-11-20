@@ -1,0 +1,9 @@
+rules:
+  - id: go-scan-error-discarded
+    metadata: {"rule": "go-scan-error-discarded", "evidence": ["scorecard planted g-swallow (spf13/cast map.go)"]}
+    languages: [go]
+    severity: WARNING
+    message: The Scan's error is discarded with _ =; a failed scan leaves the destinations at their zero values and the row is kept.
+    pattern-either:
+      - pattern: _ = $R.Scan(...)
+      - pattern: _ = $R.ScanContext(...)

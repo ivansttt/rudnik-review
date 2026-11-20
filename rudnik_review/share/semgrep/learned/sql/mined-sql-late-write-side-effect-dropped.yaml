@@ -1,0 +1,17 @@
+rules:
+  - id: sql-late-write-side-effect-dropped
+    metadata: {"rule": "sql-late-write-side-effect-dropped", "evidence": ["https://github.com/apache/superset/pull/45843#discussion_r4442957749", "https://github.com/apache/superset/pull/45843#discussion_r4442957779", "https://github.com/apache/superset/pull/45649#discussion_r4383887612"]}
+    languages: [ts]
+    severity: WARNING
+    message: A side effect that reflects a completed server write sits behind a session-alive or unmount guard, so it is skipped when the request finishes after the dialog closes.
+    pattern-either:
+      - pattern: |
+          if (!shouldApplyResponse()) return;
+          ...
+          if ($COND) {
+            ...
+            if (onDatabaseAdd) onDatabaseAdd();
+            ...
+          }
+      - pattern: |
+          if (request !== saveRequestRef.current) return;

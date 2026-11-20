@@ -1,0 +1,7 @@
+rules:
+  - id: java-discard-nonempty-unchecked
+    metadata: {"rule": "java-discard-nonempty-unchecked", "evidence": ["https://github.com/apache/kafka/pull/21446#discussion_r2795901977"]}
+    message: "Column family is closed without first verifying it is empty, which can silently lose data."
+    severity: WARNING
+    languages: [java]
+    pattern: $COLLECTION.get(...).close()

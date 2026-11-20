@@ -1,0 +1,14 @@
+rules:
+  - id: kotlin-identity-equality
+    metadata: {"rule": "kotlin-identity-equality", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/2287#discussion_r501512443", "https://github.com/detekt/detekt/pull/2862#discussion_r453353859"]}
+    languages:
+      - kotlin
+    message: >-
+      Structural equality (`==`) is used where referential identity is required.
+      Use `===` when comparing a value against a sentinel, symbol, or singleton,
+      since a broken or overloaded `equals` can change the result.
+    severity: ERROR
+    pattern-either:
+      - pattern: $X == NULL
+      - pattern: $X == $Y.$M(...)
+      - pattern: $X == $Y?.$M(...)

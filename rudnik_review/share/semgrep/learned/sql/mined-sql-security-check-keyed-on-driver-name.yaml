@@ -1,0 +1,15 @@
+rules:
+  - id: sql-security-check-keyed-on-driver-name
+    metadata: {"rule": "sql-security-check-keyed-on-driver-name", "evidence": ["https://github.com/apache/superset/pull/44505#discussion_r4107318535"]}
+    message: |-
+      `disallow_uri_query_params` is keyed on the "httpx" driver name, which
+      `get_driver_name()` only resolves for the `d1+httpx://` URI form. The bare
+      `d1://` form imports the dialect and returns `dialect.driver`, so a
+      `?base_url=` query parameter is not disallowed and the security check is
+      bypassed.
+    languages:
+      - python
+    severity: ERROR
+    patterns:
+      - pattern: |
+          disallow_uri_query_params = {"httpx": {"base_url"}}

@@ -1,0 +1,8 @@
+rules:
+  - id: kotlin-stringly-typed-value
+    metadata: {"rule": "kotlin-stringly-typed-value", "evidence": ["https://github.com/detekt/detekt/pull/6417#discussion_r1381144491"]}
+    languages: [kotlin]
+    severity: INFO
+    message: A property or parameter typed as Property<String> should use an enum instead of String for a small fixed set of values.
+    patterns:
+      - pattern-regex: Property<String>

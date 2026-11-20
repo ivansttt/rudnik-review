@@ -1,0 +1,14 @@
+rules:
+  - id: php-null-check-empty-response
+    metadata: {"rule": "php-null-check-empty-response", "evidence": ["https://github.com/matomo-org/matomo/pull/25207#discussion_r3973894891"]}
+    languages:
+      - php
+    message: >-
+      Null check treats an empty response as a valid answer. A value from a
+      fetched response is checked only for null, so an empty or truncated body
+      ('') is treated as a valid result.
+    severity: WARNING
+    patterns:
+      - pattern: $this->consumerAvailable = $CONSUMER !== null;
+      - pattern-not: |
+          $this->consumerAvailable = is_array($CONSUMER) && array_key_exists('licenses', $CONSUMER);

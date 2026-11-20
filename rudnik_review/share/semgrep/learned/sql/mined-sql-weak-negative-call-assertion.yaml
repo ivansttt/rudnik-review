@@ -1,0 +1,12 @@
+rules:
+  - id: sql-weak-negative-call-assertion
+    metadata: {"rule": "sql-weak-negative-call-assertion", "evidence": ["https://github.com/apache/superset/pull/38308#discussion_r2886142482"]}
+    languages:
+      - javascript
+      - typescript
+    message: "Negative assertion with toHaveBeenCalledOnce passes when the mock is called 0 or 2+ times. If 'never called' is intended, use not.toHaveBeenCalled()."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $EXPECT.not.toHaveBeenCalledOnce()
+          - pattern: expect($MOCK).not.toHaveBeenCalledOnce()

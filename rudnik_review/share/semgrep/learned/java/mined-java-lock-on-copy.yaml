@@ -1,0 +1,18 @@
+rules:
+  - id: java-lock-on-copy
+    metadata: {"rule": "java-lock-on-copy", "evidence": ["https://github.com/apache/kafka/pull/22683#discussion_r3483766498"]}
+    languages:
+      - java
+    severity: WARNING
+    message: >-
+      A fresh copy of the shared mutable object is passed to a method that uses
+      it as a monitor, instead of the shared object itself, so the lock excludes
+      no concurrent access.
+    pattern: |
+      synchronized ($MON) {
+        ...
+        $COPY = $MON.copy();
+        ...
+      }
+      ...
+      $FUNC(..., $COPY, ...);

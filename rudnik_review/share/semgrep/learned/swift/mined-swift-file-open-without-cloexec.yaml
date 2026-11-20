@@ -1,0 +1,12 @@
+rules:
+  - id: swift-file-open-without-cloexec
+    metadata: {"rule": "swift-file-open-without-cloexec", "evidence": ["https://github.com/apple/swift-nio/pull/975#discussion_r276798581"]}
+    languages: [swift]
+    message: File descriptor opened without O_CLOEXEC; add O_CLOEXEC to prevent leaking the descriptor across exec.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          let $FD = try Posix.open(file: $PATH, oFlag: $FLAGS, mode: $MODE)
+      - metavariable-regex:
+          metavariable: $FLAGS
+          regex: '^(?!.*O_CLOEXEC).*'

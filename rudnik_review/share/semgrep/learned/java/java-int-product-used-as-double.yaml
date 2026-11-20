@@ -1,0 +1,22 @@
+rules:
+  - id: java-int-product-used-as-double
+    languages: [java]
+    severity: WARNING
+    message: >-
+      An int product is stored as int and then used in floating-point arithmetic: it overflows past 46341 squared before
+      any widening; widen an operand before the multiplication, int $P = $A * $B becomes double $P = (double) $A * $B.
+    patterns:
+      - pattern: int $P = $A * $B;
+      - pattern-not: int $P = ($C) $E;
+      - pattern-either:
+          - pattern-inside: |
+              int $P = $A * $B;
+              ...
+              $T $Q = <... $P / $F ...>;
+          - pattern-inside: |
+              int $P = $A * $B;
+              ...
+              $T $Q = <... $P * $F ...>;
+      - metavariable-regex:
+          metavariable: $F
+          regex: ^\d+\.\d+[dD]?$

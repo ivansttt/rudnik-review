@@ -1,0 +1,25 @@
+rules:
+  - id: java-instantiable-utility-class
+    metadata: {"rule": "java-instantiable-utility-class", "evidence": ["https://github.com/apache/kafka/pull/23360#discussion_r3966794189"]}
+    languages:
+      - java
+    severity: INFO
+    message: >-
+      Utility class with only static members should be declared final and have
+      a private constructor to prevent instantiation and subclassing.
+    patterns:
+      - pattern: |
+          class $NAME {
+            ...
+          }
+      - pattern-not: |
+          final class $NAME {
+            ...
+          }
+      - pattern-not: |
+          class $NAME {
+            ...
+            private $NAME(...) {
+              ...
+            }
+          }

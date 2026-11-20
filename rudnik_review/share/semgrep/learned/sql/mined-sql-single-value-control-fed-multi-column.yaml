@@ -1,0 +1,14 @@
+rules:
+  - id: sql-single-value-control-fed-multi-column
+    metadata: {"rule": "sql-single-value-control-fed-multi-column", "evidence": ["https://github.com/apache/superset/pull/42533#discussion_r3687092534"]}
+    languages: [ts]
+    severity: ERROR
+    message: >
+      Waterfall's `groupby` control is declared `multi: false`, but here it is
+      populated with every queued column via `popAllColumns()`. `buildQuery`
+      groups by the whole array while `transformProps` reads only `groupby[0]`,
+      so the query silently groups by dimensions the renderer never shows.
+      Take a single column off the queue (e.g. `shiftColumn()`) instead.
+    patterns:
+      - pattern: |
+          groupby: getStandardizedControls().popAllColumns()

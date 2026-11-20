@@ -1,0 +1,9 @@
+rules:
+  - id: java-max-value-array-length
+    metadata: {"rule": "java-max-value-array-length", "evidence": ["https://github.com/netty/netty/pull/11934#discussion_r774249804"]}
+    languages:
+      - java
+    message: Integer.MAX_VALUE is not a valid array length on most JVMs
+    severity: WARNING
+    patterns:
+      - pattern: $CAP = Integer.MAX_VALUE;

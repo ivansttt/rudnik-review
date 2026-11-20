@@ -1,0 +1,23 @@
+rules:
+  - id: java-missing-null-check
+    metadata: {"rule": "java-missing-null-check", "evidence": ["https://github.com/netty/netty/pull/15835#discussion_r2509347391", "https://github.com/netty/netty/pull/15470#discussion_r2267292654", "https://github.com/netty/netty/pull/11415#discussion_r657903892", "https://github.com/netty/netty/pull/10488#discussion_r473033279", "https://github.com/netty/netty/pull/10488#discussion_r473033616"]}
+    languages:
+      - java
+    message: Reference parameter is stored without a null check; a null argument will surface later as a NullPointerException.
+    severity: WARNING
+    pattern-either:
+      - patterns:
+          - pattern: |
+              this.$FIELD = $PARAM;
+          - metavariable-regex:
+              metavariable: $PARAM
+              regex: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+      - patterns:
+          - pattern: |
+              $FIELD = $METHOD($PARAM, ...);
+          - metavariable-regex:
+              metavariable: $FIELD
+              regex: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+          - metavariable-regex:
+              metavariable: $PARAM
+              regex: '^[a-zA-Z_][a-zA-Z0-9_]*$'

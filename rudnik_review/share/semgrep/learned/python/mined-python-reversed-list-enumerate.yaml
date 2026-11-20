@@ -1,0 +1,7 @@
+rules:
+  - id: python-reversed-list-enumerate
+    metadata: {"rule": "python-reversed-list-enumerate", "evidence": ["https://github.com/python/cpython/pull/159170#discussion_r4442051312"]}
+    languages: [python]
+    message: Materializing enumerate() into a list only to reverse it allocates a temporary list; iterate indices backwards with range() instead.
+    severity: INFO
+    pattern: reversed(list(enumerate(...)))

@@ -1,0 +1,18 @@
+rules:
+  - id: csharp-list-capacity-loop-bound
+    metadata: {"rule": "csharp-list-capacity-loop-bound", "evidence": ["https://github.com/dotnet/runtime/pull/137127#discussion_r4506757380"]}
+    languages: [csharp]
+    message: "Iterating with List<T>.Capacity as the loop bound couples correctness to backing-storage size instead of the element count."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              for (int $I = 0; $I < $L.Capacity; $I++)
+              {
+                ...
+              }
+          - pattern: |
+              for (int $I = 0; $I <= $L.Capacity; $I++)
+              {
+                ...
+              }

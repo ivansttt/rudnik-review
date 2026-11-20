@@ -1,0 +1,9 @@
+# C#'s formatter (spec 1707, 12 Nov 2026), from the developer's .NET SDK, so setup installs nothing. `--folder` needs no solution to load,
+# and reads .editorconfig. C#'s analyser is the fleet's, which builds the solution, so C# stays a gap here.
+[[tool]]
+name = "dotnet-format"
+version = "toolchain"
+from = "dotnet"
+stacks = ["csharp"]
+globs = ["*.cs"]
+fmt = [["dotnet", "format", "whitespace", "--folder", "--include", "{files}"]]

@@ -1,0 +1,18 @@
+rules:
+  - id: javascript-expensive-sort-comparator
+    metadata: {"rule": "javascript-expensive-sort-comparator", "evidence": ["https://github.com/microsoft/TypeScript/pull/64220#discussion_r4065733913"]}
+    languages:
+      - go
+    severity: WARNING
+    message: "The sort comparator runs a lookup or normalization on its arguments on every comparison. Precompute the sort key once per element and sort the precomputed entries instead."
+    patterns:
+      - pattern-inside: |
+          slices.SortStableFunc($_, func($A, $B $T) int {
+            ...
+          })
+      - pattern-either:
+          - pattern: $O.$M($A)
+          - pattern: $O.$M(..., $A, ...)
+          - pattern: $F($A)
+          - pattern: $F(..., $A, ...)
+          - pattern: $MAP[$A]

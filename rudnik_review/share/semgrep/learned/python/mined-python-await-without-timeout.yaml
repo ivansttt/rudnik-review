@@ -1,0 +1,10 @@
+rules:
+  - id: python-await-without-timeout
+    metadata: {"rule": "python-await-without-timeout", "evidence": ["https://github.com/python/cpython/pull/160514#discussion_r4367286656"]}
+    languages:
+      - python
+    message: Test awaits a future or coroutine without wrapping it in a timeout, so a regression hangs the test forever instead of failing
+    severity: WARNING
+    patterns:
+      - pattern: await $X
+      - pattern-not: await asyncio.wait_for(...)

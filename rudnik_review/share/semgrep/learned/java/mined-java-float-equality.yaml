@@ -1,0 +1,44 @@
+rules:
+  - id: java-float-equality
+    metadata: {"rule": "java-float-equality", "evidence": ["https://github.com/apache/kafka/pull/23790#discussion_r4295999524"]}
+    languages:
+      - java
+    message: >-
+      Floating-point values are compared with == or !=, which treats +0.0 and
+      -0.0 as equal. When the same values are ordered or grouped with
+      Float.compare / Double.compare (for example in a sorted collection),
+      use Double.compare(a, b) == 0 so the equality check and the ordering agree.
+    severity: WARNING
+    pattern-either:
+      - patterns:
+          - pattern: $X == $Y
+          - metavariable-type:
+              metavariable: $X
+              type: double
+          - metavariable-type:
+              metavariable: $Y
+              type: double
+      - patterns:
+          - pattern: $X != $Y
+          - metavariable-type:
+              metavariable: $X
+              type: double
+          - metavariable-type:
+              metavariable: $Y
+              type: double
+      - patterns:
+          - pattern: $X == $Y
+          - metavariable-type:
+              metavariable: $X
+              type: float
+          - metavariable-type:
+              metavariable: $Y
+              type: float
+      - patterns:
+          - pattern: $X != $Y
+          - metavariable-type:
+              metavariable: $X
+              type: float
+          - metavariable-type:
+              metavariable: $Y
+              type: float

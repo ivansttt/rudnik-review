@@ -1,0 +1,15 @@
+rules:
+  - id: java-ungated-validation
+    metadata: {"rule": "java-ungated-validation", "evidence": ["https://github.com/netty/netty/pull/13603#discussion_r1348905041"]}
+    languages:
+      - java
+    message: Trailer pseudo-header validation runs unconditionally and is not gated by the validateHeaders flag.
+    severity: ERROR
+    pattern: |
+      if (!headers.isEmpty()) {
+        for (Iterator<Entry<CharSequence, CharSequence>> iterator = headers.iterator(); iterator.hasNext();) {
+          if (Http2Headers.PseudoHeaderName.hasPseudoHeaderFormat(iterator.next().getKey())) {
+            throw streamError(stream.id(), PROTOCOL_ERROR, "Found invalid Pseudo-Header in trailers");
+          }
+        }
+      }

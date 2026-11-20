@@ -1,0 +1,12 @@
+rules:
+  - id: sql-fetched-fields-never-consumed
+    metadata: {"rule": "sql-fetched-fields-never-consumed", "evidence": ["https://github.com/apache/superset/pull/44262#discussion_r4013968049", "https://github.com/apache/superset/pull/44262#discussion_r4064306671"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Query selects identifying columns (or the predicate helper accepts a scope argument) that the downstream recheck never reads.
+    pattern-either:
+      - pattern: sa.select($TABLE.c.id, $TABLE.c.entity_type, $TABLE.c.entity_uuid)
+      - pattern: |
+          def $FUNC(..., scope_entities: $TYPE = None, ...) -> $RET:
+              ...

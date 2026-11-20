@@ -1,0 +1,24 @@
+rules:
+  - id: python-symlink-path-not-resolved
+    metadata: {"rule": "python-symlink-path-not-resolved", "evidence": ["https://github.com/python/cpython/pull/158548#discussion_r4154635568"]}
+    languages:
+      - python
+    message: >-
+      Directory for sys.path insertion is derived from a possibly-symlinked path
+      via os.path.dirname or os.path.abspath without os.path.realpath, so files
+      next to the real target are missed.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $DIR = os.path.dirname($PATH)
+              ...
+              sys.path.insert(0, $DIR)
+          - pattern: |
+              $DIR = os.path.abspath($PATH)
+              ...
+              sys.path.insert(0, $DIR)
+      - metavariable-pattern:
+          metavariable: $PATH
+          patterns:
+            - pattern-not: os.path.realpath(...)

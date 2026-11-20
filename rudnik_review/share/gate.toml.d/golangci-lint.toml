@@ -1,0 +1,27 @@
+# Go (spec 1705, 12 Nov 2026): golangci-lint's analysers, read as SARIF, and gofmt, the formatter Go's own toolchain ships. Go is linted by
+# package, as Roslyn by solution, so the cmd takes no {files}: findings.run keeps the findings on the change's files. It needs the developer's
+# Go and a go.mod at the repository's root; a module below the root is a crash that is said (a later spec). The sha256 are the vendor's
+# (GitHub's release API, 12 Nov 2026). The command line ran in release 0.1.20359's trial (16 Nov 2026, spf13/cast): --show-stats=false
+# keeps 2.15's `0 issues.` line off the SARIF on stdout (spec 1855). It blocks nothing. The defaults miss bugs (spec 1878, 17 Nov 2026: the
+# scorecard on spf13/cast found one format note), so --enable adds gosec (SQL, commands, files built from input), gocritic (exitAfterDefer,
+# badCond, dupSubExpr), bodyclose, sqlclosecheck, rowserrcheck (unclosed or unchecked bodies and rows), errorlint and nilerr (errors lost).
+# 2.x stops on a v1 .golangci.yml (spec 1890, 17 Nov 2026: spf13/cobra's, so nothing ran): with no v2 one at the root, the kit's `config` is read.
+# --allow-parallel-runners skips the cache lock, so a run beside the editor's is no crash (spec 1980, 19 Nov 2026: 3 of 20 Go runs lost).
+[[tool]]
+name = "golangci-lint"
+version = "2.15.0"
+stacks = ["go"]
+signals = ["go.mod", "*.go"]
+globs = ["*.go"]
+cmd = ["golangci-lint", "run", "--output.sarif.path", "stdout", "--output.text.path", "stderr", "--show-stats=false",
+       "--enable=gosec,gocritic,bodyclose,sqlclosecheck,rowserrcheck,errorlint,nilerr", "--allow-parallel-runners", "{config}", "./..."]
+config = { file = "review/golangci.yml", names = [".golangci.yml", ".golangci.yaml", ".golangci.toml", ".golangci.json"], key = "version", value = "2" }
+adapter = "sarif"
+blocks = []
+fmt = [["gofmt", "-w", "{files}"]]
+release = "golangci/golangci-lint/releases/download/v{v}/golangci-lint-{v}-{os}-{go}.{ext}"
+sha256_x86_64 = "9b7fe6a6bf6334b98decf8d86b11415ea7889afdabdd1959fdce23af2a9ebcea"
+sha256_aarch64 = "b4d8f17068b35ee6060cc2f69a16fb48740d706fbba81661c318649c114a6998"
+sha256_darwin_x86_64 = "767b899a28285e88ded2823d5dcc4bc5ef681173eb2d80f029a7b17ee4ece3b8"
+sha256_darwin_arm64 = "d1e409481a8ca846c4bc97e781eb5cb1bd5c23353a0b3977a1cbda1b1b6447d5"
+sha256_windows_x86_64 = "cd7ea6063c95de245e17e5246e42bdc14bb221792c429dbd239ab3a6ade6ca6a"

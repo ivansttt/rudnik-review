@@ -1,0 +1,13 @@
+rules:
+  - id: javascript-silent-config-coercion
+    metadata: {"rule": "javascript-silent-config-coercion", "evidence": ["https://github.com/vercel/next.js/pull/97926#discussion_r3870027859"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "Silently overriding an explicitly configured option instead of throwing"
+    patterns:
+      - pattern: |
+          if (!process.env.$VAR) {
+            ...
+            result.experimental.$FIELD = $VALUE;
+            ...
+          }

@@ -1,0 +1,13 @@
+rules:
+  - id: sql-hardcoded-true-bypass
+    metadata: {"rule": "sql-hardcoded-true-bypass", "evidence": ["https://github.com/apache/superset/pull/32196#discussion_r2058651467", "https://github.com/apache/superset/pull/32112#discussion_r1960092969", "https://github.com/apache/superset/pull/28796#discussion_r1626812086"]}
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Gate, condition, or feature-flag check is hardcoded to `true`, permanently bypassing the gate.
+    pattern-either:
+      - pattern: |
+          const $X = true;
+      - pattern: |
+          true && $Y
+      - pattern: |
+          <$ELEM show ... />

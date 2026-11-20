@@ -1,0 +1,12 @@
+rules:
+  - id: python-overbroad-try-except
+    metadata: {"rule": "python-overbroad-try-except", "evidence": ["https://github.com/python/cpython/pull/161453#discussion_r4487893343"]}
+    languages: [python]
+    message: "Except clause catches exceptions raised by statements after the guarded call; move them to an else block."
+    severity: WARNING
+    pattern: |
+      try:
+        ...
+        return $VAL
+      except $EXC:
+        ...

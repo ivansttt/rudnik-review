@@ -1,0 +1,28 @@
+rules:
+  - id: csharp-shared-context-outside-delegate
+    metadata: {"rule": "csharp-shared-context-outside-delegate", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60724#discussion_r1990345164"]}
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      A mutable per-call object ($CTX) is created once outside the delegate and
+      captured in its closure, so concurrent invocations mutate the same
+      instance. Create it inside the delegate so each call gets its own state.
+    pattern-either:
+      - pattern: |
+          var $CTX = new $TYPE { ... };
+          ...
+          return async ($PARAM) =>
+          {
+            ...
+            $CTX.$FIELD?.$METHOD(...);
+            ...
+          };
+      - pattern: |
+          var $CTX = new $TYPE { ... };
+          ...
+          return async ($PARAM) =>
+          {
+            ...
+            $CTX.$FIELD.$METHOD(...);
+            ...
+          };

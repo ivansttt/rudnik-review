@@ -1,0 +1,19 @@
+# Kotlin (spec 1707, 12 Nov 2026): ktlint, its linter and formatter in one, read as SARIF. The release is one script around a jar that runs
+# on the developer's Java, the same file for Linux and macOS; Windows needs the vendor's .bat beside the jar, two files where fetch takes
+# one, so no Windows pin and setup says the gap there. The sha256 is the vendor's (GitHub's release API, 12 Nov 2026); the command lines
+# are from its documentation, not yet run here, and block nothing.
+[[tool]]
+name = "ktlint"
+version = "1.8.0"
+stacks = ["kotlin"]
+signals = ["*.kt", "*.kts"]
+globs = ["*.kt", "*.kts"]
+cmd = ["ktlint", "--reporter=sarif", "{files}"]
+adapter = "sarif"
+blocks = []
+fmt = [["ktlint", "--format", "{files}"]]
+release = "pinterest/ktlint/releases/download/{v}/ktlint"
+sha256_x86_64 = "a3fd620207d5c40da6ca789b95e7f823c54e854b7fade7f613e91096a3706d75"
+sha256_aarch64 = "a3fd620207d5c40da6ca789b95e7f823c54e854b7fade7f613e91096a3706d75"
+sha256_darwin_x86_64 = "a3fd620207d5c40da6ca789b95e7f823c54e854b7fade7f613e91096a3706d75"
+sha256_darwin_arm64 = "a3fd620207d5c40da6ca789b95e7f823c54e854b7fade7f613e91096a3706d75"

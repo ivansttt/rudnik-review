@@ -1,0 +1,14 @@
+rules:
+  - id: sql-decimal-str-scientific-notation
+    metadata: {"rule": "sql-decimal-str-scientific-notation", "evidence": ["https://github.com/apache/superset/pull/44739#discussion_r4137521499"]}
+    languages:
+      - python
+    message: >-
+      Converting a Decimal with str() renders high-scale values in scientific
+      notation (e.g. 0E-18), which downstream parsers and CSV exports misread.
+      Use format(value, 'f') to keep fixed-point notation.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: return str($X) if Decimal.is_finite($X) else None
+          - pattern: return str($X) if Decimal.is_finite($X) else $Y

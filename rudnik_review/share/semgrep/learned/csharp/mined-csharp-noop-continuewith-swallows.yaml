@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-noop-continuewith-swallows
+    metadata: {"rule": "csharp-noop-continuewith-swallows", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68664#discussion_r3826872591"]}
+    languages: [csharp]
+    message: "A no-op ContinueWith swallows the task's exception; await the task directly."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $TASK.ContinueWith(static _ => { }, ...)
+          - pattern: $TASK.ContinueWith(_ => { }, ...)

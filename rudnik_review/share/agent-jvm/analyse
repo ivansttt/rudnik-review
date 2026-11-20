@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# The Java analysers as the gate runs them in agent-jvm (spec 1248, 11 Nov 2026), on the project in the working folder; the image links this file
+# as error-prone, infer, spotbugs, cpd and javac-ep; cpd is PMD's `pmd cpd`. Error Prone (with NullAway) and Infer take no file list and run through the project's own build,
+# offline as the gate has no network (online for the corpus, below), and SpotBugs on the classes that build compiles, the files' alone when given. Each prints what its adapter in findings.py reads (Error
+# Prone's diagnostics on stderr, Infer's report.json and SpotBugs' SARIF on stdout) and the build's output on the other stream. Exit 2 is a
+# build that failed with no finding: the gate says the analyser crashed, never that the code is clean.
+set -uo pipefail
+J=/opt/jvm offline=yes
+# Each run's files in a folder of its own, gone when it exits: two agents' stop hooks check at once in a TMPDIR they share (spec 1871,
+# 17 Nov 2026). javac-ep, which the build forks, learns it from ANALYSE_RUN, which the build passes on.
+[[ -n ${ANALYSE_RUN:-} ]] || { ANALYSE_RUN=$(mktemp -d) && export ANALYSE_RUN && trap 'rm -rf "$ANALYSE_RUN"' EXIT; } || exit 2
+T=$ANALYSE_RUN
+# On a developer's machine (spec 1867, 17 Nov 2026) the jars are the folder above the link setup made, <tools>, where setup keeps spotbugs/
+# as the image keeps it and marks it with registry.sha256; the build is online into their own Maven or Gradle cache, on the throwaway
+# tree rudnik-review check unpacks.
+[[ -d $J ]] || { J=$(cd "$(dirname "$0")/.." && pwd); [[ -f $J/registry.sha256 ]] && offline=''; }
+# The corpus's run (ANALYSE_ONLINE, spec 1783) has the network, so the build fetches its dependencies; its tree is read-only, so it builds a copy
+# in the run's folder, gone with it; javac-ep, forked by that build, already runs in the copy (spec 1872: it copied the tree into itself).
+if [[ -n ${ANALYSE_ONLINE:-} && $(basename "$0") != javac-ep ]]; then offline='' && cp -r . "$T/tree" && chmod -R u+w "$T/tree" && cd "$T/tree" || exit 2; fi
+if [[ -f pom.xml ]]; then build=("$([[ -x mvnw ]] && echo ./mvnw || echo mvn)" -B -q ${offline:+-o}   # never a policy plugin: it judges the project, not the change (spec 1997, 19 Nov 2026: commons-cli's rat)
+  -Drat.skip -Dcheckstyle.skip -Denforcer.skip -Dspotless.check.skip -Djapicmp.skip -Danimal.sniffer.skip) goal=compile compiler=org.apache.maven.plugins:maven-compiler-plugin:3.15.0:compile
+else build=("$([[ -x gradlew ]] && echo ./gradlew || echo gradle)" -q ${offline:+--offline} --no-daemon) goal=classes; fi
+# A Maven build forks javac-ep by a settings profile in the run's folder, javac-ep's path escaped as XML text needs (& < >, so no ]]>; spec 1871).
+# Its properties beat the pom's (spec 1937, 18 Nov 2026): showWarnings, as before compiler plugin 3.13 -nowarn silences every warning, and
+# Apache Commons' parent's own commons.compiler.fork and .javac, which beat maven.compiler.*.
+javac_ep_profile() { local x; x=$(command -v javac-ep | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+  printf '<settings><profiles><profile><id>error-prone</id><properties><maven.compiler.showWarnings>true</maven.compiler.showWarnings>%s</properties></profile></profiles></settings>\n' \
+    "<maven.compiler.fork>true</maven.compiler.fork><maven.compiler.executable>$x</maven.compiler.executable><commons.compiler.fork>true</commons.compiler.fork><commons.compiler.javac>$x</commons.compiler.javac>" > "$T/settings.xml"
+  build+=(-s "$T/settings.xml" -P error-prone); }
+# A Maven module javac-ep missed (spec 1987, 19 Nov 2026: Commons' compiler plugin 2.0.2 never forks): its target/classes, beside its pom.xml and
+# linked or not, holds a class but was never a javac-ep run's -d, by physical path; all are when javac-ep never ran. That folder goes, so compiler
+# 3.15.0 rebuilds it; a link goes as a link, never what it points to (review, 19 Nov 2026: following links deleted classes outside the build).
+# Every scan reads through links as Maven builds through them, quiet as stderr is error-prone's diagnostics; deleting stays inside the project:
+# a missed module whose target lies outside its physical root is never touched and never rebuilt, so not checked, exit 2 (spec 1993, 19 Nov 2026).
+clear_missed() { local d m t root; [[ -f pom.xml ]] || return 1; root=$(pwd -P); [[ -f $T/javac.log ]] || m=1
+  while IFS= read -r d; do [[ -d $d && -n $(find -L "$d" -name '*.class' -print -quit 2>/dev/null) ]] || continue
+    grep -qxF "$(cd "$d" && pwd -P)" "$T/javac.dirs" 2>/dev/null && continue
+    t=$(cd "${d%/classes}" && pwd -P); [[ $t == "$root" || $t == "${root%/}"/* ]] || { echo "analyse: ${d%/target/classes} builds outside the project, not checked" >&2; exit 2; }
+    rm -rf "$d" && m=1
+  done < <(find -L . -name pom.xml 2>/dev/null | sed 's|pom\.xml$|target/classes|'); [[ -n ${m:-} ]]; }
+# The classes of the files given, one per line (spec 2025, 19 Nov 2026), under each classes root in the folder of the package the file declares, read past comments as javac does (review,
+# 19 Nov: src/java; `/* x */ package a;`): those named for it (App, App$*), as a build may drop debug names, and those whose SourceFile (javap's `Compiled from`, whole) is its name.
+package_folder() { awk '{ s = s $0 "\n" } END { while (!index(o, ";") && match(s, /\/\*([^*]|\*+[^*\/])*\*+\/|\/\/[^\n]*/)) { o = o substr(s, 1, RSTART - 1) " "; s = substr(s, RSTART + RLENGTH) }
+  o = o s; sub(/;.*/, "", o); if (sub(/^[[:space:]]*package[[:space:]]+/, "", o) && o !~ /[^[:alnum:]_$.[:space:]]/) { gsub(/[[:space:]]/, "", o); gsub(/\./, "/", o); print o } }' "$1"; }
+changed_classes() { local f n d r c cs; for f; do [[ -f $f ]] || continue; n=${f##*/} d=$(package_folder "$f"); for r in "${classes[@]}"; do cs=(); for c in "$r/${d:+$d/}"*.class; do [[ -f $c ]] && cs+=("$c"); done
+  ((${#cs[@]})) && javap "${cs[@]}" 2>/dev/null | R=$r/ N=$n awk 'BEGIN { for (i = 0; i < ARGC - 1; i++) c[i] = substr(ARGV[i + 1], length(ENVIRON["R"]) + 1); ARGC = 1 }
+    $0 == "Compiled from \"" ENVIRON["N"] "\"" { hit[k + 0] = 1 } /^}$/ { k++ }   # each class its block, in the order given, closed by a bare }
+    END { s = ENVIRON["N"]; sub(/\.java$/, "", s); for (j = 0; j < i; j++) { b = c[j]; sub(/.*\//, "", b); sub(/\.class$/, "", b)
+      if (hit[j] || b == s || index(b, s "$") == 1) { sub(/\.class$/, "", c[j]); gsub(/\//, ".", c[j]); print c[j] } } }' "${cs[@]}"; done; done; }
+
+case $(basename "$0")/${1:-} in
+  error-prone/--version) ls "$J"/error-prone/error_prone_core-* ;;
+  infer/--version) "$J/infer/bin/infer" --version ;;
+  spotbugs/--version) java -jar "$J/spotbugs/lib/spotbugs.jar" -textui -version ;;   # -version alone prints the usage, whose first x.y.z is 2.1.0 (13 Nov 2026: every Java image failed toolbox-check)
+  cpd/--version) "$J/pmd/bin/pmd" --version ;;
+  cpd/*) "$J/pmd/bin/pmd" cpd "$@" ;;   # not exec, so the trap removes the folder
+  javac-ep/*)   # javac with Error Prone and NullAway (on @NullMarked code), its diagnostics kept for error-prone to print
+    x=(); for p in api file main model parser processing tree util; do x+=("-J--add-exports=jdk.compiler/com.sun.tools.javac.$p=ALL-UNNAMED"); done
+    # On JDK 21 Error Prone 2.52.0 needs -XDaddTypeAnnotationsToSymbol=true and its own dataflow-errorprone jar (spec 1936, 18 Nov 2026)
+    ep=(-XDcompilePolicy=simple --should-stop=ifError=FLOW -XDaddTypeAnnotationsToSymbol=true -processorpath "$(printf '%s:' "$J"/error-prone/*.jar)" "-Xplugin:ErrorProne -XepOpt:NullAway:OnlyNullMarked=true")
+    # A project whose build runs Error Prone itself (gson, Guava; spec 1928, 18 Nov 2026) keeps its own: javac given the plugin twice fails
+    # `plug-in not found`; spotbugs' build runs none (JAVAC_PLAIN). Its arguments are read as javac reads them, each @file's lines too, Maven's
+    # double quotes taken off; read whole before grep, whose -q stops at the match and under pipefail would fail a long @file's writer on SIGPIPE.
+    # Each @file rejoined in the run's folder (spec 1987): an argument Maven 3.15.0 quoted across lines is one, by its quotes, CRLF read as LF; an
+    # escaped \" is miscounted. Under JAVAC_PLAIN a lone -Werror goes, so the project's own warnings never fail spotbugs' compile.
+    for a; do [[ $a == @* ]] && f=$(mktemp "$T/args.XXXXXX") && awk -v plain="${JAVAC_PLAIN:-}" '{ sub(/\r$/, ""); l = (q % 2 ? l " " : "") $0; q += gsub(/"/, "&") }
+      q % 2 { next } !(plain && l ~ /^"?-Werror"?$/) { print l } { l = "" }' "${a:1}" > "$f" && a=@$f; set -- "$@" "$a"; shift; done
+    given=$(for a; do [[ $a == @* ]] && cat "${a:1}" || printf '%s\n' "$a"; done | sed 's/^"\(.*\)"$/\1/')
+    d=$(awk '/^-d$/ { getline d } END { print d }' <<<"$given"); [[ -d $d ]] && (cd "$d" && pwd -P) >> "$T/javac.dirs"   # for clear_missed
+    { [[ -n ${JAVAC_PLAIN:-} ]] || grep -q '^-Xplugin:ErrorProne' <<<"$given"; } && ep=()
+    # JDK 21's javac refuses a level below 8 (Jackson's 1.6; spec 1937, 18 Nov 2026) and takes an option's last value, so one is appended
+    read -r opt level < <(awk '/^(-source|-target|--release)$/ { o = $0; getline v } END { print o, v }' <<<"$given")
+    if [[ $level =~ ^(1\.[1-7]|[5-7])$ ]]; then case $opt in --release) set -- "$@" --release 8 ;; *) set -- "$@" -source 8 -target 8 ;; esac; set -- "$@" -Xlint:-options; fi
+    javac "${x[@]}" -J--add-opens=jdk.compiler/com.sun.tools.javac.{code,comp}=ALL-UNNAMED "${ep[@]}" "$@" 2>&1 | tee -a "$T/javac.log"
+    exit "${PIPESTATUS[0]}" ;;
+  error-prone/)   # the compile forks javac-ep: by a Gradle init script or a Maven profile, written in the run's folder, never in the project.
+    # Gradle reads javac-ep's path, where a desktop's <tools> may hold & < > or " (spec 1871), from the environment. A failed build is Error Prone's finding only when javac failed and each of its errors is Error Prone's
+    # own ([Check]), as NullAway's errors fail javac, or -Werror's on its warnings (gson's failOnWarning, spec 1928); one failed by anything
+    # else (a javac error of its own, a later plugin) is not checked, exit 2, as is one that passed with javac-ep never run (spec 1937).
+    if [[ -f pom.xml ]]; then javac_ep_profile
+    else build+=(-I "$T/error-prone.gradle"); export JAVAC_EP && JAVAC_EP=$(command -v javac-ep)
+      echo 'allprojects { tasks.withType(JavaCompile).configureEach { options.fork = true; options.forkOptions.executable = System.getenv("JAVAC_EP") } }' > "$T/error-prone.gradle"
+    fi
+    "${build[@]}" "$goal" 2>&1; rc=$?
+    clear_missed && { "${build[@]}" process-resources "$compiler" 2>&1; rc=$?; }   # every phase before compile run again: one failed there fails again
+    [[ -f $T/javac.log ]] || exit 2
+    errors=$(grep -E '^(.*\.java:[0-9]+: )?error: ' "$T/javac.log" 2>/dev/null)
+    if ((rc)) && { [[ -z $errors ]] || grep -qvE '\.java:[0-9]+: error: \[|^error: warnings found and -Werror specified' <<<"$errors"; }; then exit 2; fi
+    if grep -qE '\.java:[0-9]+: (error|warning): \[' "$T/javac.log" 2>/dev/null; then cat "$T/javac.log" >&2; exit 1; fi
+    exit $((rc ? 2 : 0)) ;;
+  infer/)   # its Pulse and RacerD checkers on the build it captures: Maven's compile, else the wrapper's compileJava alone, else none (spec 1868)
+    if [[ -f pom.xml ]]; then capture=("${build[@]}" compile); elif [[ -x gradlew ]]; then capture=("${build[@]}" compileJava)
+    else echo "infer: no build to capture: no pom.xml or gradlew" >&2; exit 2; fi
+    "$J/infer/bin/infer" run --no-progress-bar --results-dir "$T/infer" --no-default-checkers --pulse --racerd -- "${capture[@]}" >&2 || exit 2
+    cat "$T/infer/report.json" ;;
+  spotbugs/*)   # with FindSecBugs, which it loads from its plugin folder in the image; read by line and sed, as macOS has bash 3.2 and BSD find
+    [[ -f pom.xml ]] && export JAVAC_PLAIN=1 && javac_ep_profile   # Maven's compile through javac-ep, for its level (spec 1937); Gradle's as it is
+    "${build[@]}" "$goal" >&2 || { clear_missed && "${build[@]}" process-resources "$compiler" >&2; } || exit 2   # a build that passed left every class
+    classes=(); while IFS= read -r c; do classes+=("$c"); done < <(find -L . \( -path '*/build/classes/java/main' -o -path '*/target/classes' \) -type d 2>/dev/null)
+    (( ${#classes[@]} )) || exit 2
+    only=(); (($#)) && { c=$(changed_classes "$@" | sort -u | paste -sd, -); only=(-onlyAnalyze "${c:-0}"); }   # 0: a name no class has
+    java -jar "$J/spotbugs/lib/spotbugs.jar" -textui -quiet -effort:max ${only[@]+"${only[@]}"} -sourcepath "$(find -L . -path '*/src/main/java' -type d 2>/dev/null | sed 's|^\./||' | tr '\n' :)" \
+      -sarif="$T/spotbugs.sarif" "${classes[@]}" >&2 || exit 2
+    cat "$T/spotbugs.sarif" ;;
+  *) echo "analyse: run as error-prone, infer, spotbugs, cpd or javac-ep" >&2; exit 2 ;;
+esac

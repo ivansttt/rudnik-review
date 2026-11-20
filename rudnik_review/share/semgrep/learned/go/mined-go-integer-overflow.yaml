@@ -1,0 +1,11 @@
+rules:
+  - id: go-integer-overflow
+    metadata: {"rule": "go-integer-overflow", "evidence": ["https://github.com/kubernetes/kubernetes/pull/142334#discussion_r4086202729"]}
+    languages:
+      - go
+    message: Integer multiplication can exceed the type's range and wrap. Add an overflow guard before multiplying.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: $A * int64($B)
+          - pattern: int64($B) * $A

@@ -1,0 +1,18 @@
+rules:
+  - id: csharp-overflow-check-after-wrap
+    metadata: {"rule": "csharp-overflow-check-after-wrap", "evidence": ["https://github.com/dotnet/runtime/pull/136397#discussion_r4366193556"]}
+    languages:
+      - csharp
+    message: >
+      Integer overflow is checked only after accumulation by comparing the result
+      against a bound; the accumulator may already have wrapped for larger inputs.
+      Detect overflow as each operation happens instead.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($RESTRICT && ($LENGTH_CHECK || $ACC > $BOUND)) {
+            return false;
+          }
+      - metavariable-regex:
+          metavariable: $BOUND
+          regex: ".*(MinValue|MaxValue).*"

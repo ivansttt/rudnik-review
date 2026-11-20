@@ -1,0 +1,9 @@
+rules:
+  - id: sql-lint-fix-edit-for-siblings
+    metadata: {"rule": "sql-lint-fix-edit-for-siblings", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1879#discussion_r747808359"]}
+    message: LintFix("edit") re-parents the segment by listing it as a child; use LintFix("create") to add sibling segments
+    severity: ERROR
+    languages:
+      - python
+    patterns:
+      - pattern: LintFix("edit", $SEG, [..., $SEG, ...])

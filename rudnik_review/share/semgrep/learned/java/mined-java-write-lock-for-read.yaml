@@ -1,0 +1,11 @@
+rules:
+  - id: java-write-lock-for-read
+    metadata: {"rule": "java-write-lock-for-read", "evidence": ["https://github.com/apache/lucene/pull/13306#discussion_r1592832711"]}
+    languages: [java]
+    severity: WARNING
+    message: Exclusive write lock used for a read-only section; use a shared read lock instead.
+    pattern-either:
+      - pattern: $LOCK.writeLock().lock()
+      - pattern: $LOCK.writeLock().tryLock()
+      - pattern: writeLock.lock()
+      - pattern: writeLock.tryLock()

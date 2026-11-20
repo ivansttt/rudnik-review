@@ -1,0 +1,8 @@
+rules:
+  - id: sql-inert-css-sizing
+    metadata: {"rule": "sql-inert-css-sizing", "evidence": ["https://github.com/apache/superset/pull/43966#discussion_r3960102300", "https://github.com/apache/superset/pull/43917#discussion_r4268757403"]}
+    languages:
+      - generic
+    message: "max-width (maxWidth) applied where the layout model ignores it (e.g. table-cell under table-layout:auto or a flex item bounded by flex-shrink); use overflow/overflow-wrap/clip instead"
+    severity: WARNING
+    pattern-regex: '(?m)^(?!-)[^\n]*max-?[Ww]idth[ \t]*:'

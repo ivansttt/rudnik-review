@@ -1,0 +1,24 @@
+rules:
+  - id: java-mutate-before-validation
+    metadata: {"rule": "java-mutate-before-validation", "evidence": ["https://github.com/apache/kafka/pull/23101#discussion_r3730817125", "https://github.com/apache/flink/pull/26708#discussion_r2161604759", "https://github.com/netty/netty/pull/15222#discussion_r2098165091"]}
+    languages: [java]
+    message: State is mutated before input validation, leaving it set when validation fails
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if ($COND)
+                  subscriptions.setRebalanceListener($LISTENER, $THIS);
+              ...
+              throwIfGroupIdNotDefined();
+          - pattern: |
+              subscriptions.setRebalanceListener($LISTENER, $THIS);
+              ...
+              throwIfGroupIdNotDefined();
+          - pattern: |
+              $FIELD--;
+              Preconditions.checkState($FIELD >= 0);
+          - pattern: |
+              if ($MAP.put($ID, ...) != null || $COND2) {
+                  throw new IllegalStateException(...);
+              }

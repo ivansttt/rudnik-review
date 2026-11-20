@@ -1,0 +1,13 @@
+rules:
+  - id: sql-mask-fails-open-when-schema-missing
+    metadata: {"rule": "sql-mask-fails-open-when-schema-missing", "evidence": ["https://github.com/apache/superset/pull/43474#discussion_r3856142155"]}
+    languages: [python]
+    message: 'Masking returns raw config when the lookup fails'
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if not $LOOKUP:
+              return $CONFIG
+      - metavariable-regex:
+          metavariable: $CONFIG
+          regex: '(?i)config'

@@ -1,0 +1,7 @@
+rules:
+  - id: python-version-gated-typing-backport
+    metadata: {"rule": "python-version-gated-typing-backport", "evidence": ["https://github.com/pydantic/pydantic/pull/8805#discussion_r1488423649", "https://github.com/pydantic/pydantic/pull/8947#discussion_r1521572886"]}
+    languages: [python]
+    message: Typing construct gated on sys.version_info instead of the typing_extensions backport
+    severity: INFO
+    pattern-regex: sys\.version_info\s*[<>=!]+\s*\(

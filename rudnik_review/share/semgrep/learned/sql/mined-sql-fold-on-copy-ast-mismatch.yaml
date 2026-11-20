@@ -1,0 +1,17 @@
+rules:
+  - id: sql-fold-on-copy-ast-mismatch
+    metadata: {"rule": "sql-fold-on-copy-ast-mismatch", "evidence": ["https://github.com/apache/superset/pull/46055#discussion_r4525222966"]}
+    languages:
+      - python
+    severity: ERROR
+    message: >-
+      Identifier folding runs on a copy of the SQL AST, so RLS/permissions rules
+      keyed by the folded names are matched against the original AST and the
+      predicate is silently dropped. Fold the statement itself, not a copy.
+    pattern: |
+      if $DIALECT == Dialects.SNOWFLAKE:
+          ...
+          $STMT = $STMT.copy()
+          ...
+          for $SOURCE in $STMT.find_all($TABLE):
+              ...

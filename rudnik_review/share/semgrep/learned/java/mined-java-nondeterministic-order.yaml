@@ -1,0 +1,10 @@
+rules:
+  - id: java-nondeterministic-order
+    metadata: {"rule": "java-nondeterministic-order", "evidence": ["https://github.com/apache/kafka/pull/22778#discussion_r3686977185"]}
+    languages:
+      - java
+    severity: ERROR
+    message: Code indexes into a collection with get(0)/get(1), assuming a fixed iteration order. If the collection is built from a Set, map values, or another source that does not guarantee order, the results are nondeterministic.
+    pattern-either:
+      - pattern: $COLLECTION.get(0)
+      - pattern: $COLLECTION.get(1)

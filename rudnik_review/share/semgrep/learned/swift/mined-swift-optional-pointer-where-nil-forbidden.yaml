@@ -1,0 +1,7 @@
+rules:
+  - id: swift-optional-pointer-where-nil-forbidden
+    metadata: {"rule": "swift-optional-pointer-where-nil-forbidden", "evidence": ["https://github.com/apple/swift-nio/pull/1590#discussion_r453694611", "https://github.com/apple/swift-nio/pull/1590#discussion_r453694862", "https://github.com/apple/swift-nio/pull/1590#discussion_r453695436"]}
+    languages: [swift]
+    message: Optional pointer parameter where the C function forbids nil
+    severity: WARNING
+    pattern-regex: 'func\s+[^(]*\([^)]*Unsafe(?:Mutable)?Pointer<[^>]+>\?'

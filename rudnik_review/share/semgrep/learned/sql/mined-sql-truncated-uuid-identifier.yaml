@@ -1,0 +1,8 @@
+rules:
+  - id: sql-truncated-uuid-identifier
+    metadata: {"rule": "sql-truncated-uuid-identifier", "evidence": ["https://github.com/apache/superset/pull/39776#discussion_r3168716137"]}
+    languages: [python]
+    message: identifier is a truncated uuid hex, risking collisions
+    severity: WARNING
+    patterns:
+      - pattern: uuid.uuid4().hex[:$N]

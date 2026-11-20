@@ -1,0 +1,12 @@
+rules:
+  - id: sql-falsy-default-in-aggregate
+    metadata: {"rule": "sql-falsy-default-in-aggregate", "evidence": ["https://github.com/apache/superset/pull/35045#discussion_r2338013623"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "Nullish operand defaulted with `|| 0` inside Math.min/Math.max skews the aggregate; use `?? Infinity` / `?? -Infinity`."
+    patterns:
+      - pattern-either:
+          - pattern: |
+              Math.min($X || 0, ...)
+          - pattern: |
+              Math.max($X || 0, ...)

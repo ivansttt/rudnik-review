@@ -1,0 +1,10 @@
+# Swift's formatter (spec 1707, 12 Nov 2026), the one Swift 6 ships, so setup installs nothing. No analyser: SwiftLint has no Windows
+# build, so Swift stays a gap.
+[[tool]]
+name = "swift-format"
+version = "toolchain"
+from = "swift"
+stacks = ["swift"]
+signals = ["Package.swift", "*.swift"]
+globs = ["*.swift"]
+fmt = [["swift", "format", "--in-place", "{files}"]]

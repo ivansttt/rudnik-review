@@ -1,0 +1,15 @@
+rules:
+  - id: java-unvalidated-literal-extraction
+    metadata: {"rule": "java-unvalidated-literal-extraction", "evidence": ["https://github.com/apache/flink/pull/27777#discussion_r2941597620"]}
+    languages:
+      - java
+    severity: WARNING
+    message: Value extracted from an AST node via SqlLiteral.unchain(...).getValueAs(...) without first verifying that the node and all its children are literals; a non-literal child throws or produces the wrong value.
+    patterns:
+      - pattern: SqlLiteral.unchain($X).getValueAs($TYPE)
+      - pattern-not-inside: |
+          try {
+            ...
+          } catch (Exception $E) {
+            ...
+          }

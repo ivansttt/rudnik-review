@@ -1,0 +1,8 @@
+rules:
+  - id: python-timezone-z-replace-without-guard
+    metadata: {"rule": "python-timezone-z-replace-without-guard", "evidence": ["https://github.com/pypa/pip/pull/13625#discussion_r2512644480"]}
+    languages: [python]
+    message: "Replacing Z with +00:00 before fromisoformat corrupts date-only strings ending in Z; check endswith('Z') and a time separator first."
+    severity: INFO
+    patterns:
+      - pattern: $FROM.fromisoformat($STR.replace("Z", "+00:00"))

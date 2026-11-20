@@ -1,0 +1,24 @@
+rules:
+  - id: java-assert-on-throwing-call
+    metadata: {"rule": "java-assert-on-throwing-call", "evidence": ["https://github.com/netty/netty/pull/9854#discussion_r354919529", "https://github.com/netty/netty/pull/9854#discussion_r354920167", "https://github.com/netty/netty/pull/9854#discussion_r354920213", "https://github.com/netty/netty/pull/9854#discussion_r354920539"]}
+    languages:
+      - java
+    message: >-
+      Assertion is unreachable: the call being asserted throws the exception
+      declared by @Test(expected = ...), so the assertion never runs and the test
+      verifies only the exception. Call the method directly instead of asserting
+      on its return value.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          @Test(expected = $EX)
+          $RET $METHOD(...) throws $ET {
+            ...
+          }
+      - pattern-either:
+          - pattern: $ASSERT($CALL(...));
+          - pattern: $ASSERT($CALL(...), ...);
+          - pattern: $ASSERT(..., $CALL(...));
+      - metavariable-regex:
+          metavariable: $ASSERT
+          regex: ^assert

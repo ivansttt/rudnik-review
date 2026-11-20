@@ -1,0 +1,13 @@
+rules:
+  - id: sql-sensitive-field-exposed
+    metadata: {"rule": "sql-sensitive-field-exposed", "evidence": ["https://github.com/apache/superset/pull/24067#discussion_r1198350774"]}
+    languages:
+      - python
+    severity: ERROR
+    message: >-
+      Serialization allowlist keeps a field that can hold credentials or
+      secrets while its masked counterpart was removed, exposing the secret
+      to API consumers.
+    pattern-either:
+      - pattern: '"extra"'
+      - pattern: '"server_cert"'

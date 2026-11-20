@@ -1,0 +1,16 @@
+{
+ "name": "rudnik-review",
+ "owner": {
+  "name": "rudnik"
+ },
+ "description": "rudnik's review gate for Claude Code",
+ "plugins": [
+  {
+   "name": "rudnik-review",
+   "source": "./rudnik-review",
+   "description": "The review gate in Claude Code's loop",
+   "license": "MIT",
+   "homepage": "https://github.com/ivansttt/rudnik-review"
+  }
+ ]
+}

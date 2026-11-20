@@ -1,0 +1,10 @@
+rules:
+  - id: java-locale-sensitive-case-conversion
+    metadata: {"rule": "java-locale-sensitive-case-conversion", "evidence": ["https://github.com/apache/flink/pull/26516#discussion_r2065732308"]}
+    languages: [java]
+    message: toUpperCase() or toLowerCase() called without an explicit Locale can produce locale-dependent results (e.g. Turkish dotless i) when the value is parsed or matched.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.toUpperCase()
+          - pattern: $OBJ.toLowerCase()

@@ -1,0 +1,9 @@
+rules:
+  - id: java-manual-field-copy
+    metadata: {"rule": "java-manual-field-copy", "evidence": ["https://github.com/apache/kafka/pull/23445#discussion_r4277436172"]}
+    languages:
+      - java
+    message: Copying a value object field-by-field instead of using a with/copy method can silently drop fields added later.
+    severity: WARNING
+    patterns:
+      - pattern: new $TYPE(..., $OBJ.$FIELD, ..., $OBJ.$FIELD2, ...)

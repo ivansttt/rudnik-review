@@ -1,0 +1,13 @@
+# Copied code (spec 1643, 11 Nov 2026; the kit's bar since 27 Sep: "No duplicated logic"): a copy matters against the code the change did not
+# touch, so jscpd is a whole tool, reading every tracked file of its globs, at its default 50 tokens. Only a pair the change made is new, at
+# both its places. It writes its JSON report to a file alone: findings/ is where the gate's container writes, its chatter goes to stderr.
+# Blocks nothing until spec 1626 measures its precision.
+[[tool]]
+name = "jscpd"
+version = "5.4.0"
+stacks = ["*"]
+globs = ["*.py", "*.gd", "*.sh", "*.js", "*.ts", "*.cs", "*.sql"]
+whole = true
+cmd = ["sh", "-c", "jscpd --silent --reporters json --output findings/.jscpd \"$@\" >&2 && cat findings/.jscpd/jscpd-report.json", "jscpd", "{files}"]
+adapter = "jscpd"
+blocks = []

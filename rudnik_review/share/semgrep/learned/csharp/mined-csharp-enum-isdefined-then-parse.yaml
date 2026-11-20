@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-enum-isdefined-then-parse
+    metadata: {"rule": "csharp-enum-isdefined-then-parse", "evidence": ["https://github.com/dotnet/runtime/pull/136135#discussion_r4328670052"]}
+    languages: [csharp]
+    severity: INFO
+    message: "Enum.IsDefined followed by Enum.Parse parses the value twice; use Enum.TryParse to validate and parse in one call"
+    patterns:
+      - pattern: Enum.IsDefined(typeof($TYPE), $NAME)

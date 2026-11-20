@@ -1,0 +1,12 @@
+rules:
+  - id: csharp-json-serialize-then-encode-bytes
+    metadata: {"rule": "csharp-json-serialize-then-encode-bytes", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60616#discussion_r1970548417"]}
+    languages:
+      - csharp
+    mode: taint
+    message: Use JsonSerializer.SerializeToUtf8Bytes instead of JsonSerializer.Serialize followed by Encoding.UTF8.GetBytes.
+    severity: WARNING
+    pattern-sources:
+      - pattern: JsonSerializer.Serialize(...)
+    pattern-sinks:
+      - pattern: Encoding.UTF8.GetBytes(...)

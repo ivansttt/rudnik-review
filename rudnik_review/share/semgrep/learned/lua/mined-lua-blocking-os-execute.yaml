@@ -1,0 +1,11 @@
+rules:
+  - id: lua-blocking-os-execute
+    metadata: {"rule": "lua-blocking-os-execute", "evidence": ["https://github.com/koreader/koreader/pull/16320#discussion_r4405967893"]}
+    languages: [lua]
+    message: os.execute runs a slow shell command in the foreground, blocking the UI
+    severity: WARNING
+    patterns:
+      - pattern: os.execute($CMD)
+      - metavariable-regex:
+          metavariable: $CMD
+          regex: ^[^&]*$

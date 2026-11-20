@@ -1,0 +1,24 @@
+rules:
+  - id: java-double-counted-accounting
+    metadata: {"rule": "java-double-counted-accounting", "evidence": ["https://github.com/apache/lucene/pull/15982#discussion_r3173836865"]}
+    languages:
+      - java
+    message: "ramBytesUsed() adds the base amount directly while a companion sub-component accounting method also returns it, double-counting the base amount."
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          class $CLASS {
+            ...
+            $SUB_RET $SUB() {
+              return $BASE;
+            }
+            ...
+            $TOTAL_RET ramBytesUsed() {
+              ...
+            }
+            ...
+          }
+      - pattern: |
+          long $SIZE = $BASE;
+      - pattern-not: |
+          static final long $F = $G;

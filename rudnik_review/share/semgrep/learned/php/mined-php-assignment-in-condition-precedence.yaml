@@ -1,0 +1,12 @@
+rules:
+  - id: php-assignment-in-condition-precedence
+    metadata: {"rule": "php-assignment-in-condition-precedence", "evidence": ["https://github.com/laravel/framework/pull/56620#discussion_r2267445057"]}
+    languages: [php]
+    severity: ERROR
+    message: Assignment inside a comparison condition has lower precedence than the comparison; wrap the assignment in parentheses.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if ($X = $Y == $Z) { ... }
+          - pattern: |
+              if ($X = $Y === $Z) { ... }

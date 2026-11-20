@@ -1,0 +1,28 @@
+rules:
+  - id: java-random-test-case
+    metadata: {"rule": "java-random-test-case", "evidence": ["https://github.com/apache/lucene/pull/14929#discussion_r2196391581", "https://github.com/apache/lucene/pull/12685#discussion_r1361183072"]}
+    message: |
+      Test relies on a random draw to produce the case it must exercise. It builds
+      its input with a per-element random choice between two states
+      (random().nextBoolean()) and then asserts behavior that only occurs when at
+      least one element is in a particular state, without deterministically forcing
+      that element. A run where the draws are uniform never triggers the behavior,
+      so the test is flaky.
+    languages:
+      - java
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern-inside: |
+                  for (int $I = 0; $I < $ARRAY.length; $I++) {
+                    ...
+                  }
+              - pattern: |
+                  if (random().nextBoolean()) {
+                    $ARRAY[$I] = $A;
+                  } else {
+                    $ARRAY[$I] = $B;
+                  }
+          - pattern: |
+              boolean $FLAG = random().nextBoolean();

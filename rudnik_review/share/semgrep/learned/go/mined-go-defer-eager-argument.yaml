@@ -1,0 +1,9 @@
+rules:
+  - id: go-defer-eager-argument
+    metadata: {"rule": "go-defer-eager-argument", "evidence": ["https://github.com/kubernetes/kubernetes/pull/140289#discussion_r3646182704"]}
+    languages: [go]
+    message: Arguments to a deferred call are evaluated when the defer statement runs; compute the value inside a deferred closure.
+    severity: WARNING
+    pattern-either:
+      - pattern: defer $OBJ.$METHOD($X(...))
+      - pattern: defer $FUNC($X(...))

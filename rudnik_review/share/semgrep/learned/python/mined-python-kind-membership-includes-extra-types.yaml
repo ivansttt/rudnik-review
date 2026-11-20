@@ -1,0 +1,10 @@
+rules:
+  - id: python-kind-membership-includes-extra-types
+    metadata: {"rule": "python-kind-membership-includes-extra-types", "evidence": ["https://github.com/pandas-dev/pandas/pull/66338#discussion_r3604423434"]}
+    languages: [python]
+    message: Coarse kind membership check classifies a dtype by membership in a coarse kind string that also matches kinds it must exclude; use precise type predicates instead.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $X.kind in "..."
+          - pattern: $X.kind not in "..."

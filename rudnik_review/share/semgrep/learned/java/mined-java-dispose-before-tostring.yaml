@@ -1,0 +1,11 @@
+rules:
+  - id: java-dispose-before-tostring
+    metadata: {"rule": "java-dispose-before-tostring", "evidence": ["https://github.com/netty/netty/pull/13285#discussion_r1142279464"]}
+    languages: [java]
+    message: Resource disposed before its string value is captured for logging
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $R.dispose($X);
+          ...
+          $LOGGER.error($FMT, $X, ...);

@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-concurrentdictionary-as-set
+    metadata: {"rule": "csharp-concurrentdictionary-as-set", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61554#discussion_r2103813635", "https://github.com/dotnet/aspnetcore/pull/61554#discussion_r2103819646"]}
+    languages:
+      - csharp
+    message: ConcurrentDictionary uses the same type for both key and value, treating it as a set. Use a value-type value (bool or nuint) instead of a redundant reference to avoid GC write barriers.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          private readonly ConcurrentDictionary<$T, $T> $NAME = new();

@@ -1,0 +1,11 @@
+rules:
+  - id: csharp-reflection-tests-implementation-details
+    metadata: {"rule": "csharp-reflection-tests-implementation-details", "evidence": ["https://github.com/dotnet/aspnetcore/pull/63230#discussion_r2272732877"]}
+    languages: [csharp]
+    severity: INFO
+    message: "Don't use reflection to test private implementation details."
+    patterns:
+      - pattern: $OBJ.GetMethod($NAME, $FLAGS)
+      - metavariable-regex:
+          metavariable: $FLAGS
+          regex: BindingFlags\.NonPublic

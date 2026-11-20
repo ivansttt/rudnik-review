@@ -1,0 +1,8 @@
+rules:
+  - id: python-test-mutates-global-state
+    metadata: {"rule": "python-test-mutates-global-state", "evidence": ["https://github.com/pypa/pip/pull/12508#discussion_r1540257227"]}
+    languages:
+      - python
+    severity: INFO
+    message: Mutating a global or class attribute at module scope leaks state into other tests; do it inside a fixture or mock.patch.
+    pattern: logging.Formatter.converter = $V

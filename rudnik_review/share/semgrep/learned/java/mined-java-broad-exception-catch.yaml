@@ -1,0 +1,20 @@
+rules:
+  - id: java-broad-exception-catch
+    metadata: {"rule": "java-broad-exception-catch", "evidence": ["https://github.com/apache/flink/pull/28850#discussion_r3729675619", "https://github.com/apache/lucene/pull/13068#discussion_r1477431195"]}
+    message: Broad exception caught and silently swallowed by returning a fallback value.
+    severity: WARNING
+    languages:
+      - java
+    patterns:
+      - pattern: |
+          try {
+            ...
+          } catch ($TYPE $E) {
+            ...
+            return $X;
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $TYPE
+          regex: ^(Exception|RuntimeException|Throwable)$
+    focus-metavariable: $TYPE

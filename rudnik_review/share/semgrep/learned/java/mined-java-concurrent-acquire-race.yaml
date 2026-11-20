@@ -1,0 +1,15 @@
+rules:
+  - id: java-concurrent-acquire-race
+    metadata: {"rule": "java-concurrent-acquire-race", "evidence": ["https://github.com/apache/lucene/pull/13570#discussion_r1684426889", "https://github.com/apache/lucene/pull/13570#discussion_r1686805197"]}
+    languages: [java]
+    severity: ERROR
+    message: Failed acquire removes a concurrently-replaced shared entry or throws from a stale read.
+    pattern-either:
+      - pattern: |
+          if ($X.acquire()) {
+            return $X;
+          } else {
+            $MAP.remove($KEY);
+          }
+      - pattern: |
+          throw new IllegalStateException("closed");

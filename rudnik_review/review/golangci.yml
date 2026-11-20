@@ -1,0 +1,3 @@
+version: "2"
+# 17 Nov 2026 (spec 1893): gocritic's deferInLoop is experimental, so off until a config names it; a defer in a loop leaks until the function ends.
+linters: {settings: {errcheck: {check-blank: true}, gocritic: {enabled-checks: [deferInLoop]}}}

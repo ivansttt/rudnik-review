@@ -1,0 +1,8 @@
+rules:
+  - id: sql-keyword-string-split
+    metadata: {"rule": "sql-keyword-string-split", "evidence": ["https://github.com/apache/superset/pull/45681#discussion_r4390830618"]}
+    languages: [python]
+    message: SQL text split on a keyword via regex instead of the parsed AST
+    severity: WARNING
+    patterns:
+      - pattern: re.split($SELECT_RE, $SQL, maxsplit=1, flags=re.IGNORECASE)

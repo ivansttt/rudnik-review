@@ -1,0 +1,14 @@
+rules:
+  - id: sql-validated-config-discarded
+    metadata: {"rule": "sql-validated-config-discarded", "evidence": ["https://github.com/apache/superset/pull/45103#discussion_r4235681225"]}
+    languages:
+      - python
+    message: >-
+      A configuration is validated with model_validate and then discarded, so the
+      returned instance never carries the validated configuration.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $MODEL.model_validate($CONFIG)
+          ...
+          return cls()

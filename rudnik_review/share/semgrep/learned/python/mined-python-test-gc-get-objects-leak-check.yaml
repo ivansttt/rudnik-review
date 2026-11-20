@@ -1,0 +1,7 @@
+rules:
+  - id: python-test-gc-get-objects-leak-check
+    metadata: {"rule": "python-test-gc-get-objects-leak-check", "evidence": ["https://github.com/python/cpython/pull/159140#discussion_r4306541330"]}
+    languages: [python]
+    message: Scanning gc.get_objects() to detect leaked objects is fragile; hold weak references to the objects and assert they are collected instead.
+    severity: INFO
+    pattern: gc.get_objects()

@@ -1,0 +1,10 @@
+[[tool]]
+name = "gdlint"
+version = "4.5.0"
+stacks = ["gdscript"]
+globs = ["*.gd"]
+cmd = ["gdlint", "{files}"]
+adapter = "gdlint"
+blocks = []
+# No fix: gdformat 4.5.0 wraps multi-line lambdas into code Godot 4.7 cannot parse (a game project, 11 Nov 2026: 135 scripts broke the
+# gate's import), and the kit would re-break them after every round.

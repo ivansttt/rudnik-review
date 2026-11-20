@@ -1,0 +1,9 @@
+rules:
+  - id: go-dead-condition
+    metadata: {"rule": "go-dead-condition", "evidence": ["https://github.com/kubernetes/kubernetes/pull/142719#discussion_r4195051536", "https://github.com/kubernetes/kubernetes/pull/142719#discussion_r4195210248"]}
+    languages: [go]
+    message: Condition is guaranteed false by surrounding control flow and is dead code
+    severity: WARNING
+    pattern-either:
+      - pattern: $DEPTH > $MAX || ...
+      - pattern: $X == "" || $Y == $X

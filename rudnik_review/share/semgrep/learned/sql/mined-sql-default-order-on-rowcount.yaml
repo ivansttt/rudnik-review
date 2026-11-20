@@ -1,0 +1,7 @@
+rules:
+  - id: sql-default-order-on-rowcount
+    metadata: {"rule": "sql-default-order-on-rowcount", "evidence": ["https://github.com/apache/superset/pull/45389#discussion_r4321961052"]}
+    message: Default order applied unconditionally to every dispatch, including row-count queries where it is unnecessary and can break derived-table engines.
+    severity: WARNING
+    languages: [python]
+    pattern: execute_semantic_query($DISPATCHER, with_default_order($QUERY))

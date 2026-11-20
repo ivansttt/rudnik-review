@@ -1,0 +1,12 @@
+rules:
+  - id: kotlin-weak-assertion
+    metadata: {"rule": "kotlin-weak-assertion", "evidence": ["https://github.com/detekt/detekt/pull/7204#discussion_r1571920540", "https://github.com/detekt/detekt/pull/7204#discussion_r1571943116", "https://github.com/detekt/detekt/pull/1690#discussion_r293731558", "https://github.com/detekt/detekt/pull/1690#discussion_r293731591", "https://github.com/detekt/detekt/pull/1690#discussion_r293731661"]}
+    languages:
+      - kotlin
+    severity: WARNING
+    message: Assertion ignores or omits the exact difference it should verify.
+    patterns:
+      - pattern: $RECEIVER.$METHOD($...ARGS)
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: '^(isEqualToIgnoring\w+|hasLocationStrings)$'

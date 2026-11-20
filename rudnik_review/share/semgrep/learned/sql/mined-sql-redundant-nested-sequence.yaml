@@ -1,0 +1,12 @@
+rules:
+  - id: sql-redundant-nested-sequence
+    metadata: {"rule": "sql-redundant-nested-sequence", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2076#discussion_r765675341", "https://github.com/sqlfluff/sqlfluff/pull/1855#discussion_r746423197"]}
+    languages:
+      - python
+    message: Redundant outer Sequence wrapping optional sub-sequences adds no structure and can cause parse issues.
+    severity: WARNING
+    pattern: |
+      Sequence(
+          Sequence(..., optional=True),
+          ...
+      )

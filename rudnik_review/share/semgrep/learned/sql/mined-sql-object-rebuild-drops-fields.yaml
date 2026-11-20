@@ -1,0 +1,19 @@
+rules:
+  - id: sql-object-rebuild-drops-fields
+    metadata: {"rule": "sql-object-rebuild-drops-fields", "evidence": ["https://github.com/apache/superset/pull/44894#discussion_r4419151300", "https://github.com/apache/superset/pull/39461#discussion_r3477765359"]}
+    languages:
+      - ts
+    message: Rebuilding a selected value as { value, label } drops other properties such as disabled or title.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          const $VAL = <... getValue($OPT) ...>;
+          ...
+          const label = isLabeledValue($OPT) ? $OPT.$P : String($VAL);
+          ...
+          return { value: $VAL, label };
+      - pattern: |
+          {
+            value: $ITEM.value as number,
+            label: $ITEM.text as string
+          }

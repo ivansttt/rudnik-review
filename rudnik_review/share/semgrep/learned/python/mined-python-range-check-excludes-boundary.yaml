@@ -1,0 +1,16 @@
+rules:
+  - id: python-range-check-excludes-boundary
+    metadata: {"rule": "python-range-check-excludes-boundary", "evidence": ["https://github.com/home-assistant/core/pull/186105#discussion_r4258002344"]}
+    languages: [python]
+    message: Strict inequality rejects values exactly at the boundary
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          if not $MIN < $X < $MAX:
+              ...
+      - pattern: |
+          if not $MIN <= $X < $MAX:
+              ...
+      - pattern: |
+          if not $MIN < $X <= $MAX:
+              ...

@@ -1,0 +1,8 @@
+rules:
+  - id: kotlin-todo-as-noop
+    metadata: {"rule": "kotlin-todo-as-noop", "evidence": ["https://github.com/detekt/detekt/pull/2755#discussion_r433839841"]}
+    languages: [kotlin]
+    message: TODO() throws NotImplementedError; use Unit for a no-op
+    severity: WARNING
+    pattern: |
+      override fun $NAME(...) = TODO()

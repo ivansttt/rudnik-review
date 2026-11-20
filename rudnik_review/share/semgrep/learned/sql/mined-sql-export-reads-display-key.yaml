@@ -1,0 +1,15 @@
+rules:
+  - id: sql-export-reads-display-key
+    metadata: {"rule": "sql-export-reads-display-key", "evidence": ["https://github.com/apache/superset/pull/42088#discussion_r3768729757"]}
+    languages: [ts]
+    severity: ERROR
+    message: >-
+      Export snapshot reads rows by a display-mangled grid column id instead of the row
+      data's original field name, leaving the exported column blank. Build column keys from
+      the data key (colDef.context.dataKey) rather than column.getColId().
+    patterns:
+      - pattern: |
+          displayedColumns.map(column => ({
+            key: column.getColId(),
+            label: column.getColDef().headerName || column.getColId(),
+          }))

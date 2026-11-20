@@ -1,0 +1,8 @@
+rules:
+  - id: kotlin-unreliable-gc-test
+    metadata: {"rule": "kotlin-unreliable-gc-test", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/3441#discussion_r963978554"]}
+    languages:
+      - kotlin
+    message: System.gc() used with WeakReference inspection is a non-deterministic reachability test; use a deterministic reachability check such as FieldWalker instead.
+    severity: WARNING
+    pattern: System.gc()

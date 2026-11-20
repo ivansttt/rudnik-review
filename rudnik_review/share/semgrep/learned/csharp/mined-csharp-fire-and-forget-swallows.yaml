@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-fire-and-forget-swallows
+    metadata: {"rule": "csharp-fire-and-forget-swallows", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67406#discussion_r3472732992"]}
+    languages: [csharp]
+    message: "Discarding a Task swallows exceptions; await or observe the task"
+    severity: WARNING
+    pattern: "_ = $TASK(...);"

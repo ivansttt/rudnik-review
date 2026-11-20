@@ -1,0 +1,14 @@
+rules:
+  - id: sql-auto-sync-marks-unsaved-change
+    metadata: {"rule": "sql-auto-sync-marks-unsaved-change", "evidence": ["https://github.com/apache/superset/pull/43938#discussion_r4076944913"]}
+    languages:
+      - typescript
+      - javascript
+    severity: ERROR
+    message: "Effect-driven control sync calls onChange without a programmatic flag, marking an opened saved record as user-edited or silently dropping data"
+    patterns:
+      - pattern-inside: |
+          useEffect(() => {
+            ...
+          }, [...])
+      - pattern: onChange($VALUE)

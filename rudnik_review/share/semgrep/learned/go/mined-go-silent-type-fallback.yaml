@@ -1,0 +1,10 @@
+rules:
+  - id: go-silent-type-fallback
+    metadata: {"rule": "go-silent-type-fallback", "evidence": ["https://github.com/kubernetes/kubernetes/pull/137189#discussion_r2859238300"]}
+    languages: [go]
+    severity: ERROR
+    message: A type assertion on a returned value uses the two-result form and silently falls back to a default when it fails instead of returning an error.
+    pattern: |
+      if $V, $OK := $OBJ.($TYPE); $OK && $V != nil {
+        ...
+      }

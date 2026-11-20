@@ -1,0 +1,7 @@
+rules:
+  - id: sql-double-mutation-of-sql
+    metadata: {"rule": "sql-double-mutation-of-sql", "evidence": ["https://github.com/apache/superset/pull/42739#discussion_r3740976517"]}
+    languages: [python]
+    message: mutate_sql_based_on_config called without the split phase the caller already applied
+    severity: WARNING
+    pattern: $DB.mutate_sql_based_on_config($SQL)

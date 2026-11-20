@@ -1,0 +1,12 @@
+rules:
+  - id: sql-decorator-kwargs-order-dependent
+    metadata: {"rule": "sql-decorator-kwargs-order-dependent", "evidence": ["https://github.com/apache/superset/pull/44553#discussion_r4087698169"]}
+    languages:
+      - python
+    message: >-
+      This derivation reads the wrapper's own `kwargs`, which an outer
+      decorator that calls the wrapped function positionally can empty,
+      making the derivation silently inert. Derive from the route's own
+      view args (e.g. request.view_args) instead.
+    severity: WARNING
+    pattern: get_object_ids_from_view_args($VIEW, kwargs)

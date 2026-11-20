@@ -1,0 +1,9 @@
+rules:
+  - id: kotlin-misleading-parse-fallback
+    metadata: {"rule": "kotlin-misleading-parse-fallback", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/4700#discussion_r3602738374"]}
+    languages:
+      - kotlin
+    severity: WARNING
+    message: A parse failure silently returns a misleading default instead of failing or returning a safe default.
+    pattern: |
+      $X.toIntOrNull() ?: return false

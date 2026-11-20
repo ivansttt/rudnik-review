@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-validationattribute-null-context
+    metadata: {"rule": "csharp-validationattribute-null-context", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67549#discussion_r3554108365"]}
+    languages:
+      - csharp
+    message: Do not call ValidationAttribute.IsValid without a ValidationContext; the attribute cannot resolve services from the context's IServiceProvider when the validated value is null.
+    severity: ERROR
+    pattern: $ATTR.IsValid($VALUE)

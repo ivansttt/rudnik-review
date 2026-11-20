@@ -1,0 +1,19 @@
+rules:
+  - id: csharp-shared-mutable-eventargs
+    metadata: {"rule": "csharp-shared-mutable-eventargs", "evidence": ["https://github.com/dotnet/aspnetcore/pull/62635#discussion_r2209749550"]}
+    languages:
+      - csharp
+    message: >-
+      Don't store a mutable event-arguments object in a field and reuse it
+      across raises. Create a fresh instance each time so state mutated by one
+      subscriber doesn't leak into later raises.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              private readonly $TYPE $FIELD = new();
+          - pattern: |
+              private readonly $TYPE $FIELD = new $TYPE();
+      - metavariable-regex:
+          metavariable: $TYPE
+          regex: .*EventArgs

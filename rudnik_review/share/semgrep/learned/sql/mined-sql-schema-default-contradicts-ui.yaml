@@ -1,0 +1,10 @@
+rules:
+  - id: sql-schema-default-contradicts-ui
+    metadata: {"rule": "sql-schema-default-contradicts-ui", "evidence": ["https://github.com/apache/superset/pull/42070#discussion_r3598027412"]}
+    message: Backend schema default for `show_legend` is True, contradicting the frontend checkbox default of False
+    severity: WARNING
+    languages:
+      - python
+    patterns:
+      - pattern: |
+          show_legend: bool = Field(True, ...)

@@ -1,0 +1,17 @@
+rules:
+  - id: sql-startup-side-effect-ignores-flag
+    metadata: {"rule": "sql-startup-side-effect-ignores-flag", "evidence": ["https://github.com/apache/superset/pull/45251#discussion_r4276244379"]}
+    languages:
+      - python
+    message: >-
+      bootstrap_semantic_namespace() runs unconditionally at startup without
+      checking is_semantic_layers_enabled(), so every deployment performs an
+      eager metadata read/write even when the semantic layers feature flag is off.
+    severity: WARNING
+    patterns:
+      - pattern: bootstrap_semantic_namespace()
+      - pattern-not-inside: |
+          if is_semantic_layers_enabled():
+              ...
+              bootstrap_semantic_namespace()
+              ...

@@ -1,0 +1,15 @@
+rules:
+  - id: java-accumulate-before-limit-check
+    metadata: {"rule": "java-accumulate-before-limit-check", "evidence": ["https://github.com/apache/kafka/pull/22919#discussion_r3644893920", "https://github.com/apache/kafka/pull/22919#discussion_r3644905042", "https://github.com/apache/kafka/pull/22919#discussion_r3644921211"]}
+    languages: [java]
+    message: 'Accumulator checks its size budget only after adding, so the last item can overshoot the limit.'
+    severity: ERROR
+    pattern-either:
+      - pattern: |
+          while ($COND && collectedBytes < maxDecompressedBytes) {
+            ...
+          }
+      - pattern: |
+          if (collectedBytes >= maxDecompressedBytes) return nextOffset;
+      - pattern: |
+          collectedBytes += record.sizeInBytes();

@@ -1,0 +1,7 @@
+rules:
+  - id: java-wrong-result-subset
+    metadata: {"rule": "java-wrong-result-subset", "evidence": ["https://github.com/apache/kafka/pull/22780#discussion_r3542456183", "https://github.com/apache/kafka/pull/22780#discussion_r3542524201"]}
+    languages: [java]
+    message: The same full key set is passed where only the items that produced a result are expected
+    severity: WARNING
+    pattern: $F(..., $X.keySet(), $X.keySet())

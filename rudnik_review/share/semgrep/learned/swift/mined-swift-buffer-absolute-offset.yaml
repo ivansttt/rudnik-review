@@ -1,0 +1,9 @@
+rules:
+  - id: swift-buffer-absolute-offset
+    metadata: {"rule": "swift-buffer-absolute-offset", "evidence": ["https://github.com/apple/swift-nio/pull/2475#discussion_r1280195351"]}
+    languages:
+      - swift
+    message: "ByteBuffer read at an absolute offset ignores the reader index. Use `readerIndex` (or `readSlice`) instead of a hard-coded absolute offset such as `at: 0`."
+    severity: WARNING
+    patterns:
+      - pattern: "$BUFFER.getSlice(at: 0, ...)"

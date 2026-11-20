@@ -1,0 +1,11 @@
+rules:
+  - id: java-redundant-array-copy
+    metadata: {"rule": "java-redundant-array-copy", "evidence": ["https://github.com/apache/lucene/pull/13355#discussion_r1596942824"]}
+    languages: [java]
+    message: whole array copied before being passed to a consumer that could read the original
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: $U.copyOfSubArray($A, 0, $A.length)
+          - pattern: Arrays.copyOf($A, $A.length)
+          - pattern: $A.clone()

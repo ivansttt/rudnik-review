@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-last-metadata-instead-of-all
+    metadata: {"rule": "csharp-last-metadata-instead-of-all", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60566#discussion_r1966878482"]}
+    languages: [csharp]
+    message: Apply all matching metadata or transformers, not just the last one.
+    severity: WARNING
+    pattern-either:
+      - pattern: $X.OfType<$T>().LastOrDefault()
+      - pattern: $X.OfType<$T>().Last()

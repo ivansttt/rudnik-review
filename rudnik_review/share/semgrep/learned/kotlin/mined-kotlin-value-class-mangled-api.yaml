@@ -1,0 +1,12 @@
+rules:
+  - id: kotlin-value-class-mangled-api
+    metadata: {"rule": "kotlin-value-class-mangled-api", "evidence": ["https://github.com/detekt/detekt/pull/6851#discussion_r1450986208"]}
+    languages:
+      - kotlin
+    message: >-
+      A value class exposed in a public API produces a mangled JVM name. Use
+      @JvmName or @JavaName to disable mangling and give the function a stable
+      ABI name.
+    severity: WARNING
+    patterns:
+      - pattern-regex: '\bfun\s+[A-Za-z_$][A-Za-z0-9_$]*-[A-Za-z0-9_$]+\s*\('

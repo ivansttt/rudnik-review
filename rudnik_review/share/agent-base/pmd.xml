@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="rudnik-quickstart" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>PMD's quickstart, less the two rules v8's approved commits tripped</description>
+  <rule ref="rulesets/java/quickstart.xml">
+    <exclude name="CloseResource"/>
+    <exclude name="PreserveStackTrace"/>
+  </rule>
+  <rule ref="category/java/errorprone.xml/CloseResource">
+    <properties>
+      <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream,java.io.StringReader,java.io.CharArrayReader"/>
+    </properties>
+  </rule>
+</ruleset>

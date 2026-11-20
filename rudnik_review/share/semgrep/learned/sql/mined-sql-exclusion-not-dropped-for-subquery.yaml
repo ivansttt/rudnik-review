@@ -1,0 +1,17 @@
+rules:
+  - id: sql-exclusion-not-dropped-for-subquery
+    metadata: {"rule": "sql-exclusion-not-dropped-for-subquery", "evidence": ["https://github.com/apache/superset/pull/44650#discussion_r4105036746"]}
+    languages:
+      - python
+    message: >-
+      The sub-query predicate collection reuses the outer query's per-dataset
+      exclusion (exclude_dataset_id) instead of resetting it, so sub-query
+      tables keep rules that should be left to the outer query.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          get_predicates_for_table(
+              ...,
+              exclude_dataset_id=exclude_dataset_id,
+              ...
+          )

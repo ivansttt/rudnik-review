@@ -1,0 +1,8 @@
+rules:
+  - id: swift-narrow-platform-guard
+    metadata: {"rule": "swift-narrow-platform-guard", "evidence": ["https://github.com/apple/swift-nio/pull/2479#discussion_r1276765579", "https://github.com/apple/swift-nio/pull/2479#discussion_r1276765970", "https://github.com/apple/swift-nio/pull/2004#discussion_r761992143", "https://github.com/apple/swift-nio/pull/2004#discussion_r761992242", "https://github.com/apple/swift-nio/pull/2004#discussion_r761992466"]}
+    languages:
+      - swift
+    message: 'Platform availability guard is too narrow; use a negative platform check such as !os(Windows) instead of a positive one.'
+    severity: WARNING
+    pattern-regex: '^#if(?!.*!os\(Windows\)).*os\('

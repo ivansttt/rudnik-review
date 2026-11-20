@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-route-template-catchall-string-match
+    metadata: {"rule": "csharp-route-template-catchall-string-match", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60544#discussion_r1966394363"]}
+    languages: [csharp]
+    message: Detect catch-all route parameters from structured route metadata, not by substring-matching the template.
+    severity: WARNING
+    pattern-either:
+      - pattern: '$TEMPLATE.Contains("{**")'
+      - pattern: '$TEMPLATE.Contains("{*")'

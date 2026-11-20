@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-absolute-path-in-build
+    metadata: {"rule": "kotlin-absolute-path-in-build", "evidence": ["https://github.com/detekt/detekt/pull/9051#discussion_r2803290812", "https://github.com/detekt/detekt/pull/9051#discussion_r2803334411", "https://github.com/detekt/detekt/pull/2347#discussion_r382984889"]}
+    message: Hardcoded absolute path in build or test configuration breaks portability and Gradle remote cache.
+    severity: WARNING
+    languages: [kotlin]
+    pattern-regex: 'codeSource\.location\.path|additionalJarPaths|/home/[A-Za-z0-9_/.-]*'

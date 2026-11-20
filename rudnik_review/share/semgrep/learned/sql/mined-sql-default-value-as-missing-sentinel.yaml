@@ -1,0 +1,15 @@
+rules:
+- id: sql-default-value-as-missing-sentinel
+  metadata: {"rule": "sql-default-value-as-missing-sentinel", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2300#discussion_r784049027"]}
+  languages:
+  - python
+  message: "Explicit default value (False, 0) used as the missing-argument sentinel instead of None"
+  severity: WARNING
+  patterns:
+  - pattern-either:
+    - pattern: |
+        if $KEY == $STR and $VAL is False:
+            return True
+    - pattern: |
+        if $KEY == $STR and $VAL == 0:
+            return True

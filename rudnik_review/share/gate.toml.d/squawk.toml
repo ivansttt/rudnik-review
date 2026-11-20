@@ -1,0 +1,13 @@
+# PostgreSQL migrations' locking and unsafe DDL (spec 1249, v3 §5): `engines` keeps it to a plan whose sql engine is postgres.
+# It blocks nothing until spec 1253 turns a rule on with its gate-corpus pair.
+[[tool]]
+name = "squawk"
+version = "2.71.0"
+sha256_x86_64 = "ab978cb412e5e5eb2f06aaa4c5035a1567f6eba53274d7d1e068f73169b88bbd"
+sha256_aarch64 = "cc6b563f205e9d93472232ca21113c736d6e1f45a7ce700170b7e17bcecc9b7f"
+stacks = ["sql"]
+engines = ["postgres"]
+globs = ["migrations/*.sql"]
+cmd = ["squawk", "--reporter", "json", "{files}"]
+adapter = "squawk"
+blocks = []

@@ -1,0 +1,7 @@
+rules:
+  - id: go-unexported-api
+    metadata: {"rule": "go-unexported-api", "evidence": ["https://github.com/kubernetes/kubernetes/pull/137302#discussion_r3184737946", "https://github.com/kubernetes/kubernetes/pull/137302#discussion_r3184738375"]}
+    languages: [go]
+    message: Exported method on an unexported type; unexport it when only used in-package
+    severity: INFO
+    pattern-regex: '^func \([^)]+\) [A-Z][A-Za-z0-9_]*'

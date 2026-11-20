@@ -1,0 +1,7 @@
+rules:
+  - id: go-lenient-format-parse
+    metadata: {"rule": "go-lenient-format-parse", "evidence": ["https://github.com/kubernetes/kubernetes/pull/144094#discussion_r4554921534"]}
+    languages: [go]
+    message: Parsing a fixed-format value by trimming a suffix and delegating to a general parser accepts inputs outside the expected formats.
+    severity: WARNING
+    pattern: $PARSER.ParseQuantity(strings.TrimSuffix($S, $SUFFIX) + $REST)

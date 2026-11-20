@@ -1,0 +1,12 @@
+rules:
+  - id: java-interface-default-throws
+    metadata: {"rule": "java-interface-default-throws", "evidence": ["https://github.com/apache/flink/pull/25967#discussion_r1914420812", "https://github.com/apache/flink/pull/25963#discussion_r1914545992", "https://github.com/apache/flink/pull/25963#discussion_r1914546145", "https://github.com/apache/flink/pull/25963#discussion_r1914546250", "https://github.com/apache/flink/pull/25579#discussion_r1901438688", "https://github.com/apache/flink/pull/25579#discussion_r1901438792", "https://github.com/apache/flink/pull/25579#discussion_r1901438831"]}
+    languages: [java]
+    message: Default interface method only throws to force implementers; declare it abstract instead.
+    severity: WARNING
+    pattern: |
+      default $RET $NAME(...) {
+        ...
+        throw new $EX(...);
+        ...
+      }

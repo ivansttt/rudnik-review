@@ -1,0 +1,10 @@
+rules:
+  - id: java-wrong-deprecation-version
+    metadata: {"rule": "java-wrong-deprecation-version", "evidence": ["https://github.com/apache/kafka/pull/21480#discussion_r2822519530", "https://github.com/apache/kafka/pull/21480#discussion_r2822521405"]}
+    languages:
+      - scala
+    severity: WARNING
+    message: >-
+      Deprecation annotation declares a since/removal version that does not
+      match the release in which the API is being deprecated.
+    pattern-regex: '@deprecated\([^)]*"(3\.0\.0|4\.0\.0)"\)'

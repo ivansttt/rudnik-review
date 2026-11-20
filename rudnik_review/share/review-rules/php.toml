@@ -1,0 +1,353 @@
+[[rule]]
+id = "php-assignment-in-condition-precedence"
+tier = "info"
+title = "Assignment inside a condition is compared before it is assigned"
+look_for = "an assignment embedded in an if/while condition that also contains an == or === comparison, so the comparison binds first and the variable receives a boolean instead of the assigned value"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/56620#discussion_r2267445057", "fix" = "6ed445215fe2c29ecdc662b8789b28f0cb80cef6"}]
+measured = {}
+trigger = "if|while"
+question = "Does the added condition assign to a variable while also comparing that assignment's result with == or ===, without parentheses around the assignment?"
+examples = ["@@ -281,23 +281,39 @@ public function isShared($abstract)\n             return false;\n         }\n \n-        $reflection = new ReflectionClass($abstract);\n-\n-        if (! empty($reflection->getAttributes(Singleton::class))) {\n-            return true;\n+        if ($scopedType = $this->getScopedTyped(new ReflectionClass($abstract)) === null) {", "@@ -281,7 +281,7 @@ class Container implements ArrayAccess, ContainerContract\n             return false;\n         }\n \n+        if (($scopedType = $this->getScopedTyped(new ReflectionClass($abstract))) === null) {\n             return false;\n         }\n "]
+semgrep = "semgrep/learned/php/mined-php-assignment-in-condition-precedence.yaml"
+proposed = "error"
+
+[[rule]]
+id = "php-int-cast-truncation-validation"
+tier = "info"
+title = "Casting to int before a sign-only check lets fractional values truncate to zero"
+look_for = "a value cast to int and then guarded only for being negative or non-positive, so a positive value smaller than one truncates to 0 and takes the default or zero path"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/61474#discussion_r3950899170", "fix" = "0d59cbf86cce943f5360419d44b8e18e2dc6d0a3"}]
+measured = {}
+trigger = "int"
+question = "Does the change cast a value to int and then guard only for negative or non-positive values, allowing a positive fractional value to truncate to 0 and pass the guard?"
+examples = ["@@ -436,6 +445,255 @@ protected function createLogDriver(array $config)\n         );\n     }\n \n+    /**\n+     * Create an instance of the driver.\n+     *\n+     * @param  array  $config\n+     * @return \\Illuminate\\Contracts\\Broadcasting\\Broadcaster\n+     */\n+    protected function createMercureDriver(array $config)\n+    {\n+        $expiration = $this->mercureSubscribeExpiration($config);\n+\n+        if ($expiration <= 0) {\n+            throw new InvalidArgumentException('The Mercure \"subscribe_expiration\" configuration value must be a positive number of minutes.');\n+        }\n+\n+        $hub = $this->mercure($config);\n+\n+        if ($hub->getFactory() === null) {\n+            throw new InvalidArgumentException('The Mercure broadcasting connection requires a \"secret\" (or \"subscribe_secret\") configuration value.');\n+        }\n+\n+        return new MercureBroadcaster(\n+            $hub,\n+            $expiration,\n+            $this->mercureChannelEncrypter($config),\n+            (string) (($config['topic_prefix'] ?? null) ?: 'https://laravel.alt/echo/'),\n+            (bool) ($config['client_events'] ?? true),\n+        );\n+    }\n+\n+    /**\n+     * Get a Mercure hub instance for the given configuration.\n+     *\n+     * The hub's token factory is the subscriber one, feeding the Mercure\n+     * Authorization helper; the publish token is minted by the hub's\n+     * token provider.\n+     *\n+     * @param  array  $config\n+     * @return \\Symfony\\Component\\Mercure\\HubInterface\n+     */\n+    public function mercure(array $config)\n+    {\n+        if (empty($config['url'])) {\n+            return $this->frankenPhpMercure($config);\n+        }\n+\n+        // 0 (the default) delegates the lifetime to the hub's token factory:\n+        // \"session.cookie_lifetime\", or an hour when that setting is 0.\n+        $publishExpiration = (int) (($config['publish_expiration'] ?? 0) * 60);", "@@ -491,10 +491,12 @@ class BroadcastManager implements FactoryContract\n         }\n \n         // 0 (the default) delegates the lifetime to the hub's token factory:\n+        // \"session.cookie_lifetime\", or an hour when that setting is 0. A\n+        // set value must survive the truncation to whole seconds, so a\n+        // sub-second lifetime can't silently become the default one.\n         $publishExpiration = (int) (($config['publish_expiration'] ?? 0) * 60);\n \n+        if ($publishExpiration < 0 || ($publishExpiration === 0 && ! empty($config['publish_expiration']))) {\n             throw new InvalidArgumentException('The Mercure \"publish_expiration\" configuration value must be a positive number of minutes, or 0 to use the default lifetime.');\n         }\n "]
+semgrep = "semgrep/learned/php/mined-php-int-cast-truncation-validation.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-narrowing-type-hint-breaking"
+tier = "info"
+title = "Narrowing or adding type hints on public/protected methods is a breaking change"
+look_for = "a public or protected method whose parameter or return type is being narrowed (such as callable to Closure) or added, which breaks subclasses that override it with the wider or absent type"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/58963#discussion_r2838846151", "fix" = "036cafc3013a83fb4eba9030066e5fc73e584f59"}, {"url" = "https://github.com/laravel/framework/pull/56736#discussion_r2297231217", "fix" = "5bca5a147b5ffacc2245da942c2474eb440c7808"}, {"url" = "https://github.com/laravel/framework/pull/55471#discussion_r2051350233", "fix" = "c861e24a9b625b8b3ee8082ed8d3fb851af572e7"}]
+measured = {}
+trigger = "function"
+question = "Does this hunk narrow or add a type hint on a public or protected method signature?"
+examples = ["@@ -1070,9 +1070,26 @@ public function getRelation($relation)\n      * @param  string  $key\n      * @return bool\n      */\n-    public function relationLoaded($key)\n+    public function relationLoaded(string $key): bool", "@@ -1070,7 +1070,7 @@ trait HasRelationships\n      * @param  string  $key\n      * @return bool\n      */\n+    public function relationLoaded($key)\n     {\n         [$relation, $childRelation] = array_replace(\n             [null, null],"]
+semgrep = "semgrep/learned/php/mined-php-narrowing-type-hint-breaking.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-repeated-trait-scan"
+tier = "info"
+title = "Repeatedly scanning class traits via class_uses_recursive"
+look_for = "class_uses_recursive (or a wrapper like isSoftDeletable) called more than once for the same class, or inside a loop, when its result is invariant"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/56060#discussion_r2152151153", "fix" = "4f1aa5bb9073defb27a1478e67fc59a21fd1b752"}, {"url" = "https://github.com/laravel/framework/pull/56060#discussion_r2152154653", "fix" = "07520f2225a78a183c6d02da11f662ddf207657d"}]
+measured = {}
+trigger = "class_uses_recursive|isSoftDeletable|isPrunable|isMassPrunable"
+question = "Is class_uses_recursive (or a method that wraps it) called more than once for the same class or inside a loop?"
+examples = ["@@ -2513,6 +2513,30 @@ public function escapeWhenCastingToString($escape = true)\n         return $this;\n     }\n \n+    /**\n+     * Determine if the given model class is soft deletable.\n+     */\n+    public static function isSoftDeletable(): bool\n+    {\n+        return in_array(SoftDeletes::class, class_uses_recursive(static::class));\n+    }\n+\n+    /**\n+     * Determine if the given model class is prunable.\n+     */\n+    protected function isPrunable(): bool\n+    {\n+        return in_array(Prunable::class, class_uses_recursive(static::class)) || static::isMassPrunable();", "@@ -2513,30 +2537,6 @@ abstract class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenCastToSt\n         return $this;\n     }\n \n     /**\n      * Prepare the object for serialization.\n      *"]
+semgrep_asks = 1
+
+[[rule]]
+id = "php-docblock-contradicts-code"
+tier = "info"
+title = "Docblock contradicts the method's actual signature or behavior"
+look_for = "a docblock @param or @return type or description that does not match what the method actually declares, returns, or does"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/57847#discussion_r2548363175", "fix" = "c839e3c6d3b58ec02bc59648bfab8cc244fa3f6d"}, {"url" = "https://github.com/laravel/framework/pull/56475#discussion_r2241017642", "fix" = "cc5fa0a9f871387d75e20fc2a72ab671df89c056"}, {"url" = "https://github.com/laravel/framework/pull/56029#discussion_r2146791666", "fix" = "7cf2aa7d7d6ccdfebad673f26681d1ade1023f43"}, {"url" = "https://github.com/laravel/framework/pull/53657#discussion_r1856291036", "fix" = "2852b5d144b981c53ceeb1c529f49a7ef77e83d2"}]
+measured = {}
+trigger = "return|param|template|string"
+question = "Does the docblock's @param or @return type or description contradict what the method actually declares, returns, or does?"
+examples = ["@@ -166,7 +166,7 @@ protected function prepareData()\n     /**\n      * Get the display name for the queued job.\n      *\n-     * @return string\n+     * @return class-string", "@@ -166,7 +166,7 @@ class CallQueuedListener implements ShouldQueue\n     /**\n      * Get the display name for the queued job.\n      *\n+     * @return string\n      */\n     public function displayName()\n     {"]
+semgrep_asks = 1
+
+[[rule]]
+id = "php-backedenum-only-unwrap"
+tier = "info"
+title = "Handling only BackedEnum when the value may be any UnitEnum"
+look_for = "code that unwraps only BackedEnum via ->value (instead of the enum_value helper) when the input can be a pure UnitEnum"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/56940#discussion_r2325273542", "fix" = "641f08578506d0e152d131cf21a0ad6eacdc082d"}, {"url" = "https://github.com/laravel/framework/pull/56786#discussion_r2303790954", "fix" = "bd2dc44684c19ec5ff7ac6607f7f805f6230881a"}, {"url" = "https://github.com/laravel/framework/pull/55516#discussion_r2055602205", "fix" = "530c6fa8e2c9b876eb858ba2f12aca3b0ccd64f7"}, {"url" = "https://github.com/laravel/framework/pull/53330#discussion_r1820438546", "fix" = "c1962f77756b0d3d5d3999dae29afdfe8f86982b"}]
+measured = {}
+trigger = "BackedEnum"
+question = "Does this hunk unwrap only a BackedEnum via ->value when the value may also be a pure UnitEnum?"
+examples = ["@@ -237,6 +237,8 @@ public function assertPath($path, $expect)\n     {\n         if ($expect instanceof Closure) {\n             PHPUnit::assertTrue($expect($this->json($path)));\n+        } elseif ($expect instanceof \\BackedEnum) {\n+            PHPUnit::assertSame($expect->value, $this->json($path));\n         } else {\n             PHPUnit::assertSame($expect, $this->json($path));\n         }", "@@ -237,10 +237,8 @@ class AssertableJsonString implements ArrayAccess, Countable\n     {\n         if ($expect instanceof Closure) {\n             PHPUnit::assertTrue($expect($this->json($path)));\n         } else {\n+            PHPUnit::assertSame(enum_value($expect), $this->json($path));\n         }\n \n         return $this;"]
+semgrep_asks = 1
+
+[[rule]]
+id = "php-unused-import"
+tier = "info"
+title = "Imported symbol is never used"
+look_for = "a use import for a symbol that is never referenced anywhere in the changed file"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/55954#discussion_r2139215233", "fix" = "d5aeaf8e89a31aa1ffaca41fb6d4dcba2513317a"}, {"url" = "https://github.com/laravel/framework/pull/55954#discussion_r2139216498", "fix" = "d5aeaf8e89a31aa1ffaca41fb6d4dcba2513317a"}]
+measured = {}
+trigger = "use"
+question = "Does the added use import a symbol that is never referenced anywhere in the file?"
+examples = ["@@ -4,6 +4,7 @@\n \n use Illuminate\\Cache\\ApcStore;\n use Illuminate\\Cache\\ApcWrapper;\n+use Illuminate\\Support\\Carbon;", "@@ -4,7 +4,6 @@ namespace Illuminate\\Tests\\Cache;\n \n use Illuminate\\Cache\\ApcStore;\n use Illuminate\\Cache\\ApcWrapper;\n use Mockery;\n use PHPUnit\\Framework\\TestCase;\n "]
+semgrep_asks = 1
+
+[[rule]]
+id = "php-public-interface-method-addition"
+tier = "info"
+title = "Adding a method to a public interface is a breaking change"
+look_for = "a new method added to a public interface, which every existing implementation must now provide"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/55954#discussion_r2139552636", "fix" = "c2e4c03776eea347fcccf2c422f472f2fd63b200"}, {"url" = "https://github.com/laravel/framework/pull/55954#discussion_r2139553037", "fix" = "c2e4c03776eea347fcccf2c422f472f2fd63b200"}]
+measured = {}
+trigger = "function|interface"
+question = "Does this hunk add a new method declaration to a public interface?"
+examples = ["@@ -88,6 +90,11 @@ public function remember($key, $ttl, Closure $callback);\n      */\n     public function sear($key, Closure $callback);\n \n+    /**\n+     * Set the expiration of a cached item; null TTL will retain indefinitely.\n+     */\n+    public function touch(string $key, DateTimeInterface|DateInterval|int|null $ttl = null): bool;", "@@ -90,11 +90,6 @@ interface Repository extends CacheInterface\n      */\n     public function sear($key, Closure $callback);\n \n     /**\n      * Get an item from the cache, or execute the given Closure and store the result forever.\n      *"]
+semgrep = "semgrep/learned/php/mined-php-public-interface-method-addition.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-key-missing-via-get"
+tier = "info"
+title = "Key-presence check implemented via the value instead of key existence"
+look_for = "a missing() or exists() method that negates the retrieved value (get or array access) instead of checking key existence, so a stored null or falsy value is reported as absent"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/54499#discussion_r1946376919", "fix" = "5edde1899a764d6d02fee51d35c9bcc380cc6754"}]
+measured = {}
+trigger = "missing|get"
+question = "Does this hunk determine absence from the retrieved value rather than from key existence?"
+examples = ["@@ -66,6 +66,17 @@ public function has($key)\n         return array_key_exists($key, $this->data);\n     }\n \n+    /**\n+     * Determine if the given key is missing.\n+     *\n+     * @param  string  $key\n+     * @return bool\n+     */\n+    public function missing($key)\n+    {\n+        return ! $this->get($key);", "@@ -74,7 +74,7 @@ class Repository\n      */\n     public function missing($key)\n     {\n+        return ! $this->has($key);\n     }\n \n     /**"]
+semgrep = "semgrep/learned/php/mined-php-key-missing-via-get.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "php-function-exists-guard-name"
+tier = "info"
+title = "function_exists guard names a different function than the one it wraps"
+look_for = "a function_exists guard whose name does not match the function it guards, from a copy-pasted name or an unqualified name when the file defines a namespaced function"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/52974#discussion_r1780084853", "fix" = "a9653466e24d76430929c8fa4b1d3898d5c3069d"}, {"url" = "https://github.com/laravel/framework/pull/52974#discussion_r1780086239", "fix" = "d2daee8e466d574a3fc65708aa015e56cbdc859a"}, {"url" = "https://github.com/laravel/framework/pull/52974#discussion_r1780086259", "fix" = "d2daee8e466d574a3fc65708aa015e56cbdc859a"}]
+measured = {}
+trigger = "function_exists"
+question = "Does the function_exists guard name a function other than the one it wraps (wrong name or unqualified in a namespace)?"
+examples = ["@@ -6,32 +6,36 @@\n use Illuminate\\Support\\Defer\\DeferredCallbackCollection;\n use Illuminate\\Support\\Process\\PhpExecutableFinder;\n \n-/**\n- * Defer execution of the given callback.\n- *\n- * @param  callable|null  $callback\n- * @param  string|null  $name\n- * @param  bool  $always\n- * @return \\Illuminate\\Support\\Defer\\DeferredCallback\n- */\n-function defer(?callable $callback = null, ?string $name = null, bool $always = false)\n-{\n-    if ($callback === null) {\n-        return app(DeferredCallbackCollection::class);\n-    }\n+if (! function_exists('defer')) {\n+    /**\n+     * Defer execution of the given callback.\n+     *\n+     * @param  callable|null  $callback\n+     * @param  string|null  $name\n+     * @param  bool  $always\n+     * @return \\Illuminate\\Support\\Defer\\DeferredCallback\n+     */\n+    function defer(?callable $callback = null, ?string $name = null, bool $always = false)\n+    {\n+        if ($callback === null) {\n+            return app(DeferredCallbackCollection::class);\n+        }\n \n-    return tap(\n-        new DeferredCallback($callback, $name, $always),\n-        fn ($deferred) => app(DeferredCallbackCollection::class)[] = $deferred\n-    );\n+        return tap(\n+            new DeferredCallback($callback, $name, $always),\n+            fn ($deferred) => app(DeferredCallbackCollection::class)[] = $deferred\n+        );\n+    }\n }\n \n-/**\n- * Determine the PHP Binary.\n- *\n- * @return string\n- */\n-function php_binary()\n-{\n-    return (new PhpExecutableFinder)->find(false) ?: 'php';\n+if (! function_exists('defer')) {", "@@ -28,7 +28,7 @@ if (! function_exists('defer')) {\n     }\n }\n \n+if (! function_exists('php_binary')) {\n     /**\n      * Determine the PHP Binary.\n      *"]
+semgrep_asks = 1
+proposed = "error"
+
+[[rule]]
+id = "php-misspelled-deprecated-annotation"
+tier = "info"
+title = "Misspelled @deprecated docblock tag"
+look_for = "a docblock @deprecated annotation misspelled (such as @deprected) so tooling does not recognize the deprecation"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/54487#discussion_r1944612767", "fix" = "8eeec5173f4576e84cc0e03dabebbf7f34abf3bb"}, {"url" = "https://github.com/laravel/framework/pull/54487#discussion_r1944613413", "fix" = "8eeec5173f4576e84cc0e03dabebbf7f34abf3bb"}, {"url" = "https://github.com/laravel/framework/pull/54487#discussion_r1944614193", "fix" = "8eeec5173f4576e84cc0e03dabebbf7f34abf3bb"}]
+measured = {}
+trigger = "deprected"
+question = "Does this hunk add a misspelled @deprecated tag (such as @deprected)?"
+examples = ["@@ -284,35 +287,26 @@ public function getDateFormat()\n     /**\n      * Get the grammar's table prefix.\n      *\n+     * @deprected Use DB::getTablePrefix()\n+     *\n      * @return string\n      */\n     public function getTablePrefix()\n     {\n-        return $this->tablePrefix;\n+        return $this->connection->getTablePrefix();\n     }\n \n     /**\n      * Set the grammar's table prefix.\n      *\n+     * @deprected DB::setTablePrefix()", "@@ -299,7 +299,7 @@ abstract class Grammar\n     /**\n      * Set the grammar's table prefix.\n      *\n+     * @deprecated DB::setTablePrefix()\n      *\n      * @param  string  $prefix\n      * @return $this"]
+semgrep = "semgrep/learned/php/mined-php-misspelled-deprecated-annotation.yaml"
+
+[[rule]]
+id = "php-dynamic-property-assignment"
+tier = "info"
+title = "Assignment to an undeclared property creates a dynamic property"
+look_for = "assigning to a $this->property in a constructor or method without the property being declared, which creates a dynamic property"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/53731#discussion_r1866778989", "fix" = "69051ff86d28a113ed3a358cde421a0abf3eb613"}]
+measured = {}
+trigger = "this"
+question = "Does this hunk assign to a property that the class does not declare (creating a dynamic property)?"
+examples = ["@@ -0,0 +1,96 @@\n+<?php\n+\n+namespace Illuminate\\Support;\n+\n+use Illuminate\\Contracts\\Support\\Arrayable;\n+use Illuminate\\Support\\Traits\\InteractsWithData;\n+\n+class UriQueryString implements Arrayable\n+{\n+    use InteractsWithData;\n+\n+    /**\n+     * Create a new URI query string instance.\n+     */\n+    public function __construct(Uri $uri)\n+    {\n+        $this->uri = $uri;\n+    }", "@@ -12,9 +12,9 @@ class UriQueryString implements Arrayable\n     /**\n      * Create a new URI query string instance.\n      */\n+    public function __construct(protected Uri $uri)\n     {\n+        //\n     }\n \n     /**"]
+semgrep = "semgrep/learned/php/mined-php-dynamic-property-assignment.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-commented-debug-call"
+tier = "info"
+title = "Commented-out debug call left in code"
+look_for = "a debug call (dd, var_dump, print_r, dump) left commented out instead of being removed"
+stack = "php"
+evidence = [{"url" = "https://github.com/laravel/framework/pull/55011#discussion_r2007731075", "fix" = "36fe40b81dffb300e9f4bc4b514bb647ad0b50bd"}]
+measured = {}
+trigger = "dd|var_dump|print_r|dump"
+question = "Does this hunk leave a debug call commented out rather than removing it?"
+examples = ["@@ -532,7 +549,7 @@ public function resolve($file)\n     protected function resolvePath(string $path)\n     {\n         $class = $this->getMigrationClass($this->getMigrationName($path));\n-\n+//        dd($class, $this->getMigrationName($path));", "@@ -549,7 +549,7 @@ class Migrator\n     protected function resolvePath(string $path)\n     {\n         $class = $this->getMigrationClass($this->getMigrationName($path));\n+\n         if (class_exists($class) && realpath($path) == (new ReflectionClass($class))->getFileName()) {\n             return new $class;\n         }"]
+semgrep = "semgrep/learned/php/mined-php-commented-debug-call.yaml"
+
+[[rule]]
+id = "php-plain-exception-client-error"
+tier = "info"
+title = "Client error thrown as a generic exception"
+look_for = "throwing a plain Exception for a client or validation error in an HTTP API context, so it is logged as a server error instead of returning a 4xx response"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25693#discussion_r4494270256", "fix" = "4c330e0e62f18797b884b584b1c0e93b1e3dc54d"}, {"url" = "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619283", "fix" = "76c436aace63fc5aed2e7e30fd83bde1ebd8ba72"}, {"url" = "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619515", "fix" = "76c436aace63fc5aed2e7e30fd83bde1ebd8ba72"}, {"url" = "https://github.com/matomo-org/matomo/pull/25669#discussion_r4454619768", "fix" = "76c436aace63fc5aed2e7e30fd83bde1ebd8ba72"}, {"url" = "https://github.com/matomo-org/matomo/pull/25571#discussion_r4507656997", "fix" = "2cfe93110642702ef048dd161f4fb7b66ea3cc8e"}, {"url" = "https://github.com/matomo-org/matomo/pull/25070#discussion_r3774870675", "fix" = "fd7615b1133160c426f1dd473c99b99068b52f99"}]
+measured = {}
+trigger = "throw|Exception"
+question = "Does this hunk throw a plain Exception for an error that is a client or validation error (such as a missing resource), instead of a specific exception type?"
+examples = ["@@ -453,6 +453,14 @@ private function createUpdateOrInstallView($template, $nonceName)\n \n         $plugins = $this->getPluginNameIfNonceValid($nonceName);\n \n+        if ($nonceName === static::UPDATE_NONCE) {\n+            foreach ($plugins as $pluginName) {\n+                if (!$this->pluginManager->isPluginInFilesystem($pluginName)) {\n+                    throw new Exception(Piwik::translate('CorePluginsAdmin_PluginNotFound', [$pluginName]));", "@@ -456,7 +457,7 @@ class Controller extends \\Piwik\\Plugin\\ControllerAdmin\n         if ($nonceName === static::UPDATE_NONCE) {\n             foreach ($plugins as $pluginName) {\n                 if (!$this->pluginManager->isPluginInFilesystem($pluginName)) {\n+                    throw new PluginNotFoundException($pluginName);\n                 }\n             }\n         }"]
+semgrep = "semgrep/learned/php/mined-php-plain-exception-client-error.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-catch-exception-not-throwable"
+tier = "info"
+title = "Catch of Exception misses Throwable errors in a best-effort handler"
+look_for = "a catch of \\Exception in code meant to swallow any failure so the surrounding feature keeps working, which lets \\Throwable subclasses such as ValueError or TypeError escape"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25229#discussion_r4001291068", "fix" = "911d2e1a7debda1255a83cf6e5842039a67891e1"}]
+measured = {}
+trigger = "Exception"
+question = "Does this hunk add a catch of \\Exception in code meant to swallow any failure so the surrounding feature keeps working, letting a \\Throwable such as ValueError escape?"
+examples = ["@@ -43,10 +50,42 @@ public function getStylesheetFiles(&$stylesheets)\n     {\n         $stylesheets[] = 'plugins/ProfessionalServices/stylesheets/promos.less';\n         $stylesheets[] = 'plugins/ProfessionalServices/stylesheets/widget.less';\n+        $stylesheets[] = 'plugins/ProfessionalServices/stylesheets/productPromotion.less';\n+    }\n+\n+    /**\n+     * Renders at most one contextual plugin promotion above the widgets of the default or\n+     * a custom dashboard. Every dashboard is rendered through this template, and no other\n+     * page is, so the promotion cannot leak onto All Websites or a report page.\n+     */\n+    public function renderDashboardPromotion(&$out)\n+    {\n+        try {\n+            $selected = StaticContainer::get(PromotionSelector::class)->select();\n+\n+            if (null === $selected) {\n+                return;\n+            }\n+\n+            StaticContainer::get(UserPromotionState::class)->recordShown(\n+                $selected->getPromotion()->getPluginName(),\n+                $selected->getPromotion()->getTriggerName()\n+            );\n+\n+            $out .= StaticContainer::get(PromotionRenderer::class)->render($selected);\n+        } catch (\\Exception $e) {", "@@ -73,11 +79,32 @@ class ProfessionalServices extends \\Piwik\\Plugin\n             );\n \n             $out .= StaticContainer::get(PromotionRenderer::class)->render($selected);\n+        } catch (\\Throwable $e) {\n+            // A promotion is never important enough to break a dashboard. Throwable rather\n+            // than Exception because the likeliest failure here is not an exception at\n+            // all: the copy carries placeholders, and translating a string whose\n+            // translation has lost one throws a ValueError out of sprintf.\n+            StaticContainer::get(LoggerInterface::class)->warning(\n+                'Could not render the dashboard plugin promotion: {message}',\n+                ['message' => $e->getMessage(), 'exception' => $e]\n+            );\n         }\n     }\n \n+    /**\n+     * Whether this render is the dashboard inside the app, as opposed to a copy of it\n+     * somewhere the promotion has no business being.\n+     *\n+     * `Dashboard/index.twig` includes the same template to build the exported widget, and\n+     * Widgetize can render it into an iframe on someone else's page. Both post this event,\n+     * neither is a place to advertise: the reader may not even be a Matomo user, and the\n+     * dismiss control writes to whoever's session happens to be behind the export.\n+     */\n+    private function isTheAppsOwnDashboard(): bool\n+    {\n+        return Piwik::getModule() === 'Dashboard' && Piwik::getAction() === 'embeddedIndex';\n+    }\n+\n     public function deletePromotionTriggerCache($idSite)\n     {\n         DailyTriggerCache::deleteForSite((int) $idSite);"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-unused-map-entry"
+tier = "info"
+title = "Unused map or translation entry added"
+look_for = "a key added to a map, translation list, or constant array that no code in the change references, leaving dead data"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25299#discussion_r4076687890", "fix" = "a1b1240290ed31a1c635b8b7de9631a8b5572f88"}, {"url" = "https://github.com/matomo-org/matomo/pull/25261#discussion_r4011411659", "fix" = "0b9d6a5fe95c258771a5799ec7f3aaeb4666c058"}]
+measured = {}
+trigger = ""
+question = "Does this hunk add a map or translation-list entry (a key => value pair or a quoted string in a list) that no code in the change uses?"
+examples = ["@@ -56,6 +56,7 @@ class ThemeStyles\n         'colorBorderAlternative' => 'theme-color-border-alternative',\n         'colorBorderLight' => 'theme-color-border-light',\n         'colorBorderBrand' => 'theme-color-border-brand',\n+        'colorBorderBrandLight' => 'theme-color-border-brand-light',", "@@ -56,7 +56,6 @@ class ThemeStyles\n         'colorBorderAlternative' => 'theme-color-border-alternative',\n         'colorBorderLight' => 'theme-color-border-light',\n         'colorBorderBrand' => 'theme-color-border-brand',\n         'colorBoxShadow' => 'theme-color-boxShadow',\n         'shadowOverlay' => 'theme-shadow-overlay',\n         'colorCode' => 'theme-color-code',"]
+semgrep_asks = 1
+
+[[rule]]
+id = "php-event-listener-exception"
+tier = "info"
+title = "Event dispatched after a write without catching listener exceptions"
+look_for = "an event or listener notification dispatched after a state change is already written, with no try/catch around it, so a throwing listener makes the completed change report as failed"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25307#discussion_r4044920443", "fix" = "471579a61d3f6039df341ec652a1cc6c3b9ef0aa"}]
+measured = {}
+trigger = "postEvent|dispatch|do_action|apply_filters"
+question = "Does this hunk dispatch an event or call listeners after the change is already written, without a try/catch, so a listener's exception would surface as if the write failed?"
+examples = ["@@ -903,9 +909,76 @@ public function enforceCompliancePolicySettings(\n             $settingValues[$settingClass::getPolicySettingId()] = true;\n         }\n \n+        $before = $this->complianceSettingsProvider->getPolicySettings($policy, $idSite);\n+\n         PolicyManager::setPolicySettingEnforcedStatuses($policy, $settingValues, $idSite);\n \n-        return $this->complianceSettingsProvider->getPolicySettings($policy, $idSite);\n+        $after = $this->complianceSettingsProvider->getPolicySettings($policy, $idSite);\n+\n+        $this->postCompliancePolicySettingsUpdated($policy, $idSite, $before, $after);\n+\n+        return $after;\n+    }\n+\n+    /**\n+     * Announces the compliance policy settings a request has just changed, so an audit trail\n+     * can record who changed what.\n+     *\n+     * Nothing is posted when the request left every setting as it was, which keeps a save\n+     * that repeats the current state out of the audit trail. A request that fails never\n+     * reaches this point, so it is not announced either.\n+     *\n+     * @param class-string<CompliancePolicy> $policy\n+     * @param array<string, mixed> $before payload taken before the settings were written\n+     * @param array<string, mixed> $after payload taken after the settings were written\n+     */\n+    private function postCompliancePolicySettingsUpdated(\n+        string $policy,\n+        ?int $idSite,\n+        array $before,\n+        array $after\n+    ): void {\n+        $changes = $this->complianceSettingsProvider->diffPolicySettings($before, $after);\n+\n+        if (empty($changes)) {\n+            return;\n+        }\n+\n+        /**\n+         * Triggered after a request changed the enforcement state of one or more settings of a\n+         * compliance policy, for example through the privacy compliance page.\n+         *\n+         * The event is only triggered when something actually changed, and deliberately carries\n+         * nothing but the resulting compliance state: no request parameters, and therefore no\n+         * password confirmation or authentication token, are passed on.\n+         *\n+         * **Example**\n+         *\n+         *     Piwik::addAction('PrivacyManager.compliancePolicySettingsUpdated', function ($update) {\n+         *         foreach ($update['changes'] as $change) {\n+         *             Log::info($change['name'] . ' is now ' . $change['status']);\n+         *         }\n+         *     });\n+         *\n+         * @param array $update Details of the change, containing the following data:\n+         *\n+         *                      - **policy**: The id of the compliance policy that was changed,\n+         *                                    e.g. `cnil_v1`.\n+         *                      - **idSite**: The website the policy was changed for, or `null`\n+         *                                    when the instance wide state was changed.\n+         *                      - **policyEnforced**: Whether every toggleable setting of the\n+         *                                            policy is enforced after the change.\n+         *                      - **changes**: The settings whose enforcement state or compliance\n+         *                                     status changed, each holding its `id`, `name`,\n+         *                                     `enforced`, `previousEnforced`, `status` and\n+         *                                     `previousStatus`.\n+         */\n+        Piwik::postEvent('PrivacyManager.compliancePolicySettingsUpdated', [[", "@@ -971,14 +979,26 @@ class API extends \\Piwik\\Plugin\\API\n          *                      - **changes**: The settings whose enforcement state or compliance\n          *                                     status changed, each holding its `id`, `name`,\n          *                                     `enforced`, `previousEnforced`, `status` and\n+         *                                     `previousStatus`. `id` is the stable identifier to\n+         *                                     persist; `name` is a translated title for display\n+         *                                     and changes with the interface language.\n          */\n+        try {\n+            Piwik::postEvent('PrivacyManager.compliancePolicySettingsUpdated', [[\n+                'policy' => $policy::getName(),\n+                'idSite' => $idSite,\n+                'policyEnforced' => !empty($after['policyEnforced']),\n+                'changes' => $changes,\n+            ]]);\n+        } catch (\\Throwable $e) {\n+            // the settings are already written by the time the change is announced, so a listener\n+            // that fails must not report the save as failed: the caller would retry, find nothing\n+            // left to change, and the change could then never be announced at all\n+            StaticContainer::get(LoggerInterface::class)->warning(\n+                'A listener of PrivacyManager.compliancePolicySettingsUpdated failed: {message}',\n+                ['message' => $e->getMessage(), 'exception' => $e]\n+            );\n+        }\n     }\n \n     /**"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-overridden-method-logic-missed"
+tier = "info"
+title = "Logic added to an overridable method subclasses can skip"
+look_for = "a new call added inside a public or protected method that subclasses override without calling parent, so the added behavior is silently skipped in those subclasses"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25372#discussion_r4189313792", "fix" = "de2ddfa9e7350cc0c5e3fe2da43efb86786bf24e"}]
+measured = {}
+trigger = ""
+question = "Does this hunk add a call to a non-final public or protected method whose subclasses override it, so those subclasses would skip the new call unless each is also edited?"
+examples = ["@@ -139,6 +139,8 @@ public function addSystemItem($menuName, $url, $order = 50, $tooltip = false)\n      */\n     public function getMenu()\n     {\n+        $this->resetIfBuiltForAnotherScope();", "@@ -139,8 +139,6 @@ class MenuAdmin extends MenuAbstract\n      */\n     public function getMenu()\n     {\n         if (!$this->menu) {\n             foreach ($this->getAllMenus() as $menu) {\n                 $menu->configureAdminMenu($this);"]
+semgrep = "semgrep/learned/php/mined-php-overridden-method-logic-missed.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-non-atomic-read-modify-write"
+tier = "info"
+title = "Non-atomic read-modify-write of shared persisted state"
+look_for = "a read of persisted shared state followed by a write in the same request without a transaction or lock, so concurrent requests can both pass the check and one's write is lost or duplicated"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25449#discussion_r4214099812", "fix" = "b08aabace9bd80d775636e65369cb4ba2cac3345"}, {"url" = "https://github.com/matomo-org/matomo/pull/25449#discussion_r4214106707", "fix" = "b08aabace9bd80d775636e65369cb4ba2cac3345"}]
+measured = {}
+trigger = ""
+question = "Does this hunk read persisted shared state and then write it back based on that read, without a transaction or lock, so concurrent requests could both pass the check and duplicate or lose the write?"
+examples = ["@@ -38,41 +40,78 @@ public function __construct(string $pluginName)\n      */\n     public function setRequested(string $pluginDisplayName = ''): void\n     {\n+        $requestTime = time();\n+\n         $this->storage = [\n-            'requestTime' => time(),\n+            'requestTime' => $requestTime,\n             'displayName' => $pluginDisplayName,\n             'dismissed' => [],\n             'requestedBy' => Piwik::getCurrentUserLogin(),\n         ];\n-        $this->saveStorage();\n+\n+        $this->writeWithHistory(function (RequestHistory $history) use ($requestTime) {\n+            // the option first, the same lock order as setFulfilled()\n+            $this->recordInHistory($history, $this->readStoredForUpdate());\n+            $this->saveStorage();\n+            // Option::set() ignores a failed insert of a new option, and a request recorded without it is never notified\n+            if (empty($this->readStoredForUpdate())) {\n+                throw new Exception('Could not save the trial request for ' . $this->pluginName);\n+            }\n+            $history->add($this->pluginName, $this->storage['requestedBy'], $requestTime);", "@@ -36,29 +43,48 @@ class Storage\n     }\n \n     /**\n+     * Records a trial request by the current user. Only a request made while none is pending makes one pending, so\n+     * super users are notified once per plugin and keep their dismissals.\n+     *\n+     * @return string one of the REQUEST_* constants\n      */\n+    public function setRequested(string $pluginDisplayName = ''): string\n     {\n         $requestTime = time();\n+        $login = Piwik::getCurrentUserLogin();\n+        $result = self::REQUEST_ALREADY_RECORDED;\n \n+        $this->writeWithHistory(function (RequestHistory $history) use ($pluginDisplayName, $requestTime, $login, &$result) {\n             // the option first, the same lock order as setFulfilled()\n+            $storedRequest = $this->readStoredForUpdate();\n+            $this->recordInHistory($history, $storedRequest);\n+\n+            if (!$history->add($this->pluginName, $login, $requestTime)) {\n+                return;\n+            }\n+\n+            if (!empty($storedRequest)) {\n+                $this->storage = $storedRequest;\n+                $result = self::REQUEST_ADDED_TO_PENDING;\n+                return;\n+            }\n+\n+            $this->storage = [\n+                'requestTime' => $requestTime,\n+                'displayName' => $pluginDisplayName,\n+                'dismissed' => [],\n+                'requestedBy' => $login,\n+            ];\n             $this->saveStorage();\n+            // Option::set() ignores a failed insert of a new option, even a deadlock that rolled this transaction back\n+            // while another user's request was made pending, so check the option holds this request\n+            if ($this->readStoredForUpdate() != $this->storage) {\n                 throw new Exception('Could not save the trial request for ' . $this->pluginName);\n             }\n+            $result = self::REQUEST_PENDING;\n         });\n+\n+        return $result;\n     }\n \n     /**"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-null-check-empty-response"
+tier = "info"
+title = "Null check treats an empty response as a valid answer"
+look_for = "a value from a fetched response checked only for null or truthiness when an empty string also means no answer, so an empty or truncated body is treated as a valid result"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25207#discussion_r3973894891", "fix" = "a74c4ad9f7776a0e03b4c181746c3eb9ba92058f"}]
+measured = {}
+trigger = "null"
+question = "Does this hunk gate availability on only a null or truthiness check of a fetched response that can be an empty string when the body is empty, so the empty response is treated as a real answer?"
+examples = ["@@ -46,12 +58,17 @@ public function clearCache()\n     {\n         $this->consumer = false;\n         $this->isValid = null;\n+        $this->consumerAvailable = false;\n+        $this->pluginLicenseStatus = null;\n+        $this->pluginLicenses = null;\n     }\n \n     public function getConsumer()\n     {\n         if ($this->consumer === false) {\n             $consumer = $this->marketplaceClient->getConsumer();\n+            $this->consumerAvailable = $consumer !== null;", "@@ -67,7 +67,9 @@ class Consumer\n     {\n         if ($this->consumer === false) {\n             $consumer = $this->marketplaceClient->getConsumer();\n+            // a 200 carrying an empty body reaches here as '', which says nothing about the\n+            // consumer's licenses; a real answer always carries the list, empty or not\n+            $this->consumerAvailable = is_array($consumer) && array_key_exists('licenses', $consumer);\n \n             if (!empty($consumer)) {\n                 $this->consumer = $consumer;"]
+semgrep = "semgrep/learned/php/mined-php-null-check-empty-response.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-bool-param-read-as-int"
+tier = "info"
+title = "Boolean parameter read through an integer-typed accessor"
+look_for = "a boolean flag or option read through an integer-typed request accessor or cast, so a falsy string such as 'false' fails integer validation and falls back to a truthy default, inverting the caller's intent"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/24983#discussion_r3724789557", "fix" = "22cc54dc6d4b1d6e2c63329bd121febf47de23c1"}]
+measured = {}
+trigger = "percent_of_total|getRequestVar|getBoolParameter"
+question = "Does this hunk read a boolean parameter through an integer-typed accessor or int cast, so a non-numeric falsy value falls back to a truthy default?"
+examples = ["@@ -223,6 +225,46 @@ public function applyTotalsCalculator($dataTable)\n         return $dataTable;\n     }\n \n+    /**\n+     * Registers processed metrics exposing each row's metric value as a percentage of the\n+     * report total (eg, 'nb_visits_percent_of_total'), based on the totals calculated by\n+     * ReportTotalsCalculator. Can be disabled with percent_of_total=0.\n+     *\n+     * @param DataTableInterface $dataTable\n+     * @return DataTableInterface\n+     */\n+    public function applyPercentOfTotalMetrics($dataTable)\n+    {\n+        if (1 != Common::getRequestVar('percent_of_total', '1', 'integer', $this->request)) {", "@@ -235,7 +235,7 @@ class DataTablePostProcessor\n      */\n     public function applyPercentOfTotalMetrics($dataTable)\n     {\n+        if (!(new Request($this->request))->getBoolParameter('percent_of_total', true)) {\n             return $dataTable;\n         }\n "]
+semgrep = "semgrep/learned/php/mined-php-bool-param-read-as-int.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "php-int-cast-before-validation"
+tier = "info"
+title = "Value cast to int before it is validated"
+look_for = "a value normalized or cast to int before validation, so an invalid non-numeric string silently becomes 0 instead of being rejected"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25032#discussion_r3768577294", "fix" = "2d54ee7236c7095d0bdb4b53a2b54c3ac7685874"}]
+measured = {}
+trigger = "normalize|idSegment|cast|integer"
+question = "Does this hunk cast or normalize an input to int before validating it, so an invalid non-numeric value silently becomes 0 rather than being rejected?"
+examples = ["@@ -240,6 +242,8 @@ public function updateReport(\n         Piwik::checkUserIsNotAnonymous();\n         Piwik::checkUserHasViewAccess($idSite);\n \n+        $idSegment = self::normalizeIdSegment($idSegment);", "@@ -242,8 +240,6 @@ class API extends \\Piwik\\Plugin\\API\n         Piwik::checkUserIsNotAnonymous();\n         Piwik::checkUserHasViewAccess($idSite);\n \n         $scheduledReports = $this->getReports($idSite, $periodSearch = false, $idReport);\n         $report   = reset($scheduledReports);\n         /** @phpstan-var ScheduledReport $report */"]
+semgrep = "semgrep/learned/php/mined-php-int-cast-before-validation.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-recreated-removed-array-key"
+tier = "info"
+title = "Removed array key recreated by an unconditional write"
+look_for = "an unconditional write into a nested array key that another code path removes when a flag is set, silently undoing the flag's effect"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/24983#discussion_r3731980491", "fix" = "f98488f9b8f7a05403a8c402e59bba432cb883c3"}]
+measured = {}
+trigger = "isset|metricsDocumentation|unset"
+question = "Does this hunk write into a nested array key unconditionally, without checking the key still exists, so it could recreate a key that a flag or earlier code removed?"
+examples = ["@@ -645,6 +647,35 @@ private function handleTableReport($idSite, $dataTable, &$reportMetadata, $showR\n         ];\n     }\n \n+    /**\n+     * Adds column translations, metric types and metric documentation for the percent-of-total\n+     * metrics the DataTablePostProcessor registered on the table (eg,\n+     * 'nb_visits_percent_of_total'), so their values are kept in the processed report data\n+     * and described in its metadata.\n+     *\n+     * @param DataTable|DataTable\\Map $dataTable\n+     * @param array $columns\n+     * @param array $reportMetadata\n+     * @return array\n+     */\n+    private function addPercentOfTotalColumns($dataTable, $columns, &$reportMetadata)\n+    {\n+        $tables = $dataTable instanceof DataTable\\Map ? $dataTable->getDataTables() : [$dataTable];\n+\n+        foreach ($tables as $table) {\n+            $extraProcessedMetrics = $table->getMetadata(DataTable::EXTRA_PROCESSED_METRICS_METADATA_NAME) ?: [];\n+            foreach ($extraProcessedMetrics as $metric) {\n+                if ($metric instanceof PercentOfReportTotal) {\n+                    $columns[$metric->getName()] = $metric->getTranslatedName();\n+                    $reportMetadata['metricTypes'][$metric->getName()] = $metric->getSemanticType();\n+                    $reportMetadata['metricsDocumentation'][$metric->getName()] = $metric->getDocumentation();", "@@ -668,7 +668,12 @@ class ProcessedReport\n                 if ($metric instanceof PercentOfReportTotal) {\n                     $columns[$metric->getName()] = $metric->getTranslatedName();\n                     $reportMetadata['metricTypes'][$metric->getName()] = $metric->getSemanticType();\n+\n+                    // hideMetricsDoc=1 removes the documentation from the metadata entirely,\n+                    // recreating the key here would undo that\n+                    if (isset($reportMetadata['metricsDocumentation'])) {\n+                        $reportMetadata['metricsDocumentation'][$metric->getName()] = $metric->getDocumentation();\n+                    }\n                 }\n             }\n         }"]
+semgrep = "semgrep/learned/php/mined-php-recreated-removed-array-key.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-finally-cleanup-too-narrow"
+tier = "info"
+title = "Finally cleanup does not cover the whole operation"
+look_for = "a try/finally or try/catch whose cleanup wraps only a portion of an operation, so an earlier failure leaves state behind such as a set flag or a written file"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25032#discussion_r3756874846", "fix" = "1ccbc3675c8f863ab92c8fd2b0b7480e35722a99"}]
+measured = {}
+trigger = ""
+question = "Does this hunk place a try/finally cleanup around only part of an operation, so a failure before the try still leaves state behind?"
+examples = ["", "@@ -870,45 +870,47 @@ class API extends \\Piwik\\Plugin\\API\n \n         Context::changeIdSite($report['idsite'], function () use ($report, $idReport, $date, $force) {\n \n+            $outputFilename = null;\n \n             try {\n+                $language = \\Piwik\\Plugins\\LanguagesManager\\API::getInstance()->getLanguageForUser($report['login']);\n+\n+                // generate report\n+                $this->enableSaveReportOnDisk = true;\n+                try {\n+                    [$outputFilename, $prettyDate, $reportSubject, $reportTitle, $additionalFiles] =\n+                        $this->generateReport(\n+                            $idReport,\n+                            $date,\n+                            $language,\n+                            self::OUTPUT_SAVE_ON_DISK,\n+                            $report['period_param'] ?? false\n+                        );\n+                } catch (NoAccessException $e) {\n+                    // This might occur if for some reason a report exists where the user does no longer have access to\n+                    // the configured site. Normally those reports should be automatically deleted.\n+                    Log::info(\"Skipping report as user does no longer have access to configured site\");\n+                    return;\n+                } catch (\\Throwable $e) {\n+                    throw new RetryableException($e->getMessage());\n+                } finally {\n+                    // Always clear the flag, regardless of how we leave the block. This is a singleton, so a value\n+                    // left behind here would stay set for the rest of the process and affect later requests.\n+                    $this->enableSaveReportOnDisk = false;\n+                }\n+\n+                if (!file_exists($outputFilename)) {\n+                    throw new Exception(\"The report file wasn't found in $outputFilename\");\n+                }\n+\n+                $contents = file_get_contents($outputFilename);\n+\n+                if (empty($contents)) {\n+                    Log::warning(\"Scheduled report file '%s' exists but is empty!\", $outputFilename);\n+                }\n+\n+                $reportType = $report['type'];\n+\n                 /**\n                  * Triggered when sending scheduled reports.\n                  *"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "php-xml-unclosed-empty-element"
+tier = "info"
+title = "Empty XML element emitted without a self-closing slash"
+look_for = "an empty XML or HTML element built as a start tag string without a self-closing slash or matching end tag, producing malformed markup"
+stack = "php"
+evidence = [{"url" = "https://github.com/matomo-org/matomo/pull/25120#discussion_r3844818126", "fix" = "4ec5de5cff2b83b0f4b81ea22be1a7c4cdf3159c"}]
+measured = {}
+trigger = "emptyNode|attribute|row"
+question = "Does this hunk build an empty XML or HTML element as a start tag with no self-closing slash or end tag, producing malformed markup?"
+examples = ["@@ -126,16 +126,21 @@ private function renderArray(array $array, string $prefixLines): string\n         foreach ($array as $key => $value) {\n             // based on the type of array & the key, determine how this node will look\n             if ($isAssociativeArray) {\n-                if (strpos($key, '=') !== false) {\n-                    [$keyAttributeName, $key] = explode('=', $key, 2);\n+                // a key like `idgoal=1` is rendered as a row attribute for backwards compatibility,\n+                // but only when the part in front of the `=` can be used as an attribute name\n+                if (strpos($key, '=') !== false && self::isValidXmlTagName(strstr($key, '=', true))) {\n+                    [$keyAttributeName, $keyAttributeValue] = explode('=', $key, 2);\n+                    $attribute = $keyAttributeName . '=\"' . self::formatAttributeValueXml($keyAttributeValue) . '\"';\n \n-                    $prefix = \"<row $keyAttributeName=\\\"$key\\\">\";\n+                    $prefix = \"<row $attribute>\";\n                     $suffix = \"</row>\";\n-                    $emptyNode = \"<row $keyAttributeName=\\\"$key\\\">\";\n+                    $emptyNode = \"<row $attribute>\";", "@@ -134,7 +134,7 @@ class Xml extends Renderer\n \n                     $prefix = \"<row $attribute>\";\n                     $suffix = \"</row>\";\n+                    $emptyNode = \"<row $attribute/>\";\n                 } elseif (!self::isValidXmlTagName($key)) {\n                     $attribute = 'key=\"' . self::formatAttributeValueXml($key) . '\"';\n "]
+semgrep = "semgrep/learned/php/mined-php-xml-unclosed-empty-element.yaml"
+semgrep_asks = 1
+proposed = "error"
+

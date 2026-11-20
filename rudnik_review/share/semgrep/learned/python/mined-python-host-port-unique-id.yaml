@@ -1,0 +1,28 @@
+rules:
+  - id: python-host-port-unique-id
+    metadata: {"rule": "python-host-port-unique-id", "evidence": ["https://github.com/home-assistant/core/pull/186739#discussion_r4352931733", "https://github.com/home-assistant/core/pull/186612#discussion_r4353309115"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >
+      The config entry unique id should not be derived from the host and port.
+      Use a stable device identifier such as a serial number or MAC address, or
+      abort on matching entries with `_async_abort_entries_match`.
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.async_set_unique_id(f"...{$HOST}...{$PORT}...")
+          - patterns:
+              - pattern-inside: |
+                  def _unique_id(...):
+                    ...
+              - pattern: return f"...{$HOST}...{$PORT}..."
+      - metavariable-pattern:
+          metavariable: $HOST
+          pattern-either:
+            - pattern: host
+            - pattern: $X.host
+      - metavariable-pattern:
+          metavariable: $PORT
+          pattern-either:
+            - pattern: port
+            - pattern: $X.port

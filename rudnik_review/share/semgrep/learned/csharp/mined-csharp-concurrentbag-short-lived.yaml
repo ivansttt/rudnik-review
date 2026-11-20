@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-concurrentbag-short-lived
+    metadata: {"rule": "csharp-concurrentbag-short-lived", "evidence": ["https://github.com/dotnet/aspnetcore/pull/66487#discussion_r3432184489"]}
+    languages: [csharp]
+    severity: WARNING
+    message: ConcurrentBag allocates a ThreadLocal work-stealing queue per instance; for short-lived collections use ConcurrentQueue or ConcurrentStack.
+    patterns:
+      - pattern: new ConcurrentBag<$T>()

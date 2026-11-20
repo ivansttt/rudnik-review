@@ -1,0 +1,7 @@
+rules:
+  - id: swift-off-by-one-uint16-max
+    metadata: {"rule": "swift-off-by-one-uint16-max", "evidence": ["https://github.com/apple/swift-nio/pull/3621#discussion_r3403643792"]}
+    languages: [swift]
+    message: A count or limit set to Int(UInt16.max) is off by one when it must remain strictly below the type's maximum.
+    severity: WARNING
+    pattern: $X = Int(UInt16.max)

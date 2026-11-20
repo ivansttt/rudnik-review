@@ -1,0 +1,17 @@
+rules:
+  - id: sql-like-unescaped-wildcard
+    metadata: {"rule": "sql-like-unescaped-wildcard", "evidence": ["https://github.com/apache/superset/pull/38715#discussion_r2958774596"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      A LIKE pattern is built by string-interpolating a user or stored value
+      (e.g. f"%{x}%") without escaping % and _ wildcards or using the engine's
+      autoescape, so wildcard characters in the value change the match.
+    pattern-either:
+      - pattern: $OBJ.like(f"%{$VALUE}%")
+      - pattern: $OBJ.like(f"%{$VALUE}")
+      - pattern: $OBJ.like(f"{$VALUE}%")
+      - pattern: $OBJ.like(f"_{$VALUE}_")
+      - pattern: $OBJ.like(f"%_{$VALUE}_%")
+      - pattern: $OBJ.like(f"_{$VALUE}%")

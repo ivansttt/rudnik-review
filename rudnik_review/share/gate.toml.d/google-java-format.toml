@@ -1,0 +1,14 @@
+# Java's formatter (spec 1707, 12 Nov 2026), a formatter alone: Java's toolchain ships none, and this one needs no configuration and comes
+# as one binary. It writes Google's style (two spaces) and reads no config: a team that formats Java in IntelliJ drops this file. The vendor
+# builds no Intel macOS binary, so no pin there and setup says the gap. The sha256 are the vendor's (GitHub's release API, 12 Nov 2026).
+[[tool]]
+name = "google-java-format"
+version = "2.0.0"
+stacks = ["java"]
+globs = ["*.java"]
+fmt = [["google-java-format", "--replace", "{files}"]]
+release = "google/google-java-format/releases/download/v{v}/google-java-format_{os}-{dash}{exe}"
+sha256_x86_64 = "c351f587e6dd1f11836be7296894ea2ab3bd91847dbd14101f4f04d390380fe9"
+sha256_aarch64 = "3193ae2e3a32634a45effc9f575005e7adf202699ab4d9d6488ff1a715588d10"
+sha256_darwin_arm64 = "04b13ad486bcc29ef64f7168c2d3eb330e73ae458610ba5bcf44f6018b655dc4"
+sha256_windows_x86_64 = "6e757021d3b5a8133ca3b5b1915c4cf38dc46ad0886bc9059fcc2ccb7b6036e5"

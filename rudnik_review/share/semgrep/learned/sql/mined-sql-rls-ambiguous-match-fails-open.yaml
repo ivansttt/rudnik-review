@@ -1,0 +1,14 @@
+rules:
+  - id: sql-rls-ambiguous-match-fails-open
+    metadata: {"rule": "sql-rls-ambiguous-match-fails-open", "evidence": ["https://github.com/apache/superset/pull/43993#discussion_r3962941274"]}
+    languages: [python]
+    message: |
+      An ambiguous RLS/permission dataset lookup collapses a multiple-match result
+      into the same None sentinel as a genuine miss, so the query runs with no
+      predicates instead of applying the union or refusing. Fail closed instead.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          $MATCHES = $QUERY.limit(2).all()
+          ...
+          return $MATCHES[0] if len($MATCHES) == 1 else None

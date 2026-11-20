@@ -1,0 +1,23 @@
+rules:
+  - id: python-missing-short-circuit-guard
+    metadata: {"rule": "python-missing-short-circuit-guard", "evidence": ["https://github.com/pydantic/pydantic/pull/11914#discussion_r2143344719"]}
+    languages:
+      - python
+    message: >-
+      Expensive check (any()/all() generator loop) runs without a preceding cheap
+      guard (sentinel or `is not None` comparison) to short-circuit the default case.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if any($ITEM for $NAME in $SEQ):
+                  ...
+          - pattern: |
+              if any($ITEM for $NAME in $SEQ) or $REST:
+                  ...
+          - pattern: |
+              if all($ITEM for $NAME in $SEQ):
+                  ...
+          - pattern: |
+              if all($ITEM for $NAME in $SEQ) or $REST:
+                  ...

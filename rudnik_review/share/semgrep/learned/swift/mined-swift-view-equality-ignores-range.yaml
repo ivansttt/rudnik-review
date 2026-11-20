@@ -1,0 +1,9 @@
+rules:
+  - id: swift-view-equality-ignores-range
+    metadata: {"rule": "swift-view-equality-ignores-range", "evidence": ["https://github.com/apple/swift-nio/pull/1886#discussion_r660322595"]}
+    languages:
+      - swift
+    message: Slice or view equality compares backing storage instead of the elements within each view range.
+    severity: WARNING
+    patterns:
+      - pattern: $LHS._buffer == $RHS._buffer

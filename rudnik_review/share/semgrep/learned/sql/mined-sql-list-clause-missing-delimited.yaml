@@ -1,0 +1,10 @@
+rules:
+  - id: sql-list-clause-missing-delimited
+    metadata: {"rule": "sql-list-clause-missing-delimited", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2687#discussion_r810289609", "https://github.com/sqlfluff/sqlfluff/pull/2041#discussion_r762637919"]}
+    message: Single Ref should be wrapped in Delimited(...) when a comma-separated list is allowed.
+    languages:
+      - python
+    severity: WARNING
+    patterns:
+      - pattern: 'Ref("$NAME")'
+      - pattern-not-inside: 'Delimited(...)'

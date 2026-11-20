@@ -1,0 +1,7 @@
+rules:
+  - id: sql-hardcoded-sql-extension
+    metadata: {"rule": "sql-hardcoded-sql-extension", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/8476#discussion_r3999412901", "https://github.com/sqlfluff/sqlfluff/pull/8476#discussion_r3999414682"]}
+    languages: [python]
+    message: "Use the configured supported extensions instead of hardcoding .sql."
+    severity: WARNING
+    pattern: $PATH.endswith(".sql")

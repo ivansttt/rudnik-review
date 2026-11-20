@@ -1,0 +1,20 @@
+rules:
+  - id: java-unchecked-buffer-read
+    metadata: {"rule": "java-unchecked-buffer-read", "evidence": ["https://github.com/netty/netty/pull/13656#discussion_r1355117098"]}
+    languages:
+      - java
+    severity: WARNING
+    message: Fixed-size buffer read at a computed offset without a readable-bytes check.
+    patterns:
+      - pattern: $VAR = unsignedShortBE($BUF, $OFF + 11) + $CONST;
+      - pattern-not-inside: |
+          {
+            ...
+            if ($BUF.readableBytes() < $LIMIT) {
+              ...
+              return $R;
+            }
+            ...
+            $VAR = unsignedShortBE($BUF, $OFF + 11) + $CONST;
+            ...
+          }

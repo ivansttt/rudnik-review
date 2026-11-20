@@ -1,0 +1,11 @@
+rules:
+  - id: java-enum-ordinal-persistence
+    metadata: {"rule": "java-enum-ordinal-persistence", "evidence": ["https://github.com/apache/lucene/pull/16506#discussion_r3830381273"]}
+    languages:
+      - java
+    message: Enum value read or written by its JVM ordinal; define explicit stable wire codes instead
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $E.values()[$I]
+          - pattern: $E.ordinal()

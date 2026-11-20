@@ -1,0 +1,8 @@
+rules:
+  - id: java-fallible-supplier-get
+    metadata: {"rule": "java-fallible-supplier-get", "evidence": ["https://github.com/apache/kafka/pull/23965#discussion_r4458026915", "https://github.com/apache/kafka/pull/23965#discussion_r4458035229"]}
+    languages: [java]
+    message: "Dereferencing a request-header-version supplier that can throw instead of the resilient supplier variant"
+    severity: WARNING
+    patterns:
+      - pattern: requestHeaderVersion.get()

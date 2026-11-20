@@ -1,0 +1,7 @@
+rules:
+  - id: sql-typo-in-identifier
+    metadata: {"rule": "sql-typo-in-identifier", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/501#discussion_r510875314", "https://github.com/sqlfluff/sqlfluff/pull/686#discussion_r558994439", "https://github.com/sqlfluff/sqlfluff/pull/684#discussion_r559241745"]}
+    message: Misspelled identifier or type-name string
+    severity: WARNING
+    languages: [python]
+    pattern-regex: '_unfiy|_object_types_pural|dupdate_statement'

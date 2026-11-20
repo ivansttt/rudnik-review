@@ -1,0 +1,18 @@
+rules:
+  - id: kotlin-text-search-for-structure
+    metadata: {"rule": "kotlin-text-search-for-structure", "evidence": ["https://github.com/detekt/detekt/pull/7635#discussion_r1799465011"]}
+    languages:
+      - kotlin
+    message: >-
+      Counting keyword occurrences in raw source text (e.g. text.countOccurrencesOf("..."))
+      to detect a structural or naming property is fragile and can yield false positives.
+      Check the element's name identifier (e.g. nameIdentifier?.text) instead.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: text.countOccurrencesOf($KEYWORD)
+          - pattern: text.lowercase().countOccurrencesOf($KEYWORD)
+          - pattern: text.uppercase().countOccurrencesOf($KEYWORD)
+          - pattern: $RECV.text.countOccurrencesOf($KEYWORD)
+          - pattern: $RECV.text.lowercase().countOccurrencesOf($KEYWORD)
+          - pattern: $RECV.text.uppercase().countOccurrencesOf($KEYWORD)

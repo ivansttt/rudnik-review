@@ -1,0 +1,8 @@
+---
+description: rudnik-review checks your changes before you finish
+alwaysApply: true
+---
+Before you finish, run `rudnik-review check --files <the files you changed>` once (a first check takes 1 to 4 minutes) and fix every
+error it prints; a warning or an info is advice, to take where it is right and cheap and to leave where it is not; never work around either.
+A finding you are sure is wrong, answer in your reply as `NOTE-WRONG: <fingerprint>: <why>`.
+When you stop, the stop hook runs the whole check, a second-family model review too, and hands you back any new error.

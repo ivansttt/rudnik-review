@@ -1,0 +1,14 @@
+# Spec 1868: Infer on the developer's own java, as the agent-jvm image runs it (17 Nov 2026: the owner's macOS arm64 trial said "infer: cannot
+# be installed"). Facebook's v1.3.0 ships Linux x86_64 and macOS arm64 builds alone, their digests GitHub's on 17 Nov 2026: no other platform
+# is pinned, so it is said not checked there. Its bin/infer starts what its lib/ holds, so setup keeps the folder whole as <tools>/infer and
+# links infer to share/agent-jvm/analyse, which captures the project's own build. That takes minutes on a real project, so only
+# `check --deep` runs it (`deep`).
+[desktop.infer]
+release = "facebook/infer/releases/download/v{v}/infer-linux-x86_64-v{v}.tar.xz"
+release_darwin = "facebook/infer/releases/download/v{v}/infer-osx-arm64-v{v}.tar.xz"
+folder = "infer-*-v{v}"
+needs = ["java"]
+link = "share/agent-jvm/analyse"
+deep = true
+sha256_x86_64 = "02be62ba931cb43e2d42bbf7abf4bd9a410cf8464cce5453934e25c90a825850"
+sha256_darwin_arm64 = "60eccd231e27f2a3d65947ef75b9adcd1983528296bd1da6f67a6da02e22a96e"

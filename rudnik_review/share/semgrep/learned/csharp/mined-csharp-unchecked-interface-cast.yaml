@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-unchecked-interface-cast
+    metadata: {"rule": "csharp-unchecked-interface-cast", "evidence": ["https://github.com/dotnet/aspnetcore/pull/57323#discussion_r1716084880"]}
+    languages: [csharp]
+    message: Do not cast an interface-typed member to a concrete collection type without checking the type.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: (List<$T>)$EXPR
+          - pattern: (Dictionary<$K, $V>)$EXPR

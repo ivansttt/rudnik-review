@@ -1,0 +1,12 @@
+rules:
+  - id: sql-pointer-delta-ignores-scroll
+    metadata: {"rule": "sql-pointer-delta-ignores-scroll", "evidence": ["https://github.com/apache/superset/pull/45090#discussion_r4282746680"]}
+    languages: [ts]
+    message: >-
+      Drag/drop delta is computed from viewport client coordinates without
+      adding the scroll offset of the scrolling container.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: $A.clientX - $B.startX
+          - pattern: $A.clientY - $B.startY

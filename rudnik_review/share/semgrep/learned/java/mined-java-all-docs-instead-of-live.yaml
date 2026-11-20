@@ -1,0 +1,7 @@
+rules:
+  - id: java-all-docs-instead-of-live
+    metadata: {"rule": "java-all-docs-instead-of-live", "evidence": ["https://github.com/apache/lucene/pull/15836#discussion_r2957225112"]}
+    languages: [java]
+    severity: WARNING
+    message: "DocIdSetIterator.all(maxDoc) matches deleted and not-live documents too; use the live-docs/accept-docs iterator when only live documents should match."
+    pattern: DocIdSetIterator.all(...)

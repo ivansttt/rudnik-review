@@ -1,0 +1,18 @@
+rules:
+  - id: sql-lost-memoization-repeats-provider
+    metadata: {"rule": "sql-lost-memoization-repeats-provider", "evidence": ["https://github.com/apache/superset/pull/44892#discussion_r4183383151"]}
+    languages:
+      - python
+    message: >-
+      The purge-policy registry is rebuilt (and its provider re-invoked) on every
+      call because the caching layer was removed. Cache the index per provider (for
+      example with @lru_cache) so an expensive or non-deterministic provider runs
+      once per process.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          return validate_unique_root_policies($ARGS)
+      - pattern-not-inside: |
+          @lru_cache(...)
+          def $F(...):
+            ...

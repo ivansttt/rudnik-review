@@ -1,0 +1,15 @@
+rules:
+  - id: python-substring-operator-match
+    metadata: {"rule": "python-substring-operator-match", "evidence": ["https://github.com/pypa/pip/pull/10625#discussion_r744101945"]}
+    languages: [python]
+    severity: INFO
+    message: Compare the operator for equality; substring membership such as '==' in operator also matches '~='.
+    pattern-either:
+      - pattern: '"==" in $OP'
+      - pattern: '"!=" in $OP'
+      - pattern: '"<" in $OP'
+      - pattern: '">" in $OP'
+      - pattern: '"<=" in $OP'
+      - pattern: '">=" in $OP'
+      - pattern: '"~=" in $OP'
+      - pattern: '"===" in $OP'

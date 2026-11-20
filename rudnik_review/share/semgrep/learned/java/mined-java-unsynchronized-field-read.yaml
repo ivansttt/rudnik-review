@@ -1,0 +1,8 @@
+rules:
+  - id: java-unsynchronized-field-read
+    metadata: {"rule": "java-unsynchronized-field-read", "evidence": ["https://github.com/apache/lucene/pull/13627#discussion_r1705650081"]}
+    languages:
+      - java
+    message: "DocumentsWriterDeleteQueue#advanced is read without synchronization via isAdvanced(), so the reader can observe a stale value."
+    severity: WARNING
+    pattern: $X.deleteQueue.isAdvanced()

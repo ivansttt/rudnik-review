@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-interop-signature-unsigned-type
+    metadata: {"rule": "csharp-interop-signature-unsigned-type", "evidence": ["https://github.com/dotnet/runtime/pull/135144#discussion_r4173736929", "https://github.com/dotnet/runtime/pull/135144#discussion_r4177492556", "https://github.com/dotnet/runtime/pull/135144#discussion_r4177501932"]}
+    languages: [csharp]
+    message: Casting a native value to uint at the call site instead of declaring the interop signature with uint.
+    severity: WARNING
+    pattern-either:
+      - pattern: unchecked((uint) $X)
+      - pattern: (uint) $X

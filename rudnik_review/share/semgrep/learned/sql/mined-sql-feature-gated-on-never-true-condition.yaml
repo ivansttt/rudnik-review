@@ -1,0 +1,15 @@
+rules:
+  - id: sql-feature-gated-on-never-true-condition
+    metadata: {"rule": "sql-feature-gated-on-never-true-condition", "evidence": ["https://github.com/apache/superset/pull/40237#discussion_r3291584009"]}
+    message: |
+      A cache or optimization branch is gated on a condition that is never
+      satisfied at its callsites (e.g. `if not nullpool:` when every caller
+      passes `nullpool=True` by default), leaving the branch permanently
+      dormant.
+    languages:
+      - python
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if not $FLAG:
+            ...

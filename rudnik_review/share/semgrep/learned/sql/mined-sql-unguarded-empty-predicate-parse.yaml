@@ -1,0 +1,16 @@
+rules:
+  - id: sql-unguarded-empty-predicate-parse
+    metadata: {"rule": "sql-unguarded-empty-predicate-parse", "evidence": ["https://github.com/apache/superset/pull/19454#discussion_r839292500"]}
+    message: >-
+      A possibly-empty RLS predicate is passed to sqlparse.parse(...)[0] without
+      a falsy guard, so an empty predicate raises IndexError.
+    languages:
+      - python
+    severity: ERROR
+    patterns:
+      - pattern: sqlparse.parse($PRED)[0]
+      - pattern-not-inside: |
+          if not $PRED:
+              return None
+          ...
+          sqlparse.parse($PRED)[0]

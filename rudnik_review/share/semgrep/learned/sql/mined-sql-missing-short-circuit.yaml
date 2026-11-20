@@ -1,0 +1,12 @@
+rules:
+  - id: sql-missing-short-circuit
+    metadata: {"rule": "sql-missing-short-circuit", "evidence": ["https://github.com/apache/superset/pull/24808#discussion_r1276541831", "https://github.com/apache/superset/pull/24808#discussion_r1276543183"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Loop keeps iterating after a match instead of returning True immediately.
+    patterns:
+      - pattern-inside: |
+          for $ITEM in $ITERABLE:
+              ...
+      - pattern: "$FLAG = True"

@@ -1,0 +1,13 @@
+rules:
+  - id: sql-release-note-mismatched-link
+    metadata: {"rule": "sql-release-note-mismatched-link", "evidence": ["https://github.com/apache/superset/pull/20490#discussion_r906150531", "https://github.com/apache/superset/pull/20490#discussion_r906150797", "https://github.com/apache/superset/pull/20490#discussion_r906151573", "https://github.com/apache/superset/pull/20490#discussion_r906152402", "https://github.com/apache/superset/pull/20490#discussion_r906152721"]}
+    languages: [generic]
+    message: Release note link text and URL reference different PR numbers or a wrong URL form.
+    severity: WARNING
+    pattern-either:
+      - patterns:
+          - pattern: "([#$A](https://github.com/apache/superset/pull/$B))"
+          - metavariable-comparison:
+              metavariable: $A
+              comparison: $A != $B
+      - pattern: "([#$A](https://github.com/apache/superset/pull/$A/files))"

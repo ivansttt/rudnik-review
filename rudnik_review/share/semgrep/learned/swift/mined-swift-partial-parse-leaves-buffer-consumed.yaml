@@ -1,0 +1,10 @@
+rules:
+  - id: swift-partial-parse-leaves-buffer-consumed
+    metadata: {"rule": "swift-partial-parse-leaves-buffer-consumed", "evidence": ["https://github.com/apple/swift-nio/pull/2320#discussion_r1032622134", "https://github.com/apple/swift-nio/pull/1902#discussion_r673756291"]}
+    languages:
+      - swift
+    severity: WARNING
+    message: Failable parse mutates an inout buffer without restoring it on failure; guarded readInteger calls that return nil leave the buffer partially consumed.
+    patterns:
+      - pattern: $BUFFER.readInteger(...)
+      - pattern-inside: "guard ... else { return nil }"

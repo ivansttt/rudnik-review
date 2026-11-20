@@ -1,0 +1,21 @@
+rules:
+  - id: java-iterator-next-null
+    metadata: {"rule": "java-iterator-next-null", "evidence": ["https://github.com/apache/kafka/pull/21736#discussion_r2934531784", "https://github.com/apache/kafka/pull/21734#discussion_r2934548673", "https://github.com/apache/kafka/pull/21734#discussion_r2934549007"]}
+    languages: [java]
+    severity: ERROR
+    message: "Iterator next()/peekNextKey() returns null when the wrapped iterator yields null instead of following the Iterator contract"
+    pattern-either:
+      - pattern: |
+          final $TYPE $X = $ITER.next();
+          ...
+          if ($X == null) {
+            return null;
+          }
+      - pattern: |
+          $TYPE $X = $ITER.next();
+          ...
+          if ($X == null) {
+            return null;
+          }
+      - pattern: |
+          return $X == null ? null : $X.$FIELD;

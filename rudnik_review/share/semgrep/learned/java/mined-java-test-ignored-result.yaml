@@ -1,0 +1,19 @@
+rules:
+  - id: java-test-ignored-result
+    metadata: {"rule": "java-test-ignored-result", "evidence": ["https://github.com/netty/netty/pull/15833#discussion_r2506531799", "https://github.com/netty/netty/pull/15833#discussion_r2506532724", "https://github.com/netty/netty/pull/15833#discussion_r2506534086", "https://github.com/netty/netty/pull/13274#discussion_r1135111658", "https://github.com/netty/netty/pull/11966#discussion_r779449226", "https://github.com/netty/netty/pull/11469#discussion_r672275015", "https://github.com/netty/netty/pull/10498#discussion_r479985083"]}
+    languages:
+      - java
+    message: >-
+      Test calls $METHOD as a bare statement, discarding its boolean/status
+      result that reports success or failure. Assert the result (e.g.
+      assertTrue/assertFalse) so a failed operation is detected.
+    severity: WARNING
+    patterns:
+      - pattern: $OBJ.$METHOD(...);
+      - pattern-not-inside: |
+          assertTrue(...);
+      - pattern-not-inside: |
+          assertFalse(...);
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(writeInbound|writeOutbound|writeOneInbound|writeOneOutbound|finishAndReleaseAll|finish|close)$

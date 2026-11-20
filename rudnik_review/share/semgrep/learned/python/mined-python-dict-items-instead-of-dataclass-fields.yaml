@@ -1,0 +1,12 @@
+rules:
+  - id: python-dict-items-instead-of-dataclass-fields
+    metadata: {"rule": "python-dict-items-instead-of-dataclass-fields", "evidence": ["https://github.com/pydantic/pydantic/pull/10662#discussion_r1812674722"]}
+    languages:
+      - python
+    message: Enumerating a dataclass's fields via self.__dict__ misses fields not stored in __dict__ and includes non-field attributes; use dataclasses.fields(self).
+    severity: WARNING
+    pattern-either:
+      - pattern: self.__dict__.items()
+      - pattern: self.__dict__.keys()
+      - pattern: self.__dict__.values()
+      - pattern: self.__dict__

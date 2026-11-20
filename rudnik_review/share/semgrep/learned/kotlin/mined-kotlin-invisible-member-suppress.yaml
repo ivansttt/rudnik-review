@@ -1,0 +1,10 @@
+rules:
+  - id: kotlin-invisible-member-suppress
+    metadata: {"rule": "kotlin-invisible-member-suppress", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/3000#discussion_r735662443"]}
+    languages: [kotlin]
+    severity: WARNING
+    message: Suppressing invisible member access across modules is undefined behavior; use @PublishedApi.
+    patterns:
+      - pattern-either:
+          - pattern: '@Suppress("INVISIBLE_MEMBER")'
+          - pattern: '@Suppress("INVISIBLE_REFERENCE")'

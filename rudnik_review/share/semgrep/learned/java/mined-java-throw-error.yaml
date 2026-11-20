@@ -1,0 +1,9 @@
+rules:
+  - id: java-throw-error
+    metadata: {"rule": "java-throw-error", "evidence": ["https://github.com/netty/netty/pull/14466#discussion_r1846046341", "https://github.com/netty/netty/pull/14198#discussion_r1704993414"]}
+    languages: [java]
+    message: raw Error thrown instead of a specific exception with a message
+    severity: WARNING
+    pattern-either:
+      - pattern: throw new Error();
+      - pattern: throw new Error($...ARGS);

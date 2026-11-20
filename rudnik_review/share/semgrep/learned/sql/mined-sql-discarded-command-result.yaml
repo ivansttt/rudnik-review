@@ -1,0 +1,10 @@
+rules:
+  - id: sql-discarded-command-result
+    metadata: {"rule": "sql-discarded-command-result", "evidence": ["https://github.com/apache/superset/pull/22199#discussion_r1060822143"]}
+    languages: [python]
+    patterns:
+      - pattern: $C(...).run()
+      - pattern-not-inside: |
+          $X = $C(...).run()
+    message: Command run() result is discarded, losing the created object reference
+    severity: WARNING

@@ -1,0 +1,20 @@
+rules:
+  - id: java-redundant-flag-parameter
+    metadata: {"rule": "java-redundant-flag-parameter", "evidence": ["https://github.com/apache/lucene/pull/13542#discussion_r1750468665", "https://github.com/netty/netty/pull/10498#discussion_r479981486"]}
+    languages:
+      - java
+    message: Boolean flag parameter whose value is derivable from another argument
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $CLASS(..., boolean $FLAG, ...) {
+                ...
+              }
+          - pattern: |
+              $RET $METHOD(..., boolean $FLAG, ...) {
+                ...
+              }
+      - metavariable-regex:
+          metavariable: $FLAG
+          regex: ^(is|has)[A-Z]

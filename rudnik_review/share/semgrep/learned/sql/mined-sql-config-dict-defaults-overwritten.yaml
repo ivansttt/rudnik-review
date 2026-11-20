@@ -1,0 +1,19 @@
+rules:
+  - id: sql-config-dict-defaults-overwritten
+    metadata: {"rule": "sql-config-dict-defaults-overwritten", "evidence": ["https://github.com/apache/superset/pull/22635#discussion_r1065402894"]}
+    languages:
+      - python
+    message: >-
+      Config defaults for individual keys are stored as entries in one shared
+      config dict. A user who overrides the dict with a single key replaces the
+      whole dict and silently drops the other keys' defaults.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $CONFIG = {
+            $KEY: $VALUE,
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $CONFIG
+          regex: '^[A-Z][A-Z0-9_]*$'

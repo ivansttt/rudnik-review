@@ -1,0 +1,19 @@
+rules:
+  - id: java-unbounded-queue-blocking-put
+    metadata: {"rule": "java-unbounded-queue-blocking-put", "evidence": ["https://github.com/apache/kafka/pull/21261#discussion_r2678870612", "https://github.com/apache/kafka/pull/21261#discussion_r2683176145"]}
+    languages: [java]
+    message: Blocking put on an unbounded queue only adds InterruptedException handling; use addFirst/add
+    severity: INFO
+    pattern-either:
+      - pattern: |
+          try {
+            $Q.putFirst(...);
+          } catch (InterruptedException $E) {
+            ...
+          }
+      - pattern: |
+          try {
+            $Q.putLast(...);
+          } catch (InterruptedException $E) {
+            ...
+          }

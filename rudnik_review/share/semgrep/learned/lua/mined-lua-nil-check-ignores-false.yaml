@@ -1,0 +1,9 @@
+rules:
+  - id: lua-nil-check-ignores-false
+    metadata: {"rule": "lua-nil-check-ignores-false", "evidence": ["https://github.com/koreader/koreader/pull/16264#discussion_r4308580473"]}
+    languages: [lua]
+    message: Comparing a result to nil misses a false value that also means declined or absent
+    severity: ERROR
+    patterns:
+      - pattern: |
+          if $X == nil then return end

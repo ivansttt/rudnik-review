@@ -1,0 +1,11 @@
+rules:
+  - id: sql-identical-fixture-identity-fields
+    metadata: {"rule": "sql-identical-fixture-identity-fields", "evidence": ["https://github.com/apache/superset/pull/35105#discussion_r2342084269"]}
+    languages: [javascript, typescript]
+    message: Fixture sets `id` and `immutableId` to the same value; give them different values so code that mixes them up is caught.
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          { ..., id: $X, immutableId: $X, ... }
+      - pattern: |
+          { ..., immutableId: $X, id: $X, ... }

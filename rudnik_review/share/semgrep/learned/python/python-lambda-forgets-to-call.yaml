@@ -1,0 +1,12 @@
+rules:
+  - id: python-lambda-forgets-to-call
+    metadata: {"rule": "python-lambda-forgets-to-call", "evidence": ["BugsInPy youtube-dl-12: `not str_op(attr, value)` became `not str_op`"]}
+    languages: [python]
+    severity: WARNING
+    message: This lambda ignores both its parameters and returns the negation of a bare name, False for any function; the function is likely meant to be called with them.
+    patterns:
+      - pattern: "lambda $A, $B: not $F"
+      - metavariable-regex: {metavariable: $F, regex: '^(?!None$|True$|False$|_)[A-Za-z_]\w*$'}
+      - metavariable-regex: {metavariable: $A, regex: '^[A-Za-z]\w*$'}
+      - pattern-not: "lambda $A, $B: not $A"
+      - pattern-not: "lambda $A, $B: not $B"

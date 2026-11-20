@@ -1,0 +1,8 @@
+rules:
+  - id: sql-single-element-tuple
+    metadata: {"rule": "sql-single-element-tuple", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1099#discussion_r643237547"]}
+    languages: [python]
+    message: Parenthesized string is not a tuple; add a trailing comma.
+    severity: WARNING
+    patterns:
+      - pattern: $F(..., $K = ("$Y"))

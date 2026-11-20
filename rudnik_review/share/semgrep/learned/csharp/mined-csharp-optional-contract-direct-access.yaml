@@ -1,0 +1,14 @@
+rules:
+  - id: csharp-optional-contract-direct-access
+    metadata: {"rule": "csharp-optional-contract-direct-access", "evidence": ["https://github.com/dotnet/runtime/pull/133986#discussion_r4049191330", "https://github.com/dotnet/runtime/pull/133986#discussion_r4048114189"]}
+    languages:
+      - csharp
+    severity: WARNING
+    message: Access optional data contracts via TryGetContract or gated validation, not direct registry access or unconditional Validate.
+    patterns:
+      - pattern-either:
+          - pattern: $TARGET.Contracts.$CONTRACT
+          - pattern: Validate<$CONTRACT>($REGISTRY)
+      - metavariable-regex:
+          metavariable: $CONTRACT
+          regex: .*ExternalMemoryHandles.*

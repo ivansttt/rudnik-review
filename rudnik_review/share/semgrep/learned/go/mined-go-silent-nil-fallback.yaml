@@ -1,0 +1,11 @@
+rules:
+  - id: go-silent-nil-fallback
+    metadata: {"rule": "go-silent-nil-fallback", "evidence": ["https://github.com/kubernetes/kubernetes/pull/138564#discussion_r3882951700"]}
+    languages:
+      - go
+    message: >-
+      Reads only the structured Object field of a runtime.RawExtension, ignoring
+      the Raw byte representation. Inputs parsed from YAML/JSON populate only Raw,
+      so this silently evaluates to nil. Decode Raw and fall back to Object.
+    severity: WARNING
+    pattern: $X.Options.Object

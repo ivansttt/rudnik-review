@@ -1,0 +1,9 @@
+rules:
+  - id: java-ignored-cas-result
+    metadata: {"rule": "java-ignored-cas-result", "evidence": ["https://github.com/netty/netty/pull/14152#discussion_r1670918044"]}
+    languages: [java]
+    severity: WARNING
+    message: The boolean result of compareAndSet is discarded, so code proceeds as if the update succeeded.
+    pattern-either:
+      - pattern: $U.compareAndSet($A, $B);
+      - pattern: $U.compareAndSet($A, $B, $C);

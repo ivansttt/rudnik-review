@@ -1,0 +1,9 @@
+rules:
+  - id: java-default-conflates-absent
+    metadata: {"rule": "java-default-conflates-absent", "evidence": ["https://github.com/apache/kafka/pull/22436#discussion_r3339917831", "https://github.com/apache/kafka/pull/22284#discussion_r3242387579"]}
+    languages: [java]
+    message: 'Optional.orElse substitutes a default for an absent configured value, so callers can no longer distinguish "not configured" from "the default". Return the Optional (or a distinguishable sentinel) instead.'
+    severity: WARNING
+    patterns:
+      - pattern: |
+          return $OPT.orElse($DEFAULT);

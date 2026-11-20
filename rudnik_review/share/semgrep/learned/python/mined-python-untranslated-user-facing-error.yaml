@@ -1,0 +1,14 @@
+rules:
+  - id: python-untranslated-user-facing-error
+    metadata: {"rule": "python-untranslated-user-facing-error", "evidence": ["https://github.com/home-assistant/core/pull/188456#discussion_r4370178837"]}
+    languages: [python]
+    severity: WARNING
+    message: User-facing error raised with a hardcoded message string instead of translation_domain, translation_key and translation_placeholders
+    patterns:
+      - pattern-either:
+          - pattern: raise ConfigEntryNotReady($MSG)
+          - pattern: raise UpdateFailed($MSG)
+          - pattern: raise ServiceValidationError($MSG)
+      - metavariable-regex:
+          metavariable: $MSG
+          regex: ^f?["'].*["']$

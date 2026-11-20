@@ -1,0 +1,16 @@
+rules:
+  - id: sql-self-repo-action-unresolvable
+    metadata: {"rule": "sql-self-repo-action-unresolvable", "evidence": ["https://github.com/apache/superset/pull/44131#discussion_r3975965701", "https://github.com/apache/superset/pull/44131#discussion_r3975965704"]}
+    languages:
+      - yaml
+    severity: WARNING
+    message: >
+      A GitHub Actions step uses the self-repository syntax ($/) for a path that
+      only exists in the workspace (a sparse checkout or git submodule), which the
+      self-repo resolver cannot see. Use the workspace-relative ./ form instead.
+    patterns:
+      - pattern: |
+          uses: $ACTION
+      - metavariable-regex:
+          metavariable: $ACTION
+          regex: '^\$/'

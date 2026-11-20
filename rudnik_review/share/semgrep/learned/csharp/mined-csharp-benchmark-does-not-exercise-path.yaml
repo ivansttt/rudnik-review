@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-benchmark-does-not-exercise-path
+    metadata: {"rule": "csharp-benchmark-does-not-exercise-path", "evidence": ["https://github.com/dotnet/aspnetcore/pull/56395#discussion_r1678297400"]}
+    languages: [csharp]
+    severity: INFO
+    message: Benchmark endpoint has an empty parameterless delegate, so the measured transformer/handler path may never execute.
+    patterns:
+      - pattern-either:
+          - pattern: $B.MapGet($R, () => { })
+          - pattern: $B.MapPost($R, () => { })

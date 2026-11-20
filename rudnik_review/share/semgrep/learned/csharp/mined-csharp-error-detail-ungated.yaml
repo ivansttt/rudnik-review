@@ -1,0 +1,17 @@
+rules:
+  - id: csharp-error-detail-ungated
+    metadata: {"rule": "csharp-error-detail-ungated", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65256#discussion_r2761839426", "https://github.com/dotnet/aspnetcore/pull/65256#discussion_r2767267708"]}
+    languages:
+      - csharp
+    message: >-
+      Error details are extracted from the request buffer without checking
+      the `_showErrorDetails` flag, leaking internal details in production.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          if (result.ErrorLength > 0 && result.ErrorOffset + result.ErrorLength <= $BUFFER.Length)
+          {
+            ...
+            var $SLICE = $BUFFER.Slice(result.ErrorOffset, result.ErrorLength);
+            ...
+          }

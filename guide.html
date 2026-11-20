@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rudnik-review: a guide</title>
+<style>
+  :root { --bg: #fbfaf7; --ink: #23211d; --soft: #6b665c; --card: #ffffff; --line: #d9d4c8; --accent: #2f6f5e;
+          --ok: #e3f1ea; --stop: #fbe9dc; --stop-ink: #9a4a17; --code: #f1eee6; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #17181a; --ink: #e8e6e1; --soft: #a4a09a; --card: #212326; --line: #3a3d42; --accent: #7cc4ad;
+            --ok: #1f3a31; --stop: #43291a; --stop-ink: #f0a877; --code: #26282c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 .25rem; }
+  h2 { font-size: 1.35rem; margin: 2.75rem 0 .5rem; }
+  .lede { font-size: 1.15rem; color: var(--soft); margin-top: 0; }
+  code, pre { font: .9em/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: .1em .35em; overflow-wrap: anywhere; }
+  pre { padding: .9rem 1rem; overflow-x: auto; }
+  pre code { padding: 0; background: none; }
+  .cmd-note { color: var(--soft); }
+  figure { margin: 1.5rem 0; padding: .75rem .5rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  figure svg { display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 auto; }
+  figcaption { margin-top: .75rem; text-align: center; color: var(--soft); font-size: .95rem; }
+  svg text { fill: var(--ink); font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; text-anchor: middle; }
+  svg .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+  svg .ok { fill: var(--ok); stroke: none; }
+  svg .stop { fill: var(--stop); stroke: none; }
+  svg .wire { stroke: var(--soft); stroke-width: 1.5; fill: none; }
+  svg .back { stroke: var(--stop-ink); stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+  svg .dot { fill: var(--accent); }
+  svg text.on-dot { fill: var(--bg); font-weight: 600; }
+  svg .left { text-anchor: start; }
+  svg .small { font-size: 11.5px; fill: var(--soft); }
+  .blocked { border-left: 4px solid var(--stop-ink); background: var(--stop); padding: .75rem 1rem; border-radius: 0 8px 8px 0; }
+  .blocked pre { background: transparent; padding: .25rem 0; white-space: pre-wrap; word-break: break-all; }
+  a { color: var(--accent); }
+  @media (min-width: 64rem) { body { font-size: 18px; } main { max-width: 56rem; padding-top: 4rem; } }
+</style>
+</head>
+<body>
+<main>
+<h1>rudnik-review</h1>
+<p class="lede">One formatter and one review for every language you write, inside the agent you already use.</p>
+
+<h2>Why it exists</h2>
+<p>Your agent writes code faster than anyone can read it, and fast code leaves small things behind: an <code>eval</code> on user
+input, a secret pasted into a test, an import nobody uses. None of it is dramatic, and all of it adds up. rudnik-review formats
+what you change and stops a change that brings a <em>new</em> defect, at the three moments it matters. Code that was there before
+never blocks you, so it does not nag you about the past.</p>
+
+<figure>
+<svg viewBox="0 0 360 400" role="img" aria-label="Where it stands guard">
+  <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+  <g style="color: var(--soft)">
+    <rect class="box" x="70" y="10" width="220" height="44" rx="10"/><text x="180" y="37">You and your agent change code</text>
+    <path class="wire" d="M180 54V82" marker-end="url(#a1)"/>
+    <rect class="box" x="90" y="86" width="180" height="40" rx="10"/><text x="180" y="111">The change is formatted</text>
+    <path class="wire" d="M180 126L60 160" marker-end="url(#a1)"/><path class="wire" d="M180 126V160" marker-end="url(#a1)"/><path class="wire" d="M180 126L300 160" marker-end="url(#a1)"/>
+    <rect class="box" x="8" y="164" width="104" height="40" rx="10"/><text x="60" y="189">Agent finishes</text>
+    <rect class="box" x="128" y="164" width="104" height="40" rx="10"/><text x="180" y="189">You commit</text>
+    <rect class="box" x="248" y="164" width="104" height="40" rx="10"/><text x="300" y="189">Pull request</text>
+    <path class="wire" d="M60 204L180 240" marker-end="url(#a1)"/><path class="wire" d="M180 204V240" marker-end="url(#a1)"/><path class="wire" d="M300 204L180 240" marker-end="url(#a1)"/>
+    <rect class="box" x="85" y="244" width="190" height="40" rx="20"/><text x="180" y="269">Anything new and wrong?</text>
+    <path class="wire" d="M140 284L90 320" marker-end="url(#a1)"/><path class="wire" d="M220 284L270 320" marker-end="url(#a1)"/>
+    <rect class="ok" x="10" y="324" width="160" height="60" rx="10"/><text x="90" y="349">No: old code passes,</text><text x="90" y="368">your change goes on</text>
+    <rect class="stop" x="190" y="324" width="160" height="60" rx="10"/><text x="270" y="349">A new defect goes back</text><text x="270" y="368">to whoever can mend it</text>
+    <path class="back" d="M350 340C372 250 360 60 292 32" marker-end="url(#a1)" style="color: var(--stop-ink)"/>
+  </g>
+</svg>
+<figcaption>The same check stands at three doors, and only something new you brought is ever sent back.</figcaption>
+</figure>
+
+<h2>The first ten minutes</h2>
+<p>You need git with access to this repository and <a href="https://docs.astral.sh/uv">uv</a>; macOS, Linux and Windows work, less the analysers the README's Needs exclude.
+Install once a machine:</p>
+<pre><code>uv tool install git+https://github.com/ivansttt/rudnik-review</code></pre>
+<p class="cmd-note">With ssh keys: <code>git+ssh://git@github.com/ivansttt/rudnik-review</code>.</p>
+<p>Then, once in each clone:</p>
+<pre><code>rudnik-review init           # wires Cursor, Claude Code, Codex, JetBrains, git commit
+rudnik-review init github    # the pull request's check, once a repository
+rudnik-review setup          # the tools your languages need</code></pre>
+<p>Commit the files <code>init</code> wrote. The first of you also runs <code>rudnik-review fmt --all</code> and commits that on its
+own, so whole files are reformatted once and not inside your changes. Claude Code: accept the rudnik-review plugin it offers
+(<code>init claude</code> where <code>init</code> saw none). Codex: open <code>/hooks</code> once and trust its hook, and again when it changes.</p>
+
+<figure>
+<svg viewBox="0 0 360 330" role="img" aria-label="The first ten minutes">
+  <path class="wire" d="M28 24V306"/>
+  <circle class="dot" cx="28" cy="24" r="13"/><text class="on-dot" x="28" y="29">1</text><text class="left" x="52" y="29">You are invited to the repository</text>
+  <circle class="dot" cx="28" cy="64" r="13"/><text class="on-dot" x="28" y="69">2</text><text class="left" x="52" y="69">One install line with uv</text>
+  <circle class="dot" cx="28" cy="104" r="13"/><text class="on-dot" x="28" y="109">3</text><text class="left" x="52" y="109">init, in your clone</text>
+  <circle class="dot" cx="28" cy="144" r="13"/><text class="on-dot" x="28" y="149">4</text><text class="left" x="52" y="149">init github</text><text class="left small" x="140" y="149">once a repository</text>
+  <circle class="dot" cx="28" cy="184" r="13"/><text class="on-dot" x="28" y="189">5</text><text class="left" x="52" y="189">setup fetches the tools</text>
+  <circle class="dot" cx="28" cy="224" r="13"/><text class="on-dot" x="28" y="229">6</text><text class="left" x="52" y="229">fmt --all</text><text class="left small" x="122" y="229">once, by the first of you</text>
+  <circle class="dot" cx="28" cy="264" r="13"/><text class="on-dot" x="28" y="269">7</text><text class="left" x="52" y="269">Commit what it wrote</text>
+  <rect class="ok" x="12" y="288" width="336" height="36" rx="18"/><text x="180" y="311">8 · Work as before</text>
+</svg>
+<figcaption>Ten minutes, once, with your languages' toolchains in place: after that you work the way you always did.</figcaption>
+</figure>
+
+<h2>What it looks like when it stops something</h2>
+<p>Say you ask the agent for a calculator endpoint and it writes <code>return eval(expression)</code>. When it tries to finish, it
+gets this back instead of a green light:</p>
+<div class="blocked"><pre>error api/calc.py:12 ruff S307: Use of possibly insecure function; consider using `ast.literal_eval` 7c2e…</pre></div>
+<p>It does not stop there: it parses the expression properly, the check runs again and is quiet, and the agent finishes. The unused
+import two lines up came back as a <em>warning</em>, which you may mend or leave. The code at the end of the line is the finding's
+fingerprint (shortened here). If you are sure a finding is wrong, don't work around it: answer
+<code>NOTE-WRONG: &lt;fingerprint&gt;: &lt;why&gt;</code> in the agent's reply.</p>
+<p>The same holds elsewhere. In JetBrains, files are formatted when you save, Junie has <code>check</code> and <code>explain</code> as
+tools, and for AI Assistant you paste the one line <code>init</code> printed into its MCP settings. <code>git commit</code> is refused
+while what you staged holds a new error, and the pull request's <code>rudnik-review</code> check fails on one and shows each
+finding on its line.</p>
+
+<h2>What one check does</h2>
+<figure>
+<svg viewBox="0 0 360 344" role="img" aria-label="What one check does">
+  <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+  <g style="color: var(--soft)">
+    <rect class="box" x="40" y="10" width="280" height="40" rx="10"/><text x="180" y="35">The files your branch changed</text>
+    <path class="wire" d="M180 50V72" marker-end="url(#a2)"/>
+    <rect class="box" x="40" y="76" width="280" height="40" rx="10"/><text x="180" y="101">Each language's formatter</text>
+    <path class="wire" d="M180 116V138" marker-end="url(#a2)"/>
+    <rect class="box" x="40" y="142" width="280" height="66" rx="10"/><text x="180" y="164">The analysers</text>
+    <text class="small" x="180" y="182">only what is new against</text><text class="small" x="180" y="198">the branch it merges into</text>
+    <path class="wire" d="M180 208V230" marker-end="url(#a2)"/>
+    <rect class="box" x="40" y="234" width="280" height="40" rx="10"/><text x="180" y="259">An agent finishes: another vendor's model</text>
+    <path class="wire" d="M180 274L95 300" marker-end="url(#a2)"/><path class="wire" d="M180 274L265 300" marker-end="url(#a2)"/>
+    <rect class="stop" x="20" y="304" width="150" height="32" rx="16"/><text x="95" y="325">error: mend it</text>
+    <rect class="ok" x="190" y="304" width="150" height="32" rx="16"/><text x="265" y="325">warning, info: advice</text>
+  </g>
+</svg>
+<figcaption>Your changed files, formatted, then read by the analysers and by a second pair of eyes from another vendor.</figcaption>
+</figure>
+<p>That second pair of eyes, asked when an agent finishes and on <code>check --llm</code>, never at a commit or the pull request, is
+another vendor's model, through the CLI you are signed in to (Codex or Claude Code), never a key from us; with neither, it is skipped.</p>
+
+<h2>By hand</h2>
+<pre><code>rudnik-review check                  # what this branch adds; an error stops you
+rudnik-review fmt                    # format the files you changed
+rudnik-review check --format sarif   # .rudnik/review.sarif, which a JetBrains IDE opens
+rudnik-review update                 # the next release and its tools</code></pre>
+<p>Python, JavaScript and TypeScript, Go, Rust, Java, Kotlin, C#, C and C++, Swift, shell, SQL, YAML, TOML, Terraform, Dockerfiles
+and GDScript are covered, and every file is searched for secrets. The <a href="README.md">README</a> lists each language's
+formatter, analysers and what they need, and what to do when something is off.</p>
+</main>
+</body>
+</html>

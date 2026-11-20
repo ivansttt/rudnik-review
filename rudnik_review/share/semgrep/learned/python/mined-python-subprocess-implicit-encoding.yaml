@@ -1,0 +1,9 @@
+rules:
+  - id: python-subprocess-implicit-encoding
+    metadata: {"rule": "python-subprocess-implicit-encoding", "evidence": ["https://github.com/pypa/pip/pull/11589#discussion_r1018394941", "https://github.com/pypa/pip/pull/11589#discussion_r1018413599"]}
+    languages: [python]
+    message: Bytes decoded or text encoded with the implicit default encoding; pass an explicit encoding argument.
+    severity: WARNING
+    pattern-either:
+      - pattern: $X.decode()
+      - pattern: $X.encode()

@@ -1,0 +1,15 @@
+rules:
+  - id: sql-chip-label-bypasses-formatter
+    metadata: {"rule": "sql-chip-label-bypasses-formatter", "evidence": ["https://github.com/apache/superset/pull/45223#discussion_r4255952350", "https://github.com/apache/superset/pull/45223#discussion_r4263412766"]}
+    languages:
+      - ts
+    message: Cross-filter chip label formats a dimension value without the shared series formatter (formatSeriesName); temporal values render as raw epochs and numeric values get the smart-formatter abbreviation.
+    severity: ERROR
+    pattern-either:
+      - pattern: formatBubbleValue($VALUE)
+      - pattern: |
+          {
+            ...,
+            numberFormatter: getNumberFormatter(),
+            ...,
+          }

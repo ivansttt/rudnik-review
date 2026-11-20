@@ -1,0 +1,9 @@
+rules:
+  - id: c-redundant-parameter
+    metadata: {"rule": "c-redundant-parameter", "evidence": ["https://github.com/bitcoin/bitcoin/pull/32694#discussion_r2138697822", "https://github.com/systemd/systemd/pull/40429#discussion_r2759278519"]}
+    languages: [c, cpp]
+    message: Function parameter is redundant because callers pass a constant or a collapsed range.
+    severity: INFO
+    pattern-either:
+      - pattern: $FUNC(..., NULL, ...)
+      - pattern: $FUNC(..., $X - 1, $X)

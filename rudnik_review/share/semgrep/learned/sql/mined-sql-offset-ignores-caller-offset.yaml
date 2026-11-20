@@ -1,0 +1,14 @@
+rules:
+  - id: sql-offset-ignores-caller-offset
+    metadata: {"rule": "sql-offset-ignores-caller-offset", "evidence": ["https://github.com/apache/superset/pull/43718#discussion_r3903734797"]}
+    languages:
+      - python
+    message: >-
+      Column offset computed from index levels without adding the caller-supplied
+      start offset, so formatting or selection lands on the wrong columns.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $COL = $IDX.nlevels if $COND else 0
+      - pattern-not: |
+          $COL = $STARTCOL + ($IDX.nlevels if $COND else $BLANK)

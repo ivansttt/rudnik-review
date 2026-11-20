@@ -1,0 +1,20 @@
+rules:
+  - id: sql-catch-resolves-with-error
+    metadata: {"rule": "sql-catch-resolves-with-error", "evidence": ["https://github.com/apache/superset/pull/17680#discussion_r767135163", "https://github.com/apache/superset/pull/17680#discussion_r767135202"]}
+    languages:
+      - javascript
+      - typescript
+    message: >-
+      A promise .catch handler resolves with the caught error instead of logging
+      and returning null, so callers cannot distinguish failure from success.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $OBJ.catch(($ERR) => $ERR)
+          - pattern: |
+              $OBJ.catch($ERR => $ERR)
+          - pattern: |
+              $OBJ.catch(($ERR) => console.log(...))
+          - pattern: |
+              $OBJ.catch($ERR => console.log(...))

@@ -1,0 +1,13 @@
+rules:
+  - id: rust-hash-pointer-not-value
+    metadata: {"rule": "rust-hash-pointer-not-value", "evidence": ["https://github.com/rust-lang/cargo/pull/14915#discussion_r1878746152"]}
+    languages: [rust]
+    message: Hash hashes a pointer/address instead of the value, breaking Hash/Eq consistency
+    severity: WARNING
+    patterns:
+      - pattern-either:
+        - pattern: std::ptr::NonNull::from($X).hash($S)
+        - pattern: ptr::NonNull::from($X).hash($S)
+        - pattern: ($X as *const _).hash($S)
+        - pattern: ($X as *mut _).hash($S)
+        - pattern: ($X as usize).hash($S)

@@ -1,0 +1,8 @@
+rules:
+  - id: python-test-missing-background-task-wait
+    metadata: {"rule": "python-test-missing-background-task-wait", "evidence": ["https://github.com/home-assistant/core/pull/186232#discussion_r4431061998", "https://github.com/home-assistant/core/pull/190340#discussion_r4487068079"]}
+    languages: [python]
+    message: Test asserts state without waiting for background tasks
+    severity: WARNING
+    pattern: |
+      await hass.async_block_till_done()

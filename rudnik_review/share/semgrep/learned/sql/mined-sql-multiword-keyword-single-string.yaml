@@ -1,0 +1,14 @@
+rules:
+  - id: sql-multiword-keyword-single-string
+    metadata: {"rule": "sql-multiword-keyword-single-string", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1785#discussion_r739678535"]}
+    languages:
+      - python
+    message: >-
+      Multi-word clause option written as a single keyword string; use Sequence of
+      separate keyword strings instead.
+    severity: WARNING
+    patterns:
+      - pattern: 'OneOf(..., "$KW", ...)'
+      - metavariable-regex:
+          metavariable: $KW
+          regex: '.*\s.*'

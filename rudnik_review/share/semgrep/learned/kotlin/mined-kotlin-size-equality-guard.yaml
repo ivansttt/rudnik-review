@@ -1,0 +1,10 @@
+rules:
+  - id: kotlin-size-equality-guard
+    metadata: {"rule": "kotlin-size-equality-guard", "evidence": ["https://github.com/detekt/detekt/pull/5051#discussion_r917143339"]}
+    languages: [kotlin]
+    message: Equality guard on a size/count misses the empty case; use <= when the collection can be empty.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $X.count() == 1
+          - pattern: $X.size == 1

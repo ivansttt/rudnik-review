@@ -1,0 +1,16 @@
+rules:
+  - id: sql-adjacent-strings-not-concatenated
+    metadata: {"rule": "sql-adjacent-strings-not-concatenated", "evidence": ["https://github.com/apache/superset/pull/38200#discussion_r2846722243", "https://github.com/sqlfluff/sqlfluff/pull/3717#discussion_r944435361"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Adjacent string literals are not concatenated
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $X = f"..."
+              f"..."
+          - pattern: |
+              f"..." "..."
+      - pattern-not-inside: |
+          $X = ...

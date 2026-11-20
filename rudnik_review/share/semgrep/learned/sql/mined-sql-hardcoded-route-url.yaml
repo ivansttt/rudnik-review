@@ -1,0 +1,8 @@
+rules:
+  - id: sql-hardcoded-route-url
+    metadata: {"rule": "sql-hardcoded-route-url", "evidence": ["https://github.com/apache/superset/pull/46111#discussion_r4548995848", "https://github.com/apache/superset/pull/46058#discussion_r4513106858", "https://github.com/apache/superset/pull/32154#discussion_r1944961517"]}
+    languages:
+      - python
+    message: Hardcoded URL fragment or route prefix duplicates a shared helper or framework attribute and can diverge.
+    severity: WARNING
+    pattern-regex: '#draft=|/api/v1/\{|/sqllab/\?key=|/sqllab/p/'

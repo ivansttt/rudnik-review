@@ -1,0 +1,8 @@
+rules:
+  - id: java-hardcoded-newline
+    metadata: {"rule": "java-hardcoded-newline", "evidence": ["https://github.com/apache/flink/pull/25653#discussion_r1846425231"]}
+    languages:
+      - java
+    message: Use System.lineSeparator() instead of a hardcoded "\n" newline.
+    severity: WARNING
+    pattern-regex: '"[^"]*\\n"'

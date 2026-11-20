@@ -1,0 +1,7 @@
+rules:
+  - id: sql-identifier-parsed-as-literal
+    metadata: {"rule": "sql-identifier-parsed-as-literal", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/4410#discussion_r1111303976"]}
+    languages: [python]
+    severity: WARNING
+    message: QuotedLiteralSegment used where an identifier segment is required
+    pattern: Ref('QuotedLiteralSegment')

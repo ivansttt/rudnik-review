@@ -1,0 +1,7 @@
+rules:
+  - id: python-test-partial-representation-assertion
+    metadata: {"rule": "python-test-partial-representation-assertion", "evidence": ["https://github.com/pandas-dev/pandas/pull/66136#discussion_r3575716543"]}
+    languages: [python]
+    message: Test asserts a lossy representation instead of the full object.
+    severity: INFO
+    pattern: assert $OBJ.tolist() == ...

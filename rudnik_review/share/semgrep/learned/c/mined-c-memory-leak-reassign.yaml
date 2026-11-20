@@ -1,0 +1,7 @@
+rules:
+  - id: c-memory-leak-reassign
+    metadata: {"rule": "c-memory-leak-reassign", "evidence": ["https://github.com/systemd/systemd/pull/40505#discussion_r2757576729"]}
+    languages: [c, cpp]
+    severity: WARNING
+    message: Reassigning a pointer that owns memory without freeing the previous value leaks it; free first or use free_and_strdup.
+    pattern: $PTR = strdup($STR);

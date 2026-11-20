@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-validationcontext-object-instance
+    metadata: {"rule": "csharp-validationcontext-object-instance", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67956#discussion_r3634380311"]}
+    languages:
+      - csharp
+    message: >
+      ValidationContext is constructed with a throwaway object instance
+      (_throwawayObjectInstance) instead of the value being validated. Code in
+      IValidatableObject.Validate that casts ObjectInstance back to the model
+      will throw for non-null values.
+    severity: ERROR
+    pattern-either:
+      - pattern: |
+          new global::System.ComponentModel.DataAnnotations.ValidationContext(_throwawayObjectInstance, ...)
+      - pattern: |
+          new ValidationContext(_throwawayObjectInstance, ...)

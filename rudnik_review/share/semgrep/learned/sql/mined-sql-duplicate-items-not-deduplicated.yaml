@@ -1,0 +1,13 @@
+rules:
+  - id: sql-duplicate-items-not-deduplicated
+    metadata: {"rule": "sql-duplicate-items-not-deduplicated", "evidence": ["https://github.com/apache/superset/pull/36890#discussion_r2658885415"]}
+    languages:
+      - javascript
+      - typescript
+    message: >-
+      Two arrays are spread-concatenated without deduplicating, so an element
+      present in both appears twice and a downstream consumer that requires
+      unique values errors.
+    severity: WARNING
+    pattern: |
+      $VAR = [...$A, ...$B]

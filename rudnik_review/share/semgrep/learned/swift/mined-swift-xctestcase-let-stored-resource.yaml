@@ -1,0 +1,13 @@
+rules:
+  - id: swift-xctestcase-let-stored-resource
+    metadata: {"rule": "swift-xctestcase-let-stored-resource", "evidence": ["https://github.com/apple/swift-nio/pull/1823#discussion_r622810520"]}
+    languages: [swift]
+    message: XCTestCase stored property holds a lifecycle resource in a let
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          class $C: XCTestCase {
+            ...
+          }
+      - pattern: |
+          let $NAME = EmbeddedChannel(...)

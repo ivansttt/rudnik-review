@@ -1,0 +1,16 @@
+# Spec 1740, 12 Nov 2026: on a developer's machine these rules block, in place of the gate's lists. Ruff's: a name that does not exist,
+# a redefinition, a comparison that is always wrong, and six ways to run or trust what someone else sent (exec, eval, shell=True,
+# os.system, yaml.load, verify=False). An unused import or variable, RUF100 and the annotations are notes here: fmt and the agent fix
+# them, and none is a defect. The gate keeps its own lists in share/gate.toml.d.
+[desktop.ruff]
+blocks = ["F821", "F822", "F811", "F632", "S102", "S307", "S602", "S605", "S506", "S501"]
+
+[desktop.biome]
+blocks = ["lint/security/noGlobalEval"]
+
+# Spec 1996, 19 Nov 2026 (the publish audit's planted bugs passed as warnings): a format with the wrong argument (go vet's printf, which
+# golangci-lint's SARIF names govet), strings compared by reference, a result dropped and an exception built but never thrown.
+[desktop]
+golangci-lint.blocks = ["govet"]
+error-prone.blocks = ["ReferenceEquality", "StringEquality"]
+roslyn.blocks = ["CA1806", "S3984"]

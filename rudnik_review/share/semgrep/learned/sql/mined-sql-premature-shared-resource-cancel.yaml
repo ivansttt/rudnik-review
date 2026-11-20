@@ -1,0 +1,11 @@
+rules:
+  - id: sql-premature-shared-resource-cancel
+    metadata: {"rule": "sql-premature-shared-resource-cancel", "evidence": ["https://github.com/apache/superset/pull/43407#discussion_r3886731097"]}
+    languages:
+      - javascript
+      - typescript
+    message: >-
+      Cancels a shared task after removing only one local waiter. Other waiters
+      sharing the same task still need its result; cancel only once no waiters remain.
+    severity: ERROR
+    pattern: $TASK_IDS.forEach(cancelTask)

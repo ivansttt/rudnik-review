@@ -1,0 +1,8 @@
+rules:
+  - id: python-wrong-host-in-formatted-url
+    metadata: {"rule": "python-wrong-host-in-formatted-url", "evidence": ["https://github.com/home-assistant/core/pull/189360#discussion_r4424227658"]}
+    languages:
+      - python
+    severity: ERROR
+    message: OBSERVER_URL is formatted with the Supervisor IP address instead of the Observer's own address
+    pattern: OBSERVER_URL.format(ip_address=$IP)

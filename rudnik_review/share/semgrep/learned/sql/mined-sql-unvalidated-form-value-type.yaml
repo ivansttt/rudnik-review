@@ -1,0 +1,9 @@
+rules:
+  - id: sql-unvalidated-form-value-type
+    metadata: {"rule": "sql-unvalidated-form-value-type", "evidence": ["https://github.com/apache/superset/pull/45571#discussion_r4349822235"]}
+    languages:
+      - python
+    message: 'form_data value used as a mapping without an isinstance(..., Mapping) guard'
+    severity: WARNING
+    pattern: |
+      $X = $D.get($K) or {}

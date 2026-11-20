@@ -1,0 +1,10 @@
+rules:
+  - id: sql-approval-cache-keyed-on-digest
+    metadata: {"rule": "sql-approval-cache-keyed-on-digest", "evidence": ["https://github.com/apache/superset/pull/44465#discussion_r4059904958", "https://github.com/apache/superset/pull/44465#discussion_r4060938523"]}
+    languages: [python]
+    message: Artifact approval is keyed on a raw hash digest without the artifact kind (or recorded before validation), so bytes never validated for the delivered kind short-circuit later checks.
+    severity: ERROR
+    pattern-either:
+      - pattern: self._validated_artifacts.add(hashlib.sha256($X).hexdigest())
+      - pattern: hashlib.sha256($X).hexdigest() in self._validated_artifacts
+      - pattern: report_execution_context.approve_artifact(...)

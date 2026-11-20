@@ -1,0 +1,16 @@
+rules:
+  - id: python-stale-reference-after-rename
+    metadata: {"rule": "python-stale-reference-after-rename", "evidence": ["https://github.com/pydantic/pydantic/pull/10537#discussion_r1838411087"]}
+    languages:
+      - python
+    message: String-based reference to a private attribute may be stale after the attribute was renamed.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: delattr($OBJ, $ATTR)
+          - pattern: getattr($OBJ, $ATTR)
+          - pattern: hasattr($OBJ, $ATTR)
+          - pattern: $ATTR in $OBJ.__dict__
+      - metavariable-regex:
+          metavariable: $ATTR
+          regex: "^['\"]_"

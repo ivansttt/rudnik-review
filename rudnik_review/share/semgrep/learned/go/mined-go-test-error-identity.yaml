@@ -1,0 +1,27 @@
+rules:
+  - id: go-test-error-identity
+    metadata: {"rule": "go-test-error-identity", "evidence": ["https://github.com/kubernetes/kubernetes/pull/142650#discussion_r4223747166"]}
+    languages: [go]
+    message: >-
+      Test expects an operation to fail but only checks whether the returned error
+      is nil or non-nil. Assert the specific error (e.g. with errors.Is) so a
+      different error does not pass.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $_, $ERR := $FUNC(...)
+              ...
+              if $ERR == nil {
+                ...
+              }
+          - pattern: |
+              $_, $ERR := $FUNC(...)
+              ...
+              if $ERR != nil {
+                ...
+              }
+      - pattern-inside: |
+          func $TEST(...) {
+            ...
+          }

@@ -1,0 +1,15 @@
+rules:
+  - id: java-per-call-conversion
+    metadata: {"rule": "java-per-call-conversion", "evidence": ["https://github.com/apache/flink/pull/27777#discussion_r2952653456", "https://github.com/apache/flink/pull/27777#discussion_r2958309096", "https://github.com/apache/flink/pull/27777#discussion_r2959814329"]}
+    languages:
+      - java
+    severity: WARNING
+    message: >-
+      Per-invocation conversion between external and internal data representations
+      (String to StringData, Map<String, String> to MapData, or state type strategies
+      left external). Store or infer the internal representation once instead of
+      converting on every call.
+    pattern-either:
+      - pattern: StringData.fromString(...)
+      - pattern: $R $M(..., Map<String, String> $X, ...)
+      - pattern: $B.stateTypeStrategies(original.getStateTypeStrategies())

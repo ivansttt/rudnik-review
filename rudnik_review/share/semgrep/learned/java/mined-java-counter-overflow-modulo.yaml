@@ -1,0 +1,7 @@
+rules:
+  - id: java-counter-overflow-modulo
+    metadata: {"rule": "java-counter-overflow-modulo", "evidence": ["https://github.com/netty/netty/pull/12976#discussion_r1017540946"]}
+    languages: [java]
+    severity: WARNING
+    message: Counter modulo index can go negative on overflow
+    pattern: $ARRAY[$COUNTER.getAndIncrement() % $SIZE]

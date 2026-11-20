@@ -1,0 +1,15 @@
+# Shell's formatter (spec 1704, 12 Nov 2026), a program of its own: a [[tool]] with no `cmd` is a formatter alone, which setup installs and
+# fmt runs, check never runs nor asks for `blocks`, and which closes no gap. The sha256 are the vendor's (GitHub's release API, 12 Nov 2026).
+# shfmt reads the repository's .editorconfig where there is one, and indents with a tab where there is none.
+[[tool]]
+name = "shfmt"
+version = "3.14.1"
+stacks = ["bash"]
+globs = ["*.sh"]
+fmt = [["shfmt", "-w", "{files}"]]
+release = "mvdan/sh/releases/download/v{v}/shfmt_v{v}_{os}_{go}{exe}"
+sha256_x86_64 = "76e77641faa025814b77f153b29796b8e6fa2fca03e0c76a691608b86c7ea7bf"
+sha256_aarch64 = "5f2db09dae91fca848f7adbdd014632e921a383863a2ad7e0450ad3aba0c6489"
+sha256_darwin_x86_64 = "d33eee0da0f92835b3562e9767a05cee7e4eaeef47daa03bfd09da17b4b590a6"
+sha256_darwin_arm64 = "b7c872db63553ccffc7253aba3ed7d4885a27d83f1ba567b1138c6315a5847e5"
+sha256_windows_x86_64 = "13629ce28442ca80b6b5a819f7574ab39e1c28c6e26734ca816c9714e04851df"

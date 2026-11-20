@@ -1,0 +1,10 @@
+rules:
+  - id: python-truthiness-instead-of-none-check
+    metadata: {"rule": "python-truthiness-instead-of-none-check", "evidence": ["https://github.com/home-assistant/core/pull/186197#discussion_r4262903496", "https://github.com/pydantic/pydantic/pull/12001#discussion_r2410781701", "https://github.com/pydantic/pydantic/pull/9843#discussion_r1681756800"]}
+    languages: [python]
+    message: Optional value tested for truthiness instead of `is not None`; None and empty values are treated the same.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: any($OBJ.$ATTR for $I in $ITER)
+          - pattern: $X or $Y

@@ -1,0 +1,9 @@
+rules:
+  - id: rust-option-none-equality
+    metadata: {"rule": "rust-option-none-equality", "evidence": ["https://github.com/rust-lang/rust/pull/163571#discussion_r4484205219", "https://github.com/rust-lang/rust/pull/163571#discussion_r4484206756"]}
+    languages: [rust]
+    message: Comparing two Option values with == or != treats None == None as a match; compare the inner Some values instead.
+    severity: WARNING
+    pattern-either:
+      - pattern: $A.$B(...) == $C.$D(...)
+      - pattern: $A.$B(...) != $C.$D(...)

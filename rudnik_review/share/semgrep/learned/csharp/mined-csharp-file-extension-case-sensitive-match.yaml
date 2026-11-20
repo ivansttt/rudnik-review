@@ -1,0 +1,13 @@
+rules:
+  - id: csharp-file-extension-case-sensitive-match
+    metadata: {"rule": "csharp-file-extension-case-sensitive-match", "evidence": ["https://github.com/dotnet/aspnetcore/pull/57974#discussion_r1768877460", "https://github.com/dotnet/aspnetcore/pull/57971#discussion_r1767778956"]}
+    languages: [csharp]
+    message: File extensions are case-insensitive; compare with StringComparison.OrdinalIgnoreCase
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: string.Equals($X, $EXT, StringComparison.Ordinal)
+          - pattern: $X == $EXT
+      - metavariable-regex:
+          metavariable: $EXT
+          regex: '^"\.[A-Za-z0-9]+"$'

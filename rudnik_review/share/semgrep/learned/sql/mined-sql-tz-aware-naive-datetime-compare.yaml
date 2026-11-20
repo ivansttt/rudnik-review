@@ -1,0 +1,14 @@
+rules:
+  - id: sql-tz-aware-naive-datetime-compare
+    metadata: {"rule": "sql-tz-aware-naive-datetime-compare", "evidence": ["https://github.com/apache/superset/pull/42481#discussion_r3675056440", "https://github.com/apache/superset/pull/42481#discussion_r3675274034"]}
+    languages:
+      - python
+    message: >-
+      Timezone-aware and naive datetimes are compared without normalizing tzinfo.
+      Comparing an aware _scheduled_dttm against a value read back from a plain
+      naive DateTime column is always unequal, so the stale/retry check misfires
+      on every run. Normalize both sides (strip tzinfo) before comparing.
+    severity: ERROR
+    pattern-either:
+      - pattern: $X != self._scheduled_dttm
+      - pattern: self._scheduled_dttm != $X

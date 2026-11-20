@@ -1,0 +1,8 @@
+rules:
+  - id: lua-cache-key-empty-fallback
+    metadata: {"rule": "lua-cache-key-empty-fallback", "evidence": ["https://github.com/koreader/koreader/pull/16214#discussion_r4244943028"]}
+    languages: [lua]
+    message: Cache key falls back to an empty placeholder instead of the effective default
+    severity: WARNING
+    patterns:
+      - pattern: local $KEY = $LANG or ""

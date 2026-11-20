@@ -1,0 +1,22 @@
+rules:
+  - id: java-int-overflow-before-widening
+    languages: [java]
+    severity: WARNING
+    message: >-
+      The product is computed in int and overflows before the cast widens it; cast an operand instead: (double) a * b or (long) a * b.
+    patterns:
+      - pattern-either:
+          - pattern: (double) ($A * $B)
+          - pattern: (long) ($A * $B)
+      - pattern-not: ($T) (($U) $X * $Y)
+      - pattern-not: ($T) ($X * ($U) $Y)
+      - pattern-not: ($T) ((double $X) * $Y)
+      - pattern-not: ($T) ($X * (double $Y))
+      - pattern-not: ($T) ((float $X) * $Y)
+      - pattern-not: ($T) ($X * (float $Y))
+      - metavariable-regex:
+          metavariable: $A
+          regex: ^(?!.*(\d\.\d|\d[DdFfLl]\b|[Dd]ouble|MAX_VALUE|Math\.|\bPI\b)).*$
+      - metavariable-regex:
+          metavariable: $B
+          regex: ^(?!.*(\d\.\d|\d[DdFfLl]\b|[Dd]ouble|MAX_VALUE|Math\.|\bPI\b)).*$

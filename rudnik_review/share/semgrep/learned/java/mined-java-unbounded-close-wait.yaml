@@ -1,0 +1,12 @@
+rules:
+  - id: java-unbounded-close-wait
+    metadata: {"rule": "java-unbounded-close-wait", "evidence": ["https://github.com/apache/kafka/pull/23738#discussion_r4229333051"]}
+    languages:
+      - java
+    message: >-
+      Blocking close or leave-group call without a timeout bound can hang forever.
+      Add .withTimeout(...) to bound the call.
+    severity: ERROR
+    patterns:
+      - pattern: $STREAMS.close($OPTIONS)
+      - pattern-not: $STREAMS.close($BASE.withTimeout($T))

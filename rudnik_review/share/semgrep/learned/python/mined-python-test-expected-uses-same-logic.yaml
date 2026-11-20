@@ -1,0 +1,12 @@
+rules:
+  - id: python-test-expected-uses-same-logic
+    metadata: {"rule": "python-test-expected-uses-same-logic", "evidence": ["https://github.com/pandas-dev/pandas/pull/71025#discussion_r4460883012"]}
+    languages:
+      - python
+    message: Test computes its expected value by calling re.fullmatch, the same routine the code under test uses via str.fullmatch; a shared bug in that routine would make the test pass while the behavior is wrong.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $RESULT = $SER.str.fullmatch($PAT)
+          ...
+          $EXPECTED = pd.Series([re.fullmatch($PAT, $X) is not None for $X in $DATA], ...)

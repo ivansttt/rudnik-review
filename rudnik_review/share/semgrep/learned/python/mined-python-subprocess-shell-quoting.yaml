@@ -1,0 +1,9 @@
+rules:
+  - id: python-subprocess-shell-quoting
+    metadata: {"rule": "python-subprocess-shell-quoting", "evidence": ["https://github.com/pypa/pip/pull/11589#discussion_r1018359673"]}
+    languages: [python]
+    severity: WARNING
+    message: Subprocess command built by piping echo or manually shell-quoting arguments; pass an argv list and use input= instead.
+    pattern-either:
+      - pattern: |
+          $CMD = ["echo", ..., "|", ...]

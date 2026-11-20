@@ -1,0 +1,8 @@
+rules:
+  - id: swift-force-try-in-throwing-function
+    metadata: {"rule": "swift-force-try-in-throwing-function", "evidence": ["https://github.com/apple/swift-nio/pull/2509#discussion_r1303462281", "https://github.com/apple/swift-nio/pull/2509#discussion_r1303462889"]}
+    languages: [swift]
+    message: "Force `try!` crashes instead of propagating the error; use `try`"
+    severity: WARNING
+    patterns:
+      - pattern-regex: 'try!'

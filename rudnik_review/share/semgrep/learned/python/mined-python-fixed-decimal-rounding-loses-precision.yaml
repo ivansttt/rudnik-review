@@ -1,0 +1,8 @@
+rules:
+  - id: python-fixed-decimal-rounding-loses-precision
+    metadata: {"rule": "python-fixed-decimal-rounding-loses-precision", "evidence": ["https://github.com/home-assistant/core/pull/186013#discussion_r4303193016"]}
+    languages: [python]
+    message: Fixed decimal rounding loses precision for small values
+    severity: WARNING
+    pattern: |
+      str(round($X, $N))

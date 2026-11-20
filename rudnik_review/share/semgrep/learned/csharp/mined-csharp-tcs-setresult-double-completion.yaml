@@ -1,0 +1,11 @@
+rules:
+  - id: csharp-tcs-setresult-double-completion
+    metadata: {"rule": "csharp-tcs-setresult-double-completion", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60359#discussion_r1962561006"]}
+    languages: [csharp]
+    message: SetResult/SetException/SetCanceled throws when the TaskCompletionSource is already completed; use TrySetResult/TrySetException/TrySetCanceled when the callback can fire more than once.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $TCS.SetResult()
+          - pattern: $TCS.SetException(...)
+          - pattern: $TCS.SetCanceled(...)

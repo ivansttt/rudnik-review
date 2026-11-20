@@ -1,0 +1,14 @@
+rules:
+  - id: swift-flaky-random-inequality-assert
+    metadata: {"rule": "swift-flaky-random-inequality-assert", "evidence": ["https://github.com/apple/swift-nio/pull/2433#discussion_r1203708590"]}
+    languages:
+      - swift
+    message: Test asserts two independently generated random values are not equal, which can fail by chance.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          let $A = $F1.random()
+          ...
+          let $B = $F2.random()
+          ...
+          XCTAssertNotEqual($A, $B)

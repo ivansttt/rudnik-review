@@ -1,0 +1,14 @@
+rules:
+  - id: java-if-instead-of-while
+    metadata: {"rule": "java-if-instead-of-while", "evidence": ["https://github.com/apache/kafka/pull/22654#discussion_r3501995009"]}
+    languages: [java]
+    message: Single `if` advances a cursor/chunk/position one step; use `while` so the condition is satisfied as many steps as needed.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($C) {
+            $ADVANCE();
+          }
+      - metavariable-regex:
+          metavariable: $ADVANCE
+          regex: (?i)(advance|next|skip|step|increment|move)

@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-nullable-type-as-nonnullable
+    metadata: {"rule": "csharp-nullable-type-as-nonnullable", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67005#discussion_r3365408118"]}
+    languages: [csharp]
+    message: Return typeof(T?) for nullable cases, not typeof(T).
+    severity: WARNING
+    patterns:
+      - pattern: typeof(int)

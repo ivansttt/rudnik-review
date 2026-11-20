@@ -1,0 +1,9 @@
+rules:
+  - id: sql-cache-scoped-to-app-context
+    metadata: {"rule": "sql-cache-scoped-to-app-context", "evidence": ["https://github.com/apache/superset/pull/44017#discussion_r4066188646"]}
+    languages: [python]
+    message: per-request cache stored on Flask g instead of the request object
+    pattern-either:
+      - pattern: $CACHE = g.setdefault("...", {})
+      - pattern: g.setdefault("...", {})
+    severity: WARNING

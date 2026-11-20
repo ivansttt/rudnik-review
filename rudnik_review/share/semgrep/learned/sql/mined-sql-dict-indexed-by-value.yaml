@@ -1,0 +1,19 @@
+rules:
+  - id: sql-dict-indexed-by-value
+    metadata: {"rule": "sql-dict-indexed-by-value", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1563#discussion_r725283128"]}
+    languages:
+      - python
+    severity: ERROR
+    message: |
+      The mapping `$M` is populated with `$M[$K] = $V`, but a later lookup reads
+      `$M[$V]` using the stored value rather than the key. Since `$V` was stored
+      as a value, not a key, this lookup can raise KeyError or silently miss.
+    patterns:
+      - pattern: |
+          $M[$K] = $V
+          ...
+          $LOOKUP_STMT
+      - metavariable-pattern:
+          metavariable: $LOOKUP_STMT
+          pattern: $FUNC($M[$V], ...)
+      - focus-metavariable: $LOOKUP_STMT

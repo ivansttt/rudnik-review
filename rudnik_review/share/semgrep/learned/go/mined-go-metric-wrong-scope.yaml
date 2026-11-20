@@ -1,0 +1,29 @@
+rules:
+  - id: go-metric-wrong-scope
+    metadata: {"rule": "go-metric-wrong-scope", "evidence": ["https://github.com/kubernetes/kubernetes/pull/143114#discussion_r4301867389", "https://github.com/kubernetes/kubernetes/pull/143114#discussion_r4349628500"]}
+    languages:
+      - go
+    severity: WARNING
+    message: >-
+      A counter computed over the narrowed update range (ordinals >= updateMin)
+      is exported through a metric that should cover the whole StatefulSet, or a
+      percentage is derived from the full replica set instead of the update range,
+      so the scoped count and its metric/percentage disagree.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              getStatefulSetMaxUnavailable($SPEC, replicaCount)
+          - patterns:
+              - pattern: |
+                  func $FUNC(...) {
+                    ...
+                    for $TARGET := len($REPLICAS) - 1; $TARGET >= updateMin; $TARGET-- {
+                      ...
+                      $COUNT++
+                      ...
+                    }
+                    ...
+                    metrics.UnavailableReplicas.WithLabelValues(...).Set(float64($COUNT))
+                    ...
+                  }
+              - focus-metavariable: $TARGET

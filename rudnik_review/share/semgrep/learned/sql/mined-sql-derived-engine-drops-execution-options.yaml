@@ -1,0 +1,8 @@
+rules:
+  - id: sql-derived-engine-drops-execution-options
+    metadata: {"rule": "sql-derived-engine-drops-execution-options", "evidence": ["https://github.com/apache/superset/pull/45544#discussion_r4340365670"]}
+    languages:
+      - python
+    message: A secondary/bootstrap Engine is built from a source engine's pool, dialect and url without copying its execution options.
+    severity: WARNING
+    pattern: Engine($E.pool.recreate(), $E.dialect, $E.url)

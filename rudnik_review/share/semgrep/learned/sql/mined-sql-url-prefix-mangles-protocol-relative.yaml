@@ -1,0 +1,22 @@
+rules:
+  - id: sql-url-prefix-mangles-protocol-relative
+    metadata: {"rule": "sql-url-prefix-mangles-protocol-relative", "evidence": ["https://github.com/apache/superset/pull/37523#discussion_r3509827857"]}
+    languages:
+      - python
+    message: >-
+      Static-asset prefix helper mangles protocol-relative URLs. A URL or asset
+      path starting with '//' is protocol-relative and must be returned
+      unchanged, but this guard only checks for a single leading '/', so the
+      configured prefix is prepended to '//' URLs as well.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if not $URL.startswith("/") or not $PREFIX:
+              ...
+      - pattern-not: |
+          if (
+              $URL.startswith("//")
+              or not $URL.startswith("/")
+              or not $PREFIX
+          ):
+              ...

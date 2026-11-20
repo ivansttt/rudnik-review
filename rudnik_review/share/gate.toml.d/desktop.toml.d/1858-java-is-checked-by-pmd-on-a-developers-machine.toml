@@ -1,0 +1,17 @@
+# Spec 1858: PMD on the developer's own java, as the agent-jvm image runs it (16 Nov 2026: the Linux trial's check on a gson change ran
+# semgrep alone). The distribution is one zip for every platform, its digest from the 7.17.0 release on 17 Nov 2026. Its bin/pmd starts the
+# jars in its lib/, so setup keeps the `folder` it unpacks to whole as <tools>/pmd; a copy of bin/pmd alone cannot start.
+[desktop.pmd]
+release = "pmd/pmd/releases/download/pmd_releases%2F{v}/pmd-dist-{v}-bin.zip"
+folder = "pmd-bin-{v}"
+needs = ["java"]
+sha256_x86_64 = "440f6855769c1a651cebd735133cba188df077881af31bd923766b869482bebd"
+sha256_aarch64 = "440f6855769c1a651cebd735133cba188df077881af31bd923766b869482bebd"
+sha256_darwin_x86_64 = "440f6855769c1a651cebd735133cba188df077881af31bd923766b869482bebd"
+sha256_darwin_arm64 = "440f6855769c1a651cebd735133cba188df077881af31bd923766b869482bebd"
+sha256_windows_x86_64 = "440f6855769c1a651cebd735133cba188df077881af31bd923766b869482bebd"
+
+# CPD is `pmd cpd` from the same distribution (share/agent-jvm/analyse): a launcher, nothing downloaded of its own
+[desktop.cpd]
+runs = ["pmd", "cpd"]
+needs = ["java"]

@@ -1,0 +1,25 @@
+rules:
+  - id: csharp-disposed-check-then-cache
+    metadata: {"rule": "csharp-disposed-check-then-cache", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67912#discussion_r3778249755"]}
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      A disposed/closed flag is read and then a Socket wrapper over a raw handle is
+      cached lock-free after the check, so a concurrent Dispose can close and recycle
+      the fd between the check and the cache, leaving the wrapper pointing at an
+      unrelated connection. Synchronize the check and caching under the same lock
+      used by disposal.
+    patterns:
+      - pattern: |
+          ObjectDisposedException.ThrowIf(Volatile.Read(ref $DISPOSED) != 0, $THIS);
+          ...
+          var $CREATED = new Socket(new SafeSocketHandle((IntPtr)$FD, ownsHandle: false));
+          ...
+          if (Interlocked.CompareExchange(ref $SOCKET, $CREATED, null) is { } $WINNER)
+          {
+            ...
+            $CREATED.Dispose();
+            return $WINNER;
+          }
+          ...
+          return $CREATED;

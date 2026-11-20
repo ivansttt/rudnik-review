@@ -1,0 +1,11 @@
+rules:
+  - id: java-hardcoded-test-port
+    metadata: {"rule": "java-hardcoded-test-port", "evidence": ["https://github.com/netty/netty/pull/10765#discussion_r520689995"]}
+    languages: [java]
+    message: "Test binds a server to a hardcoded port, which may already be in use"
+    severity: INFO
+    patterns:
+      - pattern: $X.bind($HOST, $PORT)
+      - metavariable-regex:
+          metavariable: $PORT
+          regex: ^[1-9]\d*$

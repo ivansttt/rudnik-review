@@ -1,0 +1,12 @@
+[[tool]]
+name = "basedpyright"
+version = "1.32.1"
+stacks = ["python"]
+globs = ["*.py"]
+cmd = ["basedpyright", "--outputjson", "--level", "error", "{files}"]
+adapter = "basedpyright"
+# Only the rules that need no import resolution block (spec 1617, 11 Nov 2026, measured on rudnik main with every import root resolved):
+# reportAttributeAccessIssue (169) and reportCallIssue (32) are type-inference findings, not flaws by definition ("Cannot access attribute
+# "append" for class "str""), and wait for 1626's measure. reportMissingImports waits for the gate's analysers' tree to hold the project's
+# venv (spec analysers-resolve-third-party-imports): without it every third-party import is red (psycopg).
+blocks = ["reportUndefinedVariable", "reportPossiblyUnboundVariable"]

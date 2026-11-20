@@ -1,0 +1,7 @@
+# Spec 1741: semgrep by pip, its rules the image's: share/agent-base/Containerfile's repository, commit and twelve folders (six until spec 1856), which the release
+# walk holds equal to these, so neither pin is ever two (12 Nov 2026).
+[desktop.semgrep]
+pip = "semgrep"
+rules = "https://github.com/semgrep/semgrep-rules"
+rules_commit = "16b9e6d45f10649f6a531ec4838ed9924372c3bc"
+rules_folders = ["/python/", "/bash/", "/dockerfile/", "/yaml/", "/csharp/", "/java/", "/go/", "/javascript/", "/typescript/", "/kotlin/", "/rust/", "/c/"]

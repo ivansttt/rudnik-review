@@ -1,0 +1,7 @@
+rules:
+  - id: python-test-hardcoded-opcode-name
+    metadata: {"rule": "python-test-hardcoded-opcode-name", "evidence": ["https://github.com/python/cpython/pull/159460#discussion_r4307386659"]}
+    languages: [python]
+    message: Comparing instr.opname to a hardcoded opcode name breaks when opcodes change; use a stable set such as dis.hasjump.
+    severity: INFO
+    pattern: $X.opname == $Y

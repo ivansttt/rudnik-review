@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-async-void
+    metadata: {"rule": "csharp-async-void", "evidence": ["https://github.com/dotnet/aspnetcore/pull/59480#discussion_r1884918132"]}
+    languages: [csharp]
+    message: Declare the method async Task, not async void, so callers can observe exceptions.
+    severity: WARNING
+    pattern-regex: 'async\s+void\s+[A-Za-z_]\w*\s*\('

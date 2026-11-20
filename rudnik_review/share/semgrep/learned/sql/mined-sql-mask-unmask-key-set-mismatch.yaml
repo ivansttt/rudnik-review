@@ -1,0 +1,19 @@
+rules:
+  - id: sql-mask-unmask-key-set-mismatch
+    metadata: {"rule": "sql-mask-unmask-key-set-mismatch", "evidence": ["https://github.com/apache/superset/pull/43474#discussion_r3868592009"]}
+    languages:
+      - python
+    severity: ERROR
+    message: >-
+      Mask and unmask disagree on which keys are secret: the unmask restores only
+      keys in `secret_keys`, but the mask fallback masks all truthy values, so a
+      round-tripped save can persist the password mask into non-secret fields.
+    patterns:
+      - pattern: |
+          $K in $SECRET_KEYS and $V == $PASSWORD_MASK and $K in $EXISTING
+      - metavariable-regex:
+          metavariable: $SECRET_KEYS
+          regex: ^secret_keys$
+      - metavariable-regex:
+          metavariable: $PASSWORD_MASK
+          regex: ^PASSWORD_MASK$

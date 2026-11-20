@@ -1,0 +1,14 @@
+rules:
+  - id: sql-migration-unguarded-dialect
+    metadata: {"rule": "sql-migration-unguarded-dialect", "evidence": ["https://github.com/apache/superset/pull/27119#discussion_r1490131964"]}
+    languages: [python]
+    message: "Dialect-specific DDL is applied without gating on the bound dialect."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $BATCH.alter_column(...)
+          - pattern: op.alter_column(...)
+          - pattern: op.batch_alter_table(...)
+      - pattern-not-inside: |
+          if isinstance(op.get_bind().dialect, $DIALECT):
+              ...

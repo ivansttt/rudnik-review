@@ -1,0 +1,9 @@
+rules:
+  - id: rust-invariant-masked-with-fallback
+    metadata: {"rule": "rust-invariant-masked-with-fallback", "evidence": ["https://github.com/rust-lang/rust/pull/162910#discussion_r4104072768", "https://github.com/rust-lang/rust/pull/160219#discussion_r3741767392"]}
+    languages: [rust]
+    message: "An invariant-guaranteed Option/Result is silently defaulted or discarded instead of asserted."
+    severity: WARNING
+    pattern-either:
+      - pattern: $O.unwrap_or(&Default::default())
+      - pattern: let _ = $R.set($V);

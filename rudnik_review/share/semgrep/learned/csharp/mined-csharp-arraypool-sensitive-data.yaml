@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-arraypool-sensitive-data
+    metadata: {"rule": "csharp-arraypool-sensitive-data", "evidence": ["https://github.com/dotnet/aspnetcore/pull/70146#discussion_r4481642200", "https://github.com/dotnet/aspnetcore/pull/70120#discussion_r4461180991", "https://github.com/dotnet/aspnetcore/pull/70120#discussion_r4461181863"]}
+    languages:
+      - csharp
+    severity: ERROR
+    message: |
+      Do not return a shared ArrayPool buffer that may contain secrets or key material without clearing it first, and do not place key material in a shared ArrayPool buffer.
+    patterns:
+      - pattern-either:
+          - pattern: ArrayPool<byte>.Shared.Rent($SIZE)
+          - pattern: ArrayPool<char>.Shared.Return($ARRAY)
+      - pattern-not-inside: |
+          $CLEARED.Clear();
+          ...
+          ArrayPool<char>.Shared.Return($RETURNED)

@@ -1,0 +1,16 @@
+rules:
+  - id: sql-duplicated-elif-branch
+    metadata: {"rule": "sql-duplicated-elif-branch", "evidence": ["https://github.com/apache/superset/pull/24035#discussion_r1192222394"]}
+    languages:
+      - python
+    message: Duplicated condition in an if/elif chain makes the later branch unreachable.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if $A:
+              ...
+          elif $B:
+              ...
+      - metavariable-comparison:
+          comparison: str($A) == str($B)
+      - focus-metavariable: $B

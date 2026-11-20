@@ -1,0 +1,9 @@
+rules:
+  - id: swift-handler-typealias-never
+    metadata: {"rule": "swift-handler-typealias-never", "evidence": ["https://github.com/apple/swift-nio/pull/1280#discussion_r352740081", "https://github.com/apple/swift-nio/pull/1280#discussion_r352740104"]}
+    languages: [swift]
+    message: "InboundIn or OutboundOut typealias set to Never blocks the handler from receiving or sending values"
+    severity: WARNING
+    pattern-either:
+      - pattern: typealias InboundIn = Never
+      - pattern: typealias OutboundOut = Never

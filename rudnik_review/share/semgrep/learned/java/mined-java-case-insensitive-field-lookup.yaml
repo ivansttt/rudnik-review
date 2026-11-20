@@ -1,0 +1,10 @@
+rules:
+  - id: java-case-insensitive-field-lookup
+    metadata: {"rule": "java-case-insensitive-field-lookup", "evidence": ["https://github.com/apache/flink/pull/29070#discussion_r3980354526", "https://github.com/apache/flink/pull/29070#discussion_r3980533928"]}
+    languages: [java]
+    severity: WARNING
+    message: Field or column looked up case-insensitively where an exact match is required
+    patterns:
+      - pattern-either:
+          - pattern: $X.getField($NAME, false, $ELIDE)
+          - pattern: $X.getField($NAME, false)

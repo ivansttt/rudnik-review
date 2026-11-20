@@ -1,0 +1,7 @@
+rules:
+  - id: python-prerelease-dependency-pin
+    metadata: {"rule": "python-prerelease-dependency-pin", "evidence": ["https://github.com/home-assistant/core/pull/186968#discussion_r4302083034"]}
+    languages: [python, json, yaml]
+    severity: WARNING
+    message: Dependency pinned to a pre-release version instead of a stable release
+    pattern-regex: '==[0-9][0-9a-zA-Z.+-]*(rc|alpha|beta|dev)\d*'

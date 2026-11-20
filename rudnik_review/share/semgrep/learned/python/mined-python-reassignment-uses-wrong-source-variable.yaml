@@ -1,0 +1,38 @@
+rules:
+  - id: python-reassignment-uses-wrong-source-variable
+    metadata: {"rule": "python-reassignment-uses-wrong-source-variable", "evidence": ["https://github.com/pypa/pip/pull/13659#discussion_r3137392595"]}
+    languages: [python]
+    message: |
+      `$X` was already computed from `$Y` above, but is reassigned here by
+      transforming `$Y` directly instead of the derived value `$X`, silently
+      discarding the earlier computation.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $X = $FUNC(..., $Y, ...)
+              ...
+              $X = $CUR
+          - pattern: |
+              if $COND:
+                  $X = $FUNC(..., $Y, ...)
+              else:
+                  ...
+              $X = $CUR
+          - pattern: |
+              if $COND:
+                  $X = $FUNC(..., $Y, ...)
+              $X = $CUR
+          - pattern: |
+              if $COND:
+                  ...
+              else:
+                  $X = $FUNC(..., $Y, ...)
+              $X = $CUR
+      - metavariable-pattern:
+          metavariable: $CUR
+          pattern: |
+            <... $Y ...>
+      - metavariable-comparison:
+          comparison: str($X) != str($Y)
+      - focus-metavariable: $CUR

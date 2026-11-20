@@ -1,0 +1,8 @@
+rules:
+  - id: sql-bare-keyword-for-multiword-clause
+    metadata: {"rule": "sql-bare-keyword-for-multiword-clause", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1676#discussion_r730303150", "https://github.com/sqlfluff/sqlfluff/pull/1676#discussion_r730303504"]}
+    languages: [python]
+    message: Bare "ORDER" keyword used where Sequence("ORDER", "BY") is required.
+    severity: WARNING
+    patterns:
+      - pattern: OneOf(..., "ORDER", ...)

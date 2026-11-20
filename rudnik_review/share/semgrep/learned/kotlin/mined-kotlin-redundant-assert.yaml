@@ -1,0 +1,12 @@
+rules:
+  - id: kotlin-redundant-assert
+    metadata: {"rule": "kotlin-redundant-assert", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/3137#discussion_r784797833", "https://github.com/Kotlin/kotlinx.coroutines/pull/3137#discussion_r784797966", "https://github.com/detekt/detekt/pull/5700#discussion_r1081069041"]}
+    languages: [kotlin]
+    message: Redundant assert/check re-validates a condition the called API already validates
+    severity: WARNING
+    pattern-either:
+      - pattern: assert { $X >= 0 }
+      - pattern: |
+          assertThat($F).hasSize(...)
+          ...
+          assertThat($F).hasTextLocations(...)

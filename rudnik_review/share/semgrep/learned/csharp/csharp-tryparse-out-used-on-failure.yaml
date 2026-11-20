@@ -1,0 +1,12 @@
+rules:
+  - id: csharp-tryparse-out-used-on-failure
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      The branch runs exactly when $T.TryParse failed, and it returns the out value, which is then default; the condition
+      looks inverted.
+    pattern-either:
+      - pattern: |
+          if (!$T.TryParse(..., out var $V)) { ... return $V; }
+      - pattern: |
+          if (!$T.TryParse(..., out $TY $V)) { ... return $V; }

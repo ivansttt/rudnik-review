@@ -1,0 +1,7 @@
+rules:
+  - id: python-missing-translation-fallback-to-key
+    metadata: {"rule": "python-missing-translation-fallback-to-key", "evidence": ["https://github.com/home-assistant/core/pull/178125#discussion_r4355264060"]}
+    languages: [python]
+    message: Missing translation falls back to the raw translation key shown to users
+    severity: WARNING
+    pattern: $TRANSLATIONS.get($KEY, message.translation_key)

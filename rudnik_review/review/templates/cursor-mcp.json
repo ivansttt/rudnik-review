@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "rudnik-review": { "command": "rudnik-review", "args": ["mcp"] }
+  }
+}

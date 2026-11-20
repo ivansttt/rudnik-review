@@ -1,0 +1,20 @@
+rules:
+  - id: go-split-partial-validation
+    metadata: {"rule": "go-split-partial-validation", "evidence": ["https://github.com/kubernetes/kubernetes/pull/142338#discussion_r4209273897"]}
+    languages:
+      - go
+    message: Validate every part of a split key=value pair; the value (index 1) is left unchecked for empty.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $RES := strings.SplitN($INPUT, $DELIM, 2)
+          ...
+          if len($RES) != 2 || $RES[0] == "" {
+            ...
+          }
+      - pattern-not: |
+          $RES := strings.SplitN($INPUT, $DELIM, 2)
+          ...
+          if len($RES) != 2 || $RES[0] == "" || $RES[1] == "" {
+            ...
+          }

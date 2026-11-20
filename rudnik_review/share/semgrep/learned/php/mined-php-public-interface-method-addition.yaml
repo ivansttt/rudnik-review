@@ -1,0 +1,19 @@
+rules:
+  - id: php-public-interface-method-addition
+    metadata: {"rule": "php-public-interface-method-addition", "evidence": ["https://github.com/laravel/framework/pull/55954#discussion_r2139552636", "https://github.com/laravel/framework/pull/55954#discussion_r2139553037"]}
+    languages:
+      - php
+    message: Adding a method to a public interface is a major breaking change; every existing implementation must now provide it.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          public function touch(...): bool;
+      - pattern-either:
+          - pattern-inside: |
+              interface $INTERFACE {
+                ...
+              }
+          - pattern-inside: |
+              interface $INTERFACE extends $PARENT {
+                ...
+              }

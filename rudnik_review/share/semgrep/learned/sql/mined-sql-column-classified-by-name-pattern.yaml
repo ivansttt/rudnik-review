@@ -1,0 +1,12 @@
+rules:
+  - id: sql-column-classified-by-name-pattern
+    metadata: {"rule": "sql-column-classified-by-name-pattern", "evidence": ["https://github.com/apache/superset/pull/32975#discussion_r2035224415"]}
+    languages:
+      - typescript
+      - javascript
+    message: >-
+      Column is classified as a child/derived column by testing whether its name
+      starts with or contains a symbol instead of reading structured metadata.
+    severity: ERROR
+    pattern: |
+      $ARRAY.some($FN => $COL.startsWith(...) || $COL.includes(...))

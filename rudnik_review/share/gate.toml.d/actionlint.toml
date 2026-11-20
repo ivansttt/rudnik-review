@@ -1,0 +1,10 @@
+[[tool]]
+name = "actionlint"
+version = "1.7.8"
+sha256_x86_64 = "be92c2652ab7b6d08425428797ceabeb16e31a781c07bc388456b4e592f3e36a"
+sha256_aarch64 = "4c65dbb2d59b409cdd75d47ffa8fa32af8f0eee573ac510468dc2275c48bf07c"
+stacks = ["actions"]
+globs = [".github/workflows/*.yml", ".github/workflows/*.yaml"]
+cmd = ["actionlint", "-format", "{{json .}}", "{files}"]
+adapter = "actionlint"
+blocks = []

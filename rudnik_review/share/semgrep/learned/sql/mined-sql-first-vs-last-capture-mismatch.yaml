@@ -1,0 +1,36 @@
+rules:
+  - id: sql-first-vs-last-capture-mismatch
+    metadata: {"rule": "sql-first-vs-last-capture-mismatch", "evidence": ["https://github.com/apache/superset/pull/42761#discussion_r3722988390"]}
+    languages:
+      - ts
+      - javascript
+    message: >-
+      A value is captured only while the slot is still empty (guarded by
+      `this.$X === undefined`), but a sibling value it must agree with is
+      updated on every push. For multi-item slots the captured value reflects
+      the first pushed record and the sibling reflects the last, so the two can
+      point at different metrics or rows.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if (this.$X === undefined) {
+                ...
+                this.$X = $VALUE;
+                ...
+              }
+              ...
+              this.$Y.push($RECORD);
+              ...
+          - pattern: |
+              push($RECORD) {
+                ...
+                if (this.$X === undefined) {
+                  ...
+                  this.$X = $VALUE;
+                  ...
+                }
+                ...
+                this.$Y.push($RECORD);
+                ...
+              }

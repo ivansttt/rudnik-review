@@ -1,0 +1,10 @@
+rules:
+  - id: python-required-field-marked-optional
+    metadata: {"rule": "python-required-field-marked-optional", "evidence": ["https://github.com/home-assistant/core/pull/186544#discussion_r4282701339", "https://github.com/home-assistant/core/pull/186544#discussion_r4282775536"]}
+    languages:
+      - python
+    message: This config field is needed for operation mode but is marked optional in the schema
+    severity: WARNING
+    pattern-either:
+      - pattern: probatio.Optional(CONF_OPERATION_LIST)
+      - pattern: probatio.Optional(SET_OPERATION_MODE_ACTION)

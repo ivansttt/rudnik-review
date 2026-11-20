@@ -1,0 +1,11 @@
+rules:
+  - id: sql-redundant-anynumberof-in-delimited
+    metadata: {"rule": "sql-redundant-anynumberof-in-delimited", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/4652#discussion_r1155163368", "https://github.com/sqlfluff/sqlfluff/pull/4647#discussion_r1155808497"]}
+    languages: [python]
+    severity: INFO
+    message: Redundant AnyNumberOf/AnySetOf nested inside Delimited
+    patterns:
+      - pattern-either:
+          - pattern: AnyNumberOf(...)
+          - pattern: AnySetOf(...)
+      - pattern-inside: Delimited(...)

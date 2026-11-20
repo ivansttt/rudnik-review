@@ -1,0 +1,12 @@
+rules:
+  - id: sql-match-on-description-string
+    metadata: {"rule": "sql-match-on-description-string", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/4067#discussion_r1045098680"]}
+    languages: [python]
+    severity: WARNING
+    message: Filter or equality check keys on a changeable description/message string instead of a stable source, type, or enum identifier.
+    patterns:
+      - pattern-either:
+          - pattern: $X.description.startswith(...)
+          - pattern: $X.description == $Y
+          - pattern: $X.description != $Y
+          - pattern: $X.message.startswith(...)

@@ -1,0 +1,13 @@
+rules:
+  - id: sql-unhashable-frozen-dataclass
+    metadata: {"rule": "sql-unhashable-frozen-dataclass", "evidence": ["https://github.com/apache/superset/pull/38174#discussion_r3360781005"]}
+    languages:
+      - python
+    message: Frozen dataclass field typed list or dict makes the generated __hash__ raise TypeError.
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          @dataclass(..., frozen=True, ...)
+          class $CLASS:
+            ...
+      - pattern-regex: '[A-Za-z_][A-Za-z0-9_]*\s*:\s*(list|dict)\['

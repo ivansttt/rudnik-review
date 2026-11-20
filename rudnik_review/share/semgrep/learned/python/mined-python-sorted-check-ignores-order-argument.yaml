@@ -1,0 +1,21 @@
+rules:
+  - id: python-sorted-check-ignores-order-argument
+    metadata: {"rule": "python-sorted-check-ignores-order-argument", "evidence": ["https://github.com/pandas-dev/pandas/pull/65840#discussion_r3424277236"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >
+      Sorted-order check reads the raw array's first/last element instead of
+      indexing through the sorter. When a sorter is given, the sorted order is
+      array[sorter], so the ends must be checked at array[sorter[0]] and
+      array[sorter[-1]].
+    patterns:
+      - pattern-inside: |
+          def $FUNC(..., sorter=None, ...):
+              ...
+      - pattern-either:
+          - pattern: $CHECK($ARR[0])
+          - pattern: $CHECK($ARR[-1])
+      - pattern-not-inside: |
+          if sorter is None:
+              ...

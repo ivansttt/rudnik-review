@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-linear-scan-dedup
+    metadata: {"rule": "csharp-linear-scan-dedup", "evidence": ["https://github.com/dotnet/runtime/pull/134108#discussion_r4066019869"]}
+    languages: [cpp]
+    severity: WARNING
+    message: "Don't linear-scan a collection to deduplicate on every insertion; track membership with a hash set or a flag bit instead."
+    pattern: |
+      for (...)
+      {
+          ...
+          if ($C[$I] == $E)
+              return;
+          ...
+      }
+      ...
+      $C.Append($E);

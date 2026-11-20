@@ -1,0 +1,8 @@
+rules:
+  - id: sql-error-message-reveals-existence
+    metadata: {"rule": "sql-error-message-reveals-existence", "evidence": ["https://github.com/apache/superset/pull/25553#discussion_r1349374373"]}
+    languages:
+      - python
+    message: Error message echoes a user-supplied identifier, enabling enumeration of valid identifiers.
+    severity: WARNING
+    pattern-regex: 'f"[^"]*(Unknown|not found)[^"]*\{[^"]*\}"'

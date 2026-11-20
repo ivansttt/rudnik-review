@@ -1,0 +1,12 @@
+rules:
+  - id: java-bitset-offset-mismatch
+    metadata: {"rule": "java-bitset-offset-mismatch", "evidence": ["https://github.com/apache/lucene/pull/14523#discussion_r2050787461", "https://github.com/apache/lucene/pull/14523#discussion_r2050789304"]}
+    mode: taint
+    message: The docID returned by advance() is passed as the offset/base argument to intoBitSet(), shifting the copied bits by the advanced docID instead of aligning them to the target window.
+    languages:
+      - java
+    severity: ERROR
+    pattern-sources:
+      - pattern: $ITER.advance($TARGET)
+    pattern-sinks:
+      - pattern: $ITER.intoBitSet($UPTO, $BITSET, $OFFSET)

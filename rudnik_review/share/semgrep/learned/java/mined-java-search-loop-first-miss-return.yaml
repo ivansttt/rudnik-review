@@ -1,0 +1,18 @@
+rules:
+  - id: java-search-loop-first-miss-return
+    metadata: {"rule": "java-search-loop-first-miss-return", "evidence": ["https://github.com/apache/flink/pull/26543#discussion_r2091403570"]}
+    languages:
+      - java
+    message: >-
+      Search loop returns null on the first candidate source that misses,
+      instead of continuing to check the remaining sources.
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          for (...) {
+            ...
+          }
+      - pattern: |
+          if ($X == null) {
+            return null;
+          }

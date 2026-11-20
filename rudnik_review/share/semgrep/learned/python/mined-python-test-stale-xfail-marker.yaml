@@ -1,0 +1,8 @@
+rules:
+  - id: python-test-stale-xfail-marker
+    metadata: {"rule": "python-test-stale-xfail-marker", "evidence": ["https://github.com/pydantic/pydantic/pull/9137#discussion_r1548762013", "https://github.com/pydantic/pydantic/pull/9137#discussion_r1548762058"]}
+    languages:
+      - python
+    message: Test is marked xfail for a feature that already works; the stale marker masks real failures.
+    severity: WARNING
+    pattern-regex: '@pytest[.]mark[.]xfail'

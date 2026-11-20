@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-redundant-await-fromresult
+    metadata: {"rule": "csharp-redundant-await-fromresult", "evidence": ["https://github.com/dotnet/aspnetcore/pull/62066#discussion_r2112236127", "https://github.com/dotnet/aspnetcore/pull/62066#discussion_r2112237633"]}
+    languages: [csharp]
+    message: Redundant await of a completed ValueTask/Task.FromResult
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: return await ValueTask.FromResult($X);
+          - pattern: return await Task.FromResult($X);

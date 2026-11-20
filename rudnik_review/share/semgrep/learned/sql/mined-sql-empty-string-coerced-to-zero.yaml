@@ -1,0 +1,21 @@
+rules:
+  - id: sql-empty-string-coerced-to-zero
+    metadata: {"rule": "sql-empty-string-coerced-to-zero", "evidence": ["https://github.com/apache/superset/pull/38490#discussion_r3526571268", "https://github.com/apache/superset/pull/38490#discussion_r3526571303"]}
+    languages:
+      - javascript
+      - typescript
+    severity: WARNING
+    message: Empty string coerced to 0 instead of unset; check for an empty string before coercing a numeric input with Number(), parseInt, or parseFloat.
+    patterns:
+      - pattern-either:
+          - pattern: Number($X)
+          - pattern: parseInt($X, ...)
+          - pattern: parseFloat($X)
+      - pattern-not-inside: |
+          $Y === '' ? $A : $B
+      - pattern-not-inside: |
+          $Y == '' ? $A : $B
+      - pattern-not-inside: |
+          $Y !== '' ? $A : $B
+      - pattern-not-inside: |
+          $Y != '' ? $A : $B

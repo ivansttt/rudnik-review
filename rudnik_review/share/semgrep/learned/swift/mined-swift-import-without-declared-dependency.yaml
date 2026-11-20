@@ -1,0 +1,8 @@
+rules:
+  - id: swift-import-without-declared-dependency
+    metadata: {"rule": "swift-import-without-declared-dependency", "evidence": ["https://github.com/apple/swift-nio/pull/2093#discussion_r864731544"]}
+    languages: [swift]
+    severity: ERROR
+    message: Module imported without a declared dependency
+    pattern: |
+      import struct System.FileDescriptor

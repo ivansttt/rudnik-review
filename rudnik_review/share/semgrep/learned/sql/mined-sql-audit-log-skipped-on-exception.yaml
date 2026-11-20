@@ -1,0 +1,15 @@
+rules:
+  - id: sql-audit-log-skipped-on-exception
+    metadata: {"rule": "sql-audit-log-skipped-on-exception", "evidence": ["https://github.com/apache/superset/pull/41472#discussion_r3493608876", "https://github.com/apache/superset/pull/41472#discussion_r3493608886"]}
+    languages: [python]
+    message: The try/except sits outside the log_context block, so an exception from the wrapped command skips the audit log entry.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          try:
+              ...
+              with $CTX.log_context(...):
+                  $CMD(...)
+              ...
+          except $E:
+              ...

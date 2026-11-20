@@ -1,0 +1,8 @@
+rules:
+- id: sql-unbounded-row-limit
+  metadata: {"rule": "sql-unbounded-row-limit", "evidence": ["https://github.com/apache/superset/pull/27934#discussion_r1555687199"]}
+  patterns:
+  - pattern: $D['row_limit'] = None
+  languages: [python]
+  message: row_limit set to None instead of the configured ROW_LIMIT
+  severity: WARNING

@@ -1,0 +1,18 @@
+rules:
+  - id: sql-n-plus-one-lazy-relationship
+    metadata: {"rule": "sql-n-plus-one-lazy-relationship", "evidence": ["https://github.com/apache/superset/pull/44269#discussion_r4014778854"]}
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Eager-loading `semantic_view` without also eager-loading its lazy
+      `semantic_layer` relationship causes one SELECT per row (layer identity
+      and access checks). Chain a matching joinedload/subqueryload of
+      `semantic_layer` onto the query.
+    patterns:
+      - pattern-either:
+          - pattern: subqueryload($CTX).subqueryload($V.semantic_view)
+          - pattern: joinedload($CTX).subqueryload($V.semantic_view)
+          - pattern: subqueryload($CTX).joinedload($V.semantic_view)
+          - pattern: joinedload($CTX).joinedload($V.semantic_view)
+      - pattern-not-inside: |
+          $LOAD($CTX).$LOAD($V.semantic_view).$LOAD2($LAYER.semantic_layer)

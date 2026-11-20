@@ -1,0 +1,20 @@
+rules:
+  - id: sql-migration-explicit-commit
+    metadata: {"rule": "sql-migration-explicit-commit", "evidence": ["https://github.com/apache/superset/pull/38361#discussion_r2882465350", "https://github.com/apache/superset/pull/38361#discussion_r2882467024"]}
+    languages: [python]
+    severity: ERROR
+    message: |
+      Alembic migrations run as a single transaction; explicitly calling
+      session.commit() or session.rollback() breaks atomic rollback, so a
+      failed migration leaves the database in a partial state. Remove the
+      explicit commit/rollback.
+    patterns:
+      - pattern-either:
+          - pattern: session.commit()
+          - pattern: session.rollback()
+      - pattern-inside: |
+          def $FUNC():
+            ...
+      - metavariable-regex:
+          metavariable: $FUNC
+          regex: ^(upgrade|downgrade)$

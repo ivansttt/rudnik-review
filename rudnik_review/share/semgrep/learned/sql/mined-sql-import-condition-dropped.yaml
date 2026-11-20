@@ -1,0 +1,11 @@
+rules:
+  - id: sql-import-condition-dropped
+    metadata: {"rule": "sql-import-condition-dropped", "evidence": ["https://github.com/apache/superset/pull/43667#discussion_r3890402286"]}
+    languages:
+      - ts
+    message: >-
+      Inlining an @import rule replaces it with the fetched stylesheet's nodes
+      without wrapping them in the import's media, supports, or layer
+      condition, so the imported rules apply under the wrong conditions.
+    severity: WARNING
+    pattern: $RULE.replaceWith($ROOT.nodes)

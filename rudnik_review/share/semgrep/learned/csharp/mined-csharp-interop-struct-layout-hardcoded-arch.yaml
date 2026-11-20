@@ -1,0 +1,17 @@
+rules:
+  - id: csharp-interop-struct-layout-hardcoded-arch
+    metadata: {"rule": "csharp-interop-struct-layout-hardcoded-arch", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67912#discussion_r3755108001"]}
+    languages:
+      - csharp
+    message: >-
+      A native-interop struct hardcodes its layout with Pack = 1, encoding one
+      platform's packing and field offsets. When passed to a P/Invoke on every
+      architecture, other ABIs read and write at wrong offsets. Use
+      architecture-correct layouts instead.
+    severity: WARNING
+    pattern: |
+      [StructLayout(LayoutKind.Sequential, Pack = 1)]
+      struct $STRUCT
+      {
+        ...
+      }

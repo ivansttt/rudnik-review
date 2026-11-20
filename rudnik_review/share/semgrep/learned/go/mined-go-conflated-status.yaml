@@ -1,0 +1,14 @@
+rules:
+  - id: go-conflated-status
+    metadata: {"rule": "go-conflated-status", "evidence": ["https://github.com/kubernetes/kubernetes/pull/140289#discussion_r3637241845"]}
+    languages: [go]
+    severity: WARNING
+    message: >-
+      A status value with more than two states is tested with the negation of one
+      failure predicate (!IsRejected()), so another failure state (Error) is
+      treated as success. Test the success state explicitly (IsSuccess()) and
+      handle the remaining failure states separately.
+    pattern: |
+      if $STATUS := $CALL; !$STATUS.IsRejected() {
+        ...
+      }

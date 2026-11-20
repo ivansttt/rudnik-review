@@ -1,0 +1,21 @@
+rules:
+  - id: python-validate-before-conversion
+    metadata: {"rule": "python-validate-before-conversion", "evidence": ["https://github.com/home-assistant/core/pull/186105#discussion_r4257997999"]}
+    languages:
+      - python
+    message: >-
+      A numeric value is validated for finiteness before it is converted, and the
+      conversion's OverflowError is not caught; a large finite value can overflow
+      to infinity or raise. Convert first and check finiteness after, or catch
+      OverflowError.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          if not math.isfinite($X):
+              ...
+          return $CONVERT($X, ...)
+      - pattern-not-inside: |
+          try:
+              ...
+          except OverflowError:
+              ...

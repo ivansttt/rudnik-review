@@ -1,0 +1,15 @@
+rules:
+  - id: sql-unneeded-per-query-bookkeeping
+    metadata: {"rule": "sql-unneeded-per-query-bookkeeping", "evidence": ["https://github.com/apache/superset/pull/44552#discussion_r4477296503"]}
+    severity: WARNING
+    languages:
+      - ts
+    message: >-
+      A per-query client id is minted unconditionally for every caller, though
+      only Explore offers Stop. Send it only where Stop exists.
+    patterns:
+      - pattern: |
+          const $NAME = nanoid(11);
+      - metavariable-regex:
+          metavariable: $NAME
+          regex: ^(clientId|client_id|queryId|query_id|clientID)$

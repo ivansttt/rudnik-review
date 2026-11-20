@@ -1,0 +1,9 @@
+[[tool]]
+name = "lizard"
+version = "1.24.0"
+stacks = ["*"]
+globs = ["*.py", "*.gd", "*.cs", "*.java"]
+cmd = ["lizard", "--xml", "{files}"]
+adapter = "lizard"
+alone = ["whitelizard.txt"]
+blocks = []

@@ -1,0 +1,10 @@
+rules:
+  - id: rust-counter-gated-on-success
+    metadata: {"rule": "rust-counter-gated-on-success", "evidence": ["https://github.com/rust-lang/rust/pull/163730#discussion_r4371065959"]}
+    languages: [rust]
+    message: Counter updated only inside a success branch instead of for every attempt
+    severity: WARNING
+    pattern: |
+      if $COND {
+        $COUNTER.fetch_add(...);
+      }

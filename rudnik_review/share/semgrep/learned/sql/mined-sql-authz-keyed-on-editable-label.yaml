@@ -1,0 +1,14 @@
+rules:
+  - id: sql-authz-keyed-on-editable-label
+    metadata: {"rule": "sql-authz-keyed-on-editable-label", "evidence": ["https://github.com/apache/superset/pull/43681#discussion_r3886671475"]}
+    languages:
+      - yaml
+    message: >-
+      An approval gate is keyed on a user-editable label
+      (github.event.pull_request.labels.*.name) rather than an independently
+      derived fact. A triager can add the label and trigger an approving
+      review the underlying update type does not justify. Derive the decision
+      from data the actor cannot edit, such as
+      steps.metadata.outputs.update-type.
+    severity: ERROR
+    pattern-regex: 'if:\s*contains\(github\.event\.pull_request\.labels'

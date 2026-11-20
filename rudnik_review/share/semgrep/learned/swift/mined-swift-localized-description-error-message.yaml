@@ -1,0 +1,7 @@
+rules:
+  - id: swift-localized-description-error-message
+    metadata: {"rule": "swift-localized-description-error-message", "evidence": ["https://github.com/apple/swift-nio/pull/3230#discussion_r2075173090", "https://github.com/apple/swift-nio/pull/3230#discussion_r2075176587"]}
+    languages: [swift]
+    message: "Use String(describing:) or interpolation instead of localizedDescription for Swift errors"
+    pattern: $E.localizedDescription
+    severity: WARNING

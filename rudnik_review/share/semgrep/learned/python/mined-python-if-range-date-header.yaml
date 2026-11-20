@@ -1,0 +1,8 @@
+rules:
+  - id: python-if-range-date-header
+    metadata: {"rule": "python-if-range-date-header", "evidence": ["https://github.com/pypa/pip/pull/12991#discussion_r1992384663"]}
+    languages:
+      - python
+    severity: INFO
+    message: The Date header describes when the response was generated, not the content; use Last-Modified or ETag for conditional range requests.
+    pattern: $H.get("etag", $H.get("date"))

@@ -1,0 +1,9 @@
+rules:
+  - id: java-wrong-range-message
+    metadata: {"rule": "java-wrong-range-message", "evidence": ["https://github.com/netty/netty/pull/10175#discussion_r407974543"]}
+    languages: [java]
+    message: The exception message states an allowed port range that contradicts the validation bounds (the check allows 0-65535, but the message says 1-65535).
+    severity: WARNING
+    patterns:
+      - pattern: |
+          throw new IllegalArgumentException("invalid port: " + $PORT + " (expected: 1 ~ 65535)");

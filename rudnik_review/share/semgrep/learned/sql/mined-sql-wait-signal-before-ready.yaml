@@ -1,0 +1,14 @@
+rules:
+  - id: sql-wait-signal-before-ready
+    metadata: {"rule": "sql-wait-signal-before-ready", "evidence": ["https://github.com/apache/superset/pull/43640#discussion_r3878831498"]}
+    languages:
+      - python
+    message: >-
+      A testcontainer wait strategy keys on a log line that may be emitted
+      before the service actually accepts connections, so the fixture can
+      attempt DDL before the database is ready and flake. Prefer waiting on
+      the exposed port or a successful connection (e.g. CompositeWaitStrategy
+      with PortWaitStrategy).
+    severity: WARNING
+    patterns:
+      - pattern: $CONTAINER.waiting_for(LogMessageWaitStrategy(...))

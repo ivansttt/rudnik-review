@@ -1,0 +1,19 @@
+rules:
+  - id: rust-global-allocator-reentrance
+    metadata: {"rule": "rust-global-allocator-reentrance", "evidence": ["https://github.com/rust-lang/rust/pull/163730#discussion_r4177714609"]}
+    languages: [rust]
+    message: >
+      A global allocator method panics without a reentrance guard. Panicking re-enters
+      the allocator during unwinding and can recurse infinitely; set a reentrance flag
+      and return early (e.g. fall back to System) before panicking.
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          unsafe impl GlobalAlloc for $ALLOC {
+            ...
+          }
+      - pattern-either:
+          - pattern: assert!(...)
+          - pattern: panic!(...)
+          - pattern: $EXPR.expect(...)
+          - pattern: $EXPR.unwrap()

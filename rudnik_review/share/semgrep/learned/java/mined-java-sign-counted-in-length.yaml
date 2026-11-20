@@ -1,0 +1,9 @@
+rules:
+  - id: java-sign-counted-in-length
+    metadata: {"rule": "java-sign-counted-in-length", "evidence": ["https://github.com/apache/flink/pull/28828#discussion_r3661514477"]}
+    languages: [java]
+    severity: WARNING
+    message: String length of a signed number counts the minus sign as a digit
+    patterns:
+      - pattern: String.valueOf($X).length()
+      - pattern-not: String.valueOf(Math.abs(...)).length()

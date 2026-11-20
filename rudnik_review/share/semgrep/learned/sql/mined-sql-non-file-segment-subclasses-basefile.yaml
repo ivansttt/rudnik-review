@@ -1,0 +1,14 @@
+rules:
+  - id: sql-non-file-segment-subclasses-basefile
+    metadata: {"rule": "sql-non-file-segment-subclasses-basefile", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2364#discussion_r788725885"]}
+    languages:
+      - python
+    message: Non-file segment classes must subclass BaseSegment, not BaseFileSegment.
+    severity: ERROR
+    patterns:
+      - pattern: |
+          class $SEG(BaseFileSegment):
+            ...
+      - metavariable-regex:
+          metavariable: $SEG
+          regex: ^(?!FileSegment$).*

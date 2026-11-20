@@ -1,0 +1,7 @@
+rules:
+  - id: python-manual-entity-async-update
+    metadata: {"rule": "python-manual-entity-async-update", "evidence": ["https://github.com/home-assistant/core/pull/186626#discussion_r4342210466"]}
+    languages: [python]
+    severity: WARNING
+    message: Entity platform calls async_update manually instead of passing True to async_add_entities
+    pattern: await $ENTITY.async_update()

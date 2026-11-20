@@ -1,0 +1,12 @@
+rules:
+  - id: python-isinstance-tuple-misses-contracted-type
+    metadata: {"rule": "python-isinstance-tuple-misses-contracted-type", "evidence": ["https://github.com/pydantic/pydantic/pull/10490#discussion_r1775837758"]}
+    languages:
+      - python
+    message: "isinstance guard's type tuple omits a type that the function's return annotation declares it accepts, so that type falls through to the fallback branch."
+    severity: WARNING
+    pattern: |
+      def $F(...) -> $T1 | $T2 | $T3:
+        ...
+        if isinstance($V, ($T1, $T2)):
+          ...

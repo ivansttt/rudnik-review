@@ -1,0 +1,11 @@
+rules:
+  - id: kotlin-contains-instead-of-prefix
+    metadata: {"rule": "kotlin-contains-instead-of-prefix", "evidence": ["https://github.com/detekt/detekt/pull/849#discussion_r180325700"]}
+    languages: [kotlin]
+    message: contains() used to detect a leading or trailing marker instead of startsWith() or endsWith()
+    patterns:
+      - pattern-either:
+          - pattern: $X.contains("//")
+          - pattern: $X.contains("/*")
+          - pattern: $X.contains("*/")
+    severity: WARNING

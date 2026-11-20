@@ -1,0 +1,20 @@
+rules:
+  - id: csharp-null-forgiving-firstordefault
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      $V comes from FirstOrDefault, null when nothing matches, and the ! silences the compiler's warning where it is used
+      or stored; check it for null instead.
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              $V = $E.FirstOrDefault(...);
+              ...
+          - pattern-inside: |
+              var $V = $E.FirstOrDefault(...);
+              ...
+      - pattern: $V!
+      - pattern-not-inside: |
+          if ($V != null) { ... }
+      - pattern-not-inside: |
+          if ($V is not null) { ... }

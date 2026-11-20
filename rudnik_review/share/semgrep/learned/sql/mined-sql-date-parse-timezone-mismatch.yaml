@@ -1,0 +1,12 @@
+rules:
+  - id: sql-date-parse-timezone-mismatch
+    metadata: {"rule": "sql-date-parse-timezone-mismatch", "evidence": ["https://github.com/apache/superset/pull/43339#discussion_r3845167808"]}
+    languages:
+      - ts
+      - javascript
+    severity: WARNING
+    message: >-
+      A zone-less date string is parsed with `new Date` (UTC) while the consumer
+      parses the same string as local time, offsetting the value and misplacing
+      the tick or boundary.
+    pattern: new Date($X)

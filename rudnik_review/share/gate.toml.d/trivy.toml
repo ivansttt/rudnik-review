@@ -1,0 +1,14 @@
+# Spec 1882 (17 Nov 2026): Trivy's misconfiguration checks read infrastructure config (Kubernetes, Terraform, Helm, compose, CloudFormation,
+# Dockerfiles), which no other analyser reads. `trivy config` takes one directory, never a list of files, so it walks the tree; findings.recorded
+# keeps what it finds on the change's files. Its SARIF says error for HIGH and CRITICAL, which block (a container run as root, a public bucket).
+[[tool]]
+name = "trivy"
+version = "0.76.2"
+sha256_x86_64 = "bc0fc726e017b8927a62b2d3531d7a84ee01769daf5c99ed866dced54089fdbf"
+sha256_aarch64 = "ab9d51f86e6a5fb936f605faff6b593ac51bc378fff4d3e8b9d58358b9c367c3"
+stacks = ["*"]
+globs = ["*.tf", "*.tf.json", "*.yaml", "*.yml", "*.json", "Dockerfile", "Containerfile"]
+cmd = ["trivy", "config", "--format", "sarif", "--quiet", "."]
+adapter = "sarif"
+blocks = ["*"]
+network = true  # it fetches its checks bundle, then caches it (spec 1777)

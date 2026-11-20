@@ -1,0 +1,7 @@
+# Spec 1860: Roslyn's analysers on the developer's own .NET SDK, as the agent-dotnet image runs them (16 Nov 2026: a C# change was checked by
+# semgrep alone). setup links the package's share/agent-dotnet/analyse as roslyn; `needs` are every program it calls. CA1806 and S3984 block
+# by spec 1996 and the rest stay notes until spec 1626's pass; inspectcode stays the gate's.
+[desktop.roslyn]
+link = "share/agent-dotnet/analyse"
+needs = ["dotnet", "jq", "python3"]
+platforms = ["linux/x86_64", "linux/arm64", "darwin/x86_64", "darwin/arm64"]

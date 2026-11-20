@@ -1,0 +1,9 @@
+rules:
+  - id: csharp-debug-assert-for-runtime-condition
+    metadata: {"rule": "csharp-debug-assert-for-runtime-condition", "evidence": ["https://github.com/dotnet/aspnetcore/pull/58333#discussion_r1847276568"]}
+    languages: [csharp]
+    message: Debug.Assert is compiled out in release builds and must not guard runtime conditions such as a possibly-null delegate or a capability result obtained from a method that can fail.
+    severity: WARNING
+    pattern-either:
+      - pattern: Debug.Assert($X != null);
+      - pattern: Debug.Assert($X.Length > 0);

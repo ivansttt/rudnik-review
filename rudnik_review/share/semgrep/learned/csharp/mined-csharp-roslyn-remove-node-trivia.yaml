@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-roslyn-remove-node-trivia
+    metadata: {"rule": "csharp-roslyn-remove-node-trivia", "evidence": ["https://github.com/dotnet/aspnetcore/pull/58482#discussion_r1817196631"]}
+    languages: [csharp]
+    message: Use SyntaxRemoveOptions.KeepExteriorTrivia to preserve comments attached outside the removed node
+    severity: INFO
+    patterns:
+      - pattern: $X.RemoveNode($NODE, SyntaxRemoveOptions.KeepNoTrivia)

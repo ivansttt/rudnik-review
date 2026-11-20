@@ -1,0 +1,16 @@
+rules:
+  - id: java-truncated-stream-not-detected
+    metadata: {"rule": "java-truncated-stream-not-detected", "evidence": ["https://github.com/netty/netty/pull/17152#discussion_r3661758598", "https://github.com/netty/netty/pull/17146#discussion_r3661365731"]}
+    languages:
+      - java
+    severity: WARNING
+    message: "endOfInput does not verify that the stream reached a complete terminal state; truncated or corrupt input is silently accepted."
+    patterns:
+      - pattern-either:
+          - pattern: |
+              public void endOfInput() throws DecompressionException {
+                  output.setContinuous(false);
+              }
+          - pattern: |
+              public void endOfInput() throws DecompressionException {
+              }

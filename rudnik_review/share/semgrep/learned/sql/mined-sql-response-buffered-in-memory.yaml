@@ -1,0 +1,12 @@
+rules:
+  - id: sql-response-buffered-in-memory
+    metadata: {"rule": "sql-response-buffered-in-memory", "evidence": ["https://github.com/apache/superset/pull/44082#discussion_r3977848385"]}
+    languages: [python]
+    message: entire file read into memory before responding
+    patterns:
+      - pattern-either:
+          - pattern: |
+              with open($PATH, "rb") as $F:
+                  $CONTENT = $F.read()
+          - pattern: $CONTENT = open($PATH, "rb").read()
+    severity: WARNING

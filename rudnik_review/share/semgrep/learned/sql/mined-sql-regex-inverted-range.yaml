@@ -1,0 +1,7 @@
+rules:
+  - id: sql-regex-inverted-range
+    metadata: {"rule": "sql-regex-inverted-range", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3641#discussion_r926017914"]}
+    languages: [python]
+    message: Inverted regex character range matches punctuation between Z and a instead of only letters.
+    severity: WARNING
+    pattern-regex: '\[[^\]\n]*(A-z|a-Z)[^\]\n]*\]'

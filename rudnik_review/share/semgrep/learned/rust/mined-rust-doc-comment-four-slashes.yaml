@@ -1,0 +1,7 @@
+rules:
+  - id: rust-doc-comment-four-slashes
+    metadata: {"rule": "rust-doc-comment-four-slashes", "evidence": ["https://github.com/rust-lang/rust/pull/162552#discussion_r3990193324"]}
+    languages: [rust]
+    message: "Four slashes make this a doc comment whose text begins with a slash, not a plain comment."
+    severity: INFO
+    pattern-regex: '(?m)^\s*//// '

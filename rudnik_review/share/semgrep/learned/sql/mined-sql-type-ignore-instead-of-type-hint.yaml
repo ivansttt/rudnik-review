@@ -1,0 +1,8 @@
+rules:
+  - id: sql-type-ignore-instead-of-type-hint
+    metadata: {"rule": "sql-type-ignore-instead-of-type-hint", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1958#discussion_r755534039", "https://github.com/sqlfluff/sqlfluff/pull/1958#discussion_r755535377", "https://github.com/sqlfluff/sqlfluff/pull/1958#discussion_r755535488", "https://github.com/sqlfluff/sqlfluff/pull/1958#discussion_r755535617", "https://github.com/sqlfluff/sqlfluff/pull/1064#discussion_r633826636", "https://github.com/sqlfluff/sqlfluff/pull/1064#discussion_r633832978"]}
+    languages: [python]
+    severity: WARNING
+    message: "`# type: ignore` silences a type error instead of a cast or type hint."
+    patterns:
+      - pattern-regex: '# type: ignore'

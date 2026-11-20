@@ -1,0 +1,8 @@
+rules:
+  - id: sql-select-star-overfetch
+    metadata: {"rule": "sql-select-star-overfetch", "evidence": ["https://github.com/apache/superset/pull/44905#discussion_r4190376882"]}
+    languages:
+      - python
+    message: table.select() with no columns fetches every column; select only what is read
+    severity: INFO
+    pattern: $T.select()

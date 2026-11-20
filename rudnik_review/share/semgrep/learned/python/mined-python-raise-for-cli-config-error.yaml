@@ -1,0 +1,21 @@
+rules:
+  - id: python-raise-for-cli-config-error
+    metadata: {"rule": "python-raise-for-cli-config-error", "evidence": ["https://github.com/pypa/pip/pull/14011#discussion_r3654238829", "https://github.com/pypa/pip/pull/14011#discussion_r3672488077"]}
+    message: >-
+      A configuration or CLI option validation error is surfaced by raising an
+      exception or invoking a parser error() method, which prints a traceback or
+      full usage. Log a concise error and exit with a non-zero status instead.
+    severity: ERROR
+    languages:
+      - python
+    pattern-either:
+      - pattern: |
+          raise optparse.OptionValueError(...)
+      - patterns:
+          - pattern: |
+              raise self.error(...)
+          - pattern-inside: |
+              try:
+                ...
+              except optparse.OptionValueError as $EXC:
+                ...

@@ -1,0 +1,24 @@
+rules:
+  - id: java-wrong-width-conversion
+    metadata: {"rule": "java-wrong-width-conversion", "evidence": ["https://github.com/apache/lucene/pull/13246#discussion_r1544670843", "https://github.com/apache/lucene/pull/13246#discussion_r1544671240"]}
+    languages:
+      - java
+    message: >-
+      Fixed-width byte representation converted using the wrong-sized converter:
+      sortableBytesToInt on 8-byte data (double), or sortableBytesToLong on 4-byte
+      data (int), truncating or misreading the value.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern-inside: |
+                  class $CLASS extends NumericComparator<Double> {
+                  ...
+                  }
+              - pattern: NumericUtils.sortableBytesToInt($BYTES, $OFFSET)
+          - patterns:
+              - pattern-inside: |
+                  class $CLASS extends NumericComparator<Integer> {
+                  ...
+                  }
+              - pattern: NumericUtils.sortableBytesToLong($BYTES, $OFFSET)

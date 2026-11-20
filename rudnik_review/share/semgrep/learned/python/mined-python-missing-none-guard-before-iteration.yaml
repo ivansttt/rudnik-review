@@ -1,0 +1,8 @@
+rules:
+  - id: python-missing-none-guard-before-iteration
+    metadata: {"rule": "python-missing-none-guard-before-iteration", "evidence": ["https://github.com/home-assistant/core/pull/189488#discussion_r4539177528"]}
+    languages:
+      - python
+    message: Possibly-missing field iterated without a None guard
+    severity: WARNING
+    pattern: set($X.endpoints)

@@ -1,0 +1,12 @@
+rules:
+  - id: sql-metadata-write-on-async-loop
+    metadata: {"rule": "sql-metadata-write-on-async-loop", "evidence": ["https://github.com/apache/superset/pull/45509#discussion_r4331757964"]}
+    languages:
+      - python
+    message: A synchronous metadata-database write runs directly on an async loop instead of being offloaded to a worker thread.
+    severity: WARNING
+    patterns:
+      - pattern: event_logger.log(...)
+      - pattern-inside: |
+          async def $FUNC(...):
+            ...

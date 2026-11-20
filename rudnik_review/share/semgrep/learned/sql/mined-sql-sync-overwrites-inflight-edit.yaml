@@ -1,0 +1,12 @@
+rules:
+  - id: sql-sync-overwrites-inflight-edit
+    metadata: {"rule": "sql-sync-overwrites-inflight-edit", "evidence": ["https://github.com/apache/superset/pull/42342#discussion_r3664353887"]}
+    languages:
+      - typescript
+      - javascript
+    message: effect overwrites local state from an external prop unconditionally
+    severity: WARNING
+    pattern: |
+      useEffect(() => {
+        $SET($PROP);
+      }, [$PROP]);

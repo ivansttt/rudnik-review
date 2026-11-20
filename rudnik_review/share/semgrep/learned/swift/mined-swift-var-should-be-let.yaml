@@ -1,0 +1,10 @@
+rules:
+  - id: swift-var-should-be-let
+    metadata: {"rule": "swift-var-should-be-let", "evidence": ["https://github.com/apple/swift-nio/pull/2909#discussion_r1793542604", "https://github.com/apple/swift-nio/pull/2890#discussion_r1766701805", "https://github.com/apple/swift-nio/pull/2735#discussion_r1631244747"]}
+    languages:
+      - swift
+    message: >-
+      This `var` is initialized but never mutated; use `let` or a read-only
+      computed property instead.
+    severity: WARNING
+    pattern-regex: '\bvar\s+\w+\s*='

@@ -1,0 +1,15 @@
+# Spec 1867: SpotBugs on the developer's own java, as the agent-jvm image runs it (17 Nov 2026: the owner's macOS arm64 trial said
+# "spotbugs: cannot be installed"). setup keeps the one tgz for every platform whole as <tools>/spotbugs, its digest from the 4.9.8 release
+# on 17 Nov 2026, and links spotbugs to share/agent-jvm/analyse, which builds each revision with the project's own build, online, and reads
+# the classes it left. FindSecBugs, a jar from Maven Central, stays the image's. Error Prone follows in its own spec.
+[desktop.spotbugs]
+release = "spotbugs/spotbugs/releases/download/{v}/spotbugs-{v}.tgz"
+folder = "spotbugs-{v}"
+needs = ["java"]
+builds = true   # 1880: the tree's own mvn or gradle, which check finds or names
+link = "share/agent-jvm/analyse"
+platforms = ["linux/x86_64", "linux/arm64", "darwin/x86_64", "darwin/arm64"]
+sha256_x86_64 = "2eb8e0f2b223c22ffa2ce0c1cf1be4127dde19d240b8f7ce69a5fd3ad5c36ff3"
+sha256_aarch64 = "2eb8e0f2b223c22ffa2ce0c1cf1be4127dde19d240b8f7ce69a5fd3ad5c36ff3"
+sha256_darwin_x86_64 = "2eb8e0f2b223c22ffa2ce0c1cf1be4127dde19d240b8f7ce69a5fd3ad5c36ff3"
+sha256_darwin_arm64 = "2eb8e0f2b223c22ffa2ce0c1cf1be4127dde19d240b8f7ce69a5fd3ad5c36ff3"

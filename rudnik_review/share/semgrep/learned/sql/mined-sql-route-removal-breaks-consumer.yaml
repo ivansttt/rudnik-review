@@ -1,0 +1,12 @@
+rules:
+  - id: sql-route-removal-breaks-consumer
+    metadata: {"rule": "sql-route-removal-breaks-consumer", "evidence": ["https://github.com/apache/superset/pull/43390#discussion_r3833203021"]}
+    languages:
+      - python
+    message: "`include_route_methods` omits `RouteMethod.DELETE`; existing consumers may still call the DELETE route and get 405 instead of the action being removed or kept."
+    severity: WARNING
+    patterns:
+      - pattern: |
+          include_route_methods = $METHODS
+      - pattern-not: |
+          include_route_methods = {RouteMethod.GET, RouteMethod.GET_LIST, RouteMethod.INFO, RouteMethod.DELETE}

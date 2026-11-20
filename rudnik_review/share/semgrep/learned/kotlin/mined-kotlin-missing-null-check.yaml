@@ -1,0 +1,8 @@
+rules:
+  - id: kotlin-missing-null-check
+    metadata: {"rule": "kotlin-missing-null-check", "evidence": ["https://github.com/detekt/detekt/pull/127#discussion_r124245901"]}
+    languages: [kotlin]
+    severity: WARNING
+    message: "Nullable value dereferenced without a null check"
+    patterns:
+      - pattern: KtPsiUtil.getShortName($X).toString()

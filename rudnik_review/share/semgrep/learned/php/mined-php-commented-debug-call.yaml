@@ -1,0 +1,8 @@
+rules:
+  - id: php-commented-debug-call
+    metadata: {"rule": "php-commented-debug-call", "evidence": ["https://github.com/laravel/framework/pull/55011#discussion_r2007731075"]}
+    languages: [php]
+    severity: INFO
+    message: 'Commented-out debug call should be removed.'
+    patterns:
+      - pattern-regex: '//\s*(dd|var_dump|print_r|dump)\('

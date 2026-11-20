@@ -1,0 +1,11 @@
+rules:
+  - id: python-test-overbroad-exception-match
+    metadata: {"rule": "python-test-overbroad-exception-match", "evidence": ["https://github.com/pandas-dev/pandas/pull/66557#discussion_r3697314176"]}
+    languages: [python]
+    message: pytest.raises match string is too generic to distinguish which code path raised the exception
+    severity: WARNING
+    patterns:
+      - pattern: pytest.raises(..., match=$MSG)
+      - metavariable-regex:
+          metavariable: $MSG
+          regex: '^"?[a-zA-Z0-9 ,._-]+"?$'

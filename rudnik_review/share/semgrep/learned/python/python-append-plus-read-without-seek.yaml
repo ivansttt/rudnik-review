@@ -1,0 +1,23 @@
+rules:
+  - id: python-append-plus-read-without-seek
+    metadata: {"rule": "python-append-plus-read-without-seek", "evidence": ["BugsInPy scrapy-28: self.file.seek(0) after open(path, 'a+')"]}
+    languages: [python]
+    severity: WARNING
+    message: A file opened in 'a+' mode is positioned at its end; reading it before seek(0) reads nothing.
+    patterns:
+      - pattern-inside: |
+          $F = open($P, $M, ...)
+          ...
+      - pattern-not-inside: |
+          $F.seek(0)
+          ...
+      - pattern-either:
+          - pattern: ($Y for $X in $F)
+          - pattern: "[$Y for $X in $F]"
+          - pattern: |
+              for $X in $F:
+                  ...
+          - pattern: $F.read(...)
+          - pattern: $F.readline(...)
+          - pattern: $F.readlines(...)
+      - metavariable-regex: {metavariable: $M, regex: "^[rbu]?['\"]a\\+b?['\"]$"}

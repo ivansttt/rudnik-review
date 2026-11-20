@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-nameidentifier-only-user-check
+    metadata: {"rule": "csharp-nameidentifier-only-user-check", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67409#discussion_r3583289342"]}
+    languages: [csharp]
+    message: Comparing user identity using only NameIdentifier misses apps that use a different identity claim.
+    severity: WARNING
+    patterns:
+      - pattern: $X.FindFirst(ClaimTypes.NameIdentifier)

@@ -1,0 +1,13 @@
+rules:
+  - id: java-unvalidated-finite-input
+    metadata: {"rule": "java-unvalidated-finite-input", "evidence": ["https://github.com/apache/lucene/pull/16383#discussion_r3581713418", "https://github.com/apache/lucene/pull/16383#discussion_r3581942811", "https://github.com/apache/lucene/pull/16383#discussion_r3581947007"]}
+    languages: [java]
+    message: Validate floating-point input for null and finiteness before storing it
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: this.$F = $V;
+          - pattern: $F = $V;
+      - metavariable-regex:
+          metavariable: $V
+          regex: ^(vector|target|queryVector|query|values)$

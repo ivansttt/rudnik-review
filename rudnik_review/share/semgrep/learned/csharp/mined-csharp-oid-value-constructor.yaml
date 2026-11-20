@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-oid-value-constructor
+    metadata: {"rule": "csharp-oid-value-constructor", "evidence": ["https://github.com/dotnet/runtime/pull/133046#discussion_r3929170252"]}
+    languages: [csharp]
+    message: Pass null as the friendly-name argument to force value-only OID interpretation.
+    severity: INFO
+    pattern: "new Oid($X)"

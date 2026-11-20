@@ -1,0 +1,11 @@
+rules:
+  - id: java-redundant-collection-copy
+    metadata: {"rule": "java-redundant-collection-copy", "evidence": ["https://github.com/apache/kafka/pull/22060#discussion_r3311938690", "https://github.com/apache/kafka/pull/22060#discussion_r3311939835", "https://github.com/apache/kafka/pull/22060#discussion_r3311941493", "https://github.com/apache/kafka/pull/22060#discussion_r3325192159"]}
+    languages: [java]
+    message: "Collection is freshly created and unshared; copyOf makes a redundant full copy."
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: "List.copyOf($X)"
+          - pattern: "Set.copyOf($X)"
+          - pattern: "Map.copyOf($X)"

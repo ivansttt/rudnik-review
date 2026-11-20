@@ -1,0 +1,11 @@
+rules:
+  - id: java-version-range-single-bound
+    metadata: {"rule": "java-version-range-single-bound", "evidence": ["https://github.com/apache/kafka/pull/21577#discussion_r2877077548"]}
+    languages: [java]
+    severity: WARNING
+    message: Version check validates only the upper bound, not the lower bound.
+    patterns:
+      - pattern: if ($VERSION > $HIGHEST) { ... }
+      - metavariable-regex:
+          metavariable: $HIGHEST
+          regex: .*HIGHEST.*

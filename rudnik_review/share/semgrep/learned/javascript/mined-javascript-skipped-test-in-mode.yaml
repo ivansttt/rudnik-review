@@ -1,0 +1,17 @@
+rules:
+  - id: javascript-skipped-test-in-mode
+    metadata: {"rule": "javascript-skipped-test-in-mode", "evidence": ["https://github.com/vercel/next.js/pull/98123#discussion_r3922382488"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "Test registration skipped in a runtime mode instead of forking assertions"
+    patterns:
+      - pattern: |
+          if (!$MODE) {
+            $TEST
+          }
+      - metavariable-regex:
+          metavariable: $MODE
+          regex: "(?i)isDeploy|isNext|isStart|deploy|mode"
+      - metavariable-regex:
+          metavariable: $TEST
+          regex: "^(it|test|describe)(\\.each)?\\s*\\("

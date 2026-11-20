@@ -1,0 +1,27 @@
+rules:
+  - id: csharp-pipereader-advanceto-before-use
+    metadata: {"rule": "csharp-pipereader-advanceto-before-use", "evidence": ["https://github.com/dotnet/aspnetcore/pull/61631#discussion_r2056678904"]}
+    languages:
+      - csharp
+    severity: WARNING
+    message: Call PipeReader.AdvanceTo only after finishing with the ReadOnlySequence or a slice of it.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              var $PARSE = $PARSEFUNC($BUFFER, out var $SLICE);
+              ...
+              $PIPE.AdvanceTo($BUFFER.Start);
+              ...
+              if (...)
+              {
+                ...
+                $CALL(..., $SLICE, ...);
+                ...
+              }
+          - pattern: |
+              var $PARSE = $PARSEFUNC($BUFFER, out var $SLICE);
+              ...
+              $PIPE.AdvanceTo($BUFFER.Start);
+              ...
+              $CALL(..., $SLICE, ...);
+    focus-metavariable: $PIPE

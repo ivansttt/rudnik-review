@@ -1,0 +1,10 @@
+# C's and C++'s formatter (spec 1707, 12 Nov 2026), a formatter alone, from PyPI's wheels (macOS, Linux and Windows). It reads the
+# repository's .clang-format and falls back to LLVM's style. No analyser: clang-tidy needs a compile database, so C stays a gap.
+[[tool]]
+name = "clang-format"
+version = "23.1.5"
+pip = "clang-format"
+stacks = ["c"]
+signals = ["CMakeLists.txt", "*.c", "*.cc", "*.cpp", "*.h", "*.hpp"]
+globs = ["*.c", "*.cc", "*.cpp", "*.h", "*.hpp"]
+fmt = [["clang-format", "-i", "{files}"]]

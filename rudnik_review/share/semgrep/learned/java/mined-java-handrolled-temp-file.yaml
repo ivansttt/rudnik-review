@@ -1,0 +1,10 @@
+rules:
+  - id: java-handrolled-temp-file
+    metadata: {"rule": "java-handrolled-temp-file", "evidence": ["https://github.com/apache/kafka/pull/23388#discussion_r4044041406"]}
+    languages: [java]
+    severity: WARNING
+    message: Hand-rolled temporary file name can collide; use Files.createTempFile or File.createTempFile.
+    pattern-either:
+      - pattern: Files.createFile($X.resolve($S + System.nanoTime() + $T))
+      - pattern: Files.createFile($X.resolve($S + System.currentTimeMillis() + $T))
+      - pattern: new File($S + System.nanoTime() + $T)

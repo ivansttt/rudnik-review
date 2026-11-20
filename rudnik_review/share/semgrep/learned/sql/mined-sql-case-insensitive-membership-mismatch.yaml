@@ -1,0 +1,14 @@
+rules:
+  - id: sql-case-insensitive-membership-mismatch
+    metadata: {"rule": "sql-case-insensitive-membership-mismatch", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2753#discussion_r817141722", "https://github.com/sqlfluff/sqlfluff/pull/2753#discussion_r817142098"]}
+    languages: [python]
+    message: Case-insensitive membership test compares a raw identifier against a pre-lowercased list without lowercasing the identifier.
+    severity: WARNING
+    patterns:
+      - pattern: $IDENTIFIER in $LIST
+      - metavariable-regex:
+          metavariable: $LIST
+          regex: ^ignore_words_list$
+      - metavariable-regex:
+          metavariable: $IDENTIFIER
+          regex: ^(identifier|identifier_contents)$

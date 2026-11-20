@@ -1,0 +1,13 @@
+rules:
+  - id: sql-memoizes-context-dependent-empty
+    metadata: {"rule": "sql-memoizes-context-dependent-empty", "evidence": ["https://github.com/apache/superset/pull/44892#discussion_r4183383161"]}
+    languages:
+      - python
+    message: >-
+      Memoized result depends on app context and caches the empty case: a
+      function returning early with an empty/dropped result when there is no
+      app context will cache that result on a context-less first call.
+    severity: ERROR
+    pattern: |
+      if not has_app_context():
+          return ()

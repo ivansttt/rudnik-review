@@ -1,0 +1,18 @@
+rules:
+  - id: sql-override-after-default
+    metadata: {"rule": "sql-override-after-default", "evidence": ["https://github.com/apache/superset/pull/23458#discussion_r1152286877"]}
+    message: >
+      A `||` fallback lists the base value before the override, so the override
+      is shadowed and never takes effect. Put the override first.
+    languages:
+      - typescript
+      - javascript
+    severity: WARNING
+    patterns:
+      - pattern: $BASE || $OVERRIDE
+      - metavariable-regex:
+          metavariable: $OVERRIDE
+          regex: (?i).*override
+      - metavariable-regex:
+          metavariable: $BASE
+          regex: (?i)^((?!override).)*$

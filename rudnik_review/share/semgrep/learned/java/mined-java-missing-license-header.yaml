@@ -1,0 +1,8 @@
+rules:
+  - id: java-missing-license-header
+    metadata: {"rule": "java-missing-license-header", "evidence": ["https://github.com/netty/netty/pull/12991#discussion_r1021869722"]}
+    message: New source file lacks the required license header.
+    severity: WARNING
+    languages:
+      - java
+    pattern-regex: '\A(?:package|import)\b'

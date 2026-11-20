@@ -1,0 +1,13 @@
+rules:
+  - id: sql-translated-variable
+    metadata: {"rule": "sql-translated-variable", "evidence": ["https://github.com/apache/superset/pull/20078#discussion_r986497228", "https://github.com/apache/superset/pull/20061#discussion_r873438792", "https://github.com/apache/superset/pull/20061#discussion_r873441588", "https://github.com/apache/superset/pull/18679#discussion_r805133850", "https://github.com/apache/superset/pull/18679#discussion_r805133855"]}
+    languages:
+      - javascript
+      - typescript
+    message: Translation function t() called on a runtime variable or expression instead of a string literal; message extractors cannot see the text and dynamic values are looked up as message keys.
+    severity: WARNING
+    patterns:
+      - pattern: t($X)
+      - metavariable-regex:
+          metavariable: $X
+          regex: "^[^'\"]"

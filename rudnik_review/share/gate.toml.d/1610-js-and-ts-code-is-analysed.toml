@@ -1,0 +1,14 @@
+# Biome reads JavaScript and TypeScript before the model does (spec 1610, owner 10 Nov 2026: the cheap tools first, so the review does less).
+# Its rdjson reporter is Reviewdog's format, stable and 1-based; Biome's own json reporter is experimental. The config is the image's
+# (structure-tools.sh copies biome.json to /opt/analysers). It blocks nothing yet: the gate image has no biome until the kit is rolled,
+# so its four flaw rules and their corpus pairs come in biome-flaw-rules-block-once-rolled.
+[[tool]]
+name = "biome"
+version = "2.6.6"
+stacks = ["javascript"]
+globs = ["*.ts", "*.tsx", "*.js", "*.mjs"]
+cmd = ["biome", "lint", "--reporter=rdjson", "--config-path=/opt/analysers", "{files}"]
+adapter = "biome"
+blocks = []
+fix = [["biome", "check", "--write", "{files}"]]   # safe fixes and the format, never --unsafe
+fix_config = ["biome.json", "biome.jsonc"]   # a project adopts the formatter by committing one with its one-time format commit

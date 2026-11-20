@@ -1,0 +1,16 @@
+rules:
+  - id: sql-undefined-check-misses-null
+    metadata: {"rule": "sql-undefined-check-misses-null", "evidence": ["https://github.com/apache/superset/pull/33682#discussion_r2136433877", "https://github.com/apache/superset/pull/33682#discussion_r2136437220", "https://github.com/apache/superset/pull/27255#discussion_r1506473038"]}
+    languages:
+      - javascript
+      - typescript
+    message: >-
+      This guard tests a value only against `undefined`, but the value can also
+      be `null`; null entries survive and reach a non-null assertion or a mapped
+      field that treats them as valid. Use a truthiness check (e.g. `!!value`)
+      to filter out both null and undefined.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $VALUE !== undefined
+          - pattern: $VALUE === undefined

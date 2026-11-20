@@ -1,0 +1,10 @@
+rules:
+  - id: sql-markdown-heading-missing-space
+    metadata: {"rule": "sql-markdown-heading-missing-space", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3454#discussion_r899038318", "https://github.com/sqlfluff/sqlfluff/pull/3454#discussion_r899038413"]}
+    languages: [generic]
+    severity: WARNING
+    message: "Markdown heading lacks the required space after the leading '#' and will not render as a heading."
+    pattern-regex: '^#{1,6}[^ #\n]'
+    paths:
+      include:
+        - "*.md"

@@ -1,0 +1,11 @@
+rules:
+  - id: java-only-first-item
+    metadata: {"rule": "java-only-first-item", "evidence": ["https://github.com/apache/flink/pull/27037#discussion_r2427547877", "https://github.com/apache/flink/pull/27037#discussion_r2427548011"]}
+    languages: [java]
+    message: Only the first argument is passed onward; the remaining arguments are silently dropped.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: GenericRowData.of($A[0])
+          - pattern: GenericRowData.of($A[1])
+          - pattern: GenericRowData.of($A[2])

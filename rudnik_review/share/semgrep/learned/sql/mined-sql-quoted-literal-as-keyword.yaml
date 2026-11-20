@@ -1,0 +1,8 @@
+rules:
+  - id: sql-quoted-literal-as-keyword
+    metadata: {"rule": "sql-quoted-literal-as-keyword", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/5236#discussion_r1336941670", "https://github.com/sqlfluff/sqlfluff/pull/5236#discussion_r1336942326"]}
+    message: Quoted literal variants added as keywords instead of QuotedLiteralSegment
+    languages:
+      - generic
+    severity: ERROR
+    pattern-regex: "'(S3|AZURE|GCS)'"

@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-null-forgiving-masks-missing-member
+    metadata: {"rule": "csharp-null-forgiving-masks-missing-member", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60724#discussion_r1990176622"]}
+    languages: [csharp]
+    message: Throw a descriptive exception instead of null-forgiving a reflection lookup that can return null.
+    severity: WARNING
+    pattern-either:
+      - pattern: $TYPE.GetProperty($NAME)!
+      - pattern: $TYPE.GetMethod($NAME)!
+      - pattern: $TYPE.GetField($NAME)!

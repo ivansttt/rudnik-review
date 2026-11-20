@@ -1,0 +1,9 @@
+rules:
+  - id: sql-reference-to-undefined-segment
+    metadata: {"rule": "sql-reference-to-undefined-segment", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2293#discussion_r784001796", "https://github.com/sqlfluff/sqlfluff/pull/2293#discussion_r784003115"]}
+    languages: [python]
+    message: Grammar references an undefined segment type. Use the generic reference segment that exists instead.
+    severity: ERROR
+    pattern-either:
+      - pattern: Ref("MaterializedViewReferenceSegment")
+      - pattern: Ref("OperatorReferenceSegment")

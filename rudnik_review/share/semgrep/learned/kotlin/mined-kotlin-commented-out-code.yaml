@@ -1,0 +1,8 @@
+rules:
+  - id: kotlin-commented-out-code
+    metadata: {"rule": "kotlin-commented-out-code", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/4714#discussion_r4387601169", "https://github.com/Kotlin/kotlinx.coroutines/pull/876#discussion_r240235692"]}
+    languages:
+      - kotlin
+    message: Commented-out code should be removed or replaced with an explanatory comment.
+    severity: INFO
+    pattern-regex: '//[ \t]*[A-Za-z_$][\w$]*[ \t]*(?:\(|")'

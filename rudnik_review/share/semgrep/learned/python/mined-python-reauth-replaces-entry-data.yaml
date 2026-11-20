@@ -1,0 +1,7 @@
+rules:
+  - id: python-reauth-replaces-entry-data
+    metadata: {"rule": "python-reauth-replaces-entry-data", "evidence": ["https://github.com/home-assistant/core/pull/185847#discussion_r4244065540"]}
+    languages: [python]
+    severity: WARNING
+    message: Reauth replaces the entry data instead of updating changed fields, dropping stored identifiers.
+    pattern: $FLOW.async_update_reload_and_abort(..., data=user_input)

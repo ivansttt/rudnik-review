@@ -1,0 +1,24 @@
+rules:
+  - id: sql-stop-checked-once
+    metadata: {"rule": "sql-stop-checked-once", "evidence": ["https://github.com/apache/superset/pull/44552#discussion_r4333474718", "https://github.com/apache/superset/pull/44552#discussion_r4333474741"]}
+    languages:
+      - python
+    message: A cancellation or stop check runs only before a datasource call or before the cancel handle is published, so a stop landing mid-step still executes the statement or caches a partial result
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if chart_query_cancel_requested($CTX):
+                  return self._stopped_query_result()
+              return self._qc_datasource.get_query_result($Q)
+          - patterns:
+              - pattern: |
+                  $CANCEL_ID = capture_cancel_query_id($TARGET, $CURSOR)
+                  ...
+                  _publish_cancel_handle($OWNER, $QUERY, $DB, $CANCEL_ID)
+              - pattern-not-inside: |
+                  if chart_query_cancel_requested($PRE_Q):
+                      ...
+                  $PRE_CANCEL_ID = capture_cancel_query_id($PRE_TARGET, $PRE_CURSOR)
+                  ...
+                  _publish_cancel_handle($PRE_OWNER, $PRE_QUERY, $PRE_DB, $PRE_CANCEL_ID)

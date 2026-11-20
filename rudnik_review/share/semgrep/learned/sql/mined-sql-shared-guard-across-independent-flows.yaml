@@ -1,0 +1,14 @@
+rules:
+  - id: sql-shared-guard-across-independent-flows
+    metadata: {"rule": "sql-shared-guard-across-independent-flows", "evidence": ["https://github.com/apache/superset/pull/44237#discussion_r4009583019"]}
+    languages:
+      - typescript
+      - javascript
+    severity: WARNING
+    message: A single request-id/sequence counter is shared across independent async effects or fetches, so a later request from one flow cancels or invalidates a more relevant request from the other. Use one counter per effect.
+    patterns:
+      - pattern: |
+          const $COUNTER = useRef(0);
+      - metavariable-regex:
+          metavariable: $COUNTER
+          regex: ^(latest|current|new)(Request|Fetch|Seq)(Id|Counter|Num)?$

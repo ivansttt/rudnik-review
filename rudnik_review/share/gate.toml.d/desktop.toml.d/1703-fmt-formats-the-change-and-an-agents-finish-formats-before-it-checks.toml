@@ -1,0 +1,6 @@
+# Spec 1703: each tool's formatter alone, for `rudnik-review fmt` and an agent's finish.
+[desktop.biome]
+fmt = [["biome", "format", "--write", "{files}"]]
+
+[desktop.ruff]
+fmt = [["ruff", "format", "{files}"]]

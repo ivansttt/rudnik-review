@@ -1,0 +1,9 @@
+rules:
+  - id: kotlin-identical-conditional-branches
+    metadata: {"rule": "kotlin-identical-conditional-branches", "evidence": ["https://github.com/detekt/detekt/pull/7751#discussion_r1820298764", "https://github.com/detekt/detekt/pull/7751#discussion_r1820301824"]}
+    languages: [kotlin]
+    message: "Conditional expression has identical branches, so the condition cannot affect the result."
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($COND) $SAME else $SAME

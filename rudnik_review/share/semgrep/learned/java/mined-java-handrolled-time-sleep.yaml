@@ -1,0 +1,7 @@
+rules:
+  - id: java-handrolled-time-sleep
+    metadata: {"rule": "java-handrolled-time-sleep", "evidence": ["https://github.com/netty/netty/pull/13169#discussion_r1090662892"]}
+    languages: [java]
+    severity: INFO
+    message: Hand-rolled time conversion where TimeUnit.sleep should be used
+    pattern: Thread.sleep($UNIT.toMillis($DELAY), $NANOS)

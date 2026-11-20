@@ -1,0 +1,10 @@
+rules:
+  - id: python-version-parse-unhandled-invalid
+    metadata: {"rule": "python-version-parse-unhandled-invalid", "evidence": ["https://github.com/pypa/pip/pull/13394#discussion_r2090165441"]}
+    languages: [python]
+    message: "packaging Version() parses a version string without guarding against InvalidVersion; an unparseable version raises."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: packaging.version.Version($VERSION)
+          - pattern: Version($VERSION)

@@ -1,0 +1,10 @@
+rules:
+  - id: java-name-based-comparison
+    metadata: {"rule": "java-name-based-comparison", "evidence": ["https://github.com/apache/flink/pull/28113#discussion_r3186781767"]}
+    languages: [java]
+    severity: WARNING
+    message: Matching a definition or enum by its name string instead of reference identity can conflate distinct values that share a name.
+    patterns:
+      - pattern-either:
+        - pattern: $X.getName().equalsIgnoreCase($Y)
+        - pattern: $X.getName().equals($Y)

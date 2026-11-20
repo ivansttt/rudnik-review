@@ -1,0 +1,22 @@
+rules:
+  - id: java-final-field-updater
+    metadata: {"rule": "java-final-field-updater", "evidence": ["https://github.com/netty/netty/pull/11548#discussion_r682845359", "https://github.com/netty/netty/pull/11548#discussion_r682862553"]}
+    languages:
+      - java
+    message: >-
+      Field $FIELD is mutated by an AtomicIntegerFieldUpdater,
+      AtomicLongFieldUpdater, or AtomicReferenceFieldUpdater but is declared
+      'final' instead of 'volatile'. Field updaters require the target field
+      to be volatile, so declaring it final (or dropping volatile) breaks the
+      reflective update.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              private final int $FIELD = $UPDATER.initialValue();
+          - pattern: |
+              private final long $FIELD = $UPDATER.initialValue();
+          - pattern: |
+              private final $TYPE $FIELD = $UPDATER.initialValue();
+          - pattern: |
+              private final $TYPE<$PARAM> $FIELD = $UPDATER.initialValue();

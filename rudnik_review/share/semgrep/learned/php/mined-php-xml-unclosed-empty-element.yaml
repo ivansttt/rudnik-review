@@ -1,0 +1,8 @@
+rules:
+  - id: php-xml-unclosed-empty-element
+    metadata: {"rule": "php-xml-unclosed-empty-element", "evidence": ["https://github.com/matomo-org/matomo/pull/25120#discussion_r3844818126"]}
+    languages: [php]
+    message: Empty XML element emitted without a self-closing slash
+    severity: ERROR
+    patterns:
+      - pattern-regex: '\$emptyNode\s*=\s*"<row[^>]*[^/>]>"'

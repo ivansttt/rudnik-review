@@ -1,0 +1,7 @@
+rules:
+  - id: rust-nth-one-emptiness-check
+    metadata: {"rule": "rust-nth-one-emptiness-check", "evidence": ["https://github.com/rust-lang/rust/pull/165568#discussion_r4541239760"]}
+    languages: [rust]
+    message: chars().nth(1).is_none() is true for empty and single-character strings; use is_empty() instead
+    severity: WARNING
+    pattern: $S.chars().nth(1).is_none()

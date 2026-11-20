@@ -1,0 +1,17 @@
+rules:
+  - id: kotlin-wrong-variable-checked
+    metadata: {"rule": "kotlin-wrong-variable-checked", "evidence": ["https://github.com/detekt/detekt/pull/590#discussion_r154940296"]}
+    languages:
+      - kotlin
+    severity: ERROR
+    message: |
+      Guard condition checks `$OTHER.isFile()` instead of the variable `$PATH`
+      that the surrounding code validates and the error message names.
+    patterns:
+      - pattern: |
+          if (!Files.exists($PATH) || $OTHER.isFile()) {
+            ...
+          }
+      - metavariable-comparison:
+          metavariable: $OTHER
+          comparison: str($OTHER) != str($PATH)

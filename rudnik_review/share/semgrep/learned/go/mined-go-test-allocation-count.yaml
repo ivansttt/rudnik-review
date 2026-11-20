@@ -1,0 +1,12 @@
+rules:
+  - id: go-test-allocation-count
+    metadata: {"rule": "go-test-allocation-count", "evidence": ["https://github.com/kubernetes/kubernetes/pull/142224#discussion_r4049900830"]}
+    languages:
+      - go
+    severity: WARNING
+    message: >-
+      Don't assert allocation counts in unit tests. AllocsPerRun counts move with
+      the compiler and Go version, turning a future allocation improvement into a
+      failure with no change to the code under test. Pin the behavior or move the
+      check to a benchmark.
+    pattern: testing.AllocsPerRun(...)

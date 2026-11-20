@@ -1,0 +1,23 @@
+rules:
+  - id: csharp-redundant-null-check-before-call
+    metadata: {"rule": "csharp-redundant-null-check-before-call", "evidence": ["https://github.com/dotnet/runtime/pull/132764#discussion_r3859843354", "https://github.com/dotnet/runtime/pull/132764#discussion_r3859849982"]}
+    languages: [csharp]
+    severity: WARNING
+    message: Redundant null-argument check; the called API already validates the argument and throws.
+    pattern-either:
+      - pattern: |
+          ArgumentNullException.ThrowIfNull($FMT);
+          ...
+          string.Format($CULTURE, $FMT, ...);
+      - pattern: |
+          if ($FMT == null)
+          {
+              throw new ArgumentNullException(nameof($FMT));
+          }
+          ...
+          string.Format($CULTURE, $FMT, ...);
+      - patterns:
+          - pattern: sb.AppendLine($S)
+          - metavariable-regex:
+              metavariable: $S
+              regex: .*if\s*\([^)]*==\s*null\).*

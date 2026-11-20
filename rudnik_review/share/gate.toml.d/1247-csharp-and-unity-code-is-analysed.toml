@@ -1,0 +1,31 @@
+# The C# analysers (spec 1247, 11 Nov 2026: v3 §5, §6), each naming its image: agent-dotnet, which share/agent-dotnet/Containerfile builds on
+# agent-base from the versions here, and a box builds only once a plan selects one of them. roslyn takes the {files} and builds the projects that hold them;
+# inspectcode runs through the solution. `analysers` are the NuGet packages Roslyn loads beside the SDK's own .NET analysers (at latest-All); roslyn's version is the compiler
+# the SDK carries, which toolbox-check reads. Unity's own checks wait for the Unity spike: `unity` stays a gap. Each blocks nothing until spec 1253
+# turns a rule on with its gate-corpus pair.
+[agent-dotnet]
+sdk = "9.0.306"
+analysers = ["Microsoft.Unity.Analyzers:1.23.0", "Meziantou.Analyzer:2.0.237", "Roslynator.Analyzers:4.14.1",
+             "SonarAnalyzer.CSharp:10.15.0.120848", "ErrorProne.NET.CoreAnalyzers:0.7.0-beta.1"]
+
+[[tool]]
+name = "roslyn"
+version = "4.14.0"
+image = "agent-dotnet"
+stacks = ["csharp"]
+globs = ["*.cs"]
+cmd = ["roslyn", "{files}"]
+adapter = "sarif"
+builds = true
+blocks = []
+
+[[tool]]
+name = "inspectcode"   # JetBrains ReSharper's InspectCode, `jb inspectcode`
+version = "2025.2.3"
+image = "agent-dotnet"
+stacks = ["csharp"]
+globs = ["*.cs"]
+cmd = ["inspectcode"]
+adapter = "sarif"
+builds = true
+blocks = []

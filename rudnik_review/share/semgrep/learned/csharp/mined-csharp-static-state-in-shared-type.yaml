@@ -1,0 +1,18 @@
+rules:
+  - id: csharp-static-state-in-shared-type
+    metadata: {"rule": "csharp-static-state-in-shared-type", "evidence": ["https://github.com/dotnet/runtime/pull/136644#discussion_r4462947864"]}
+    languages:
+      - csharp
+    severity: WARNING
+    message: >-
+      Feature-specific static state is declared directly on a large, widely-used
+      shared type with an eager initializer. All static fields in a type are
+      initialized together, so touching any member of the type eagerly
+      initializes this state. Isolate feature-specific state in a nested or lazy
+      holder type.
+    patterns:
+      - pattern: |
+          private static $TYPE[] $FIELD = new $TYPE[] { ... };
+      - metavariable-regex:
+          metavariable: $FIELD
+          regex: '^s_'

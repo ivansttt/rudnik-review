@@ -1,0 +1,10 @@
+rules:
+  - id: go-test-assert-in-error-branch
+    metadata: {"rule": "go-test-assert-in-error-branch", "evidence": ["https://github.com/etcd-io/etcd/pull/15721#discussion_r1170016508"]}
+    languages: [go]
+    message: Assert no error on the success path; a NoError inside the error branch only runs when the error occurred.
+    severity: WARNING
+    pattern: |
+      if $INIT; $ERR != nil {
+        require.NoError(t, $ERR)
+      }

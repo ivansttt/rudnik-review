@@ -1,0 +1,12 @@
+rules:
+  - id: java-ungated-metric-collection
+    metadata: {"rule": "java-ungated-metric-collection", "evidence": ["https://github.com/netty/netty/pull/15524#discussion_r2260339870", "https://github.com/netty/netty/pull/15524#discussion_r2260341793", "https://github.com/netty/netty/pull/15524#discussion_r2260344231"]}
+    languages: [java]
+    message: Timing/metric report is not gated by the should-report flag
+    severity: WARNING
+    patterns:
+      - pattern: $CTX.reportActiveIoTime($X);
+      - pattern-not-inside: |
+          if ($CTX.shouldReportActiveIoTime()) {
+            ...
+          }

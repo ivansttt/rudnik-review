@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-recompute-normalized-value
+    metadata: {"rule": "csharp-recompute-normalized-value", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65772#discussion_r3442614977", "https://github.com/dotnet/aspnetcore/pull/65483#discussion_r3645496444"]}
+    languages:
+      - csharp
+    message: Compute or normalize a stable value once instead of on every call or request.
+    severity: INFO
+    pattern-either:
+      - pattern: |
+          private static List<string> CollectSortedNames(string $X)
+          {
+            ...
+          }
+      - pattern: |
+          var $SESSIONKEY = $SOURCE.ToLowerInvariant();

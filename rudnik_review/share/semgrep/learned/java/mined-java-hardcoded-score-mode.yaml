@@ -1,0 +1,8 @@
+rules:
+  - id: java-hardcoded-score-mode
+    metadata: {"rule": "java-hardcoded-score-mode", "evidence": ["https://github.com/apache/lucene/pull/15574#discussion_r3316509347"]}
+    languages: [java]
+    message: "Hardcoded ScoreMode instead of the collector's scoreMode()"
+    severity: WARNING
+    patterns:
+      - pattern: createWeight($QUERY, ScoreMode.$MODE, $BOOST)

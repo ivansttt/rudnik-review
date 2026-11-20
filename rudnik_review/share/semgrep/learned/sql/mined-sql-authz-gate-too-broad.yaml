@@ -1,0 +1,13 @@
+rules:
+  - id: sql-authz-gate-too-broad
+    metadata: {"rule": "sql-authz-gate-too-broad", "evidence": ["https://github.com/apache/superset/pull/43390#discussion_r3833203019", "https://github.com/apache/superset/pull/42305#discussion_r3664745023"]}
+    languages:
+      - python
+    message: Authorization bypass keyed on a capability broader than intended.
+    severity: ERROR
+    pattern-either:
+      - pattern: $MGR.can_access_all_datasources()
+      - pattern: |
+          @permission_name("list")
+          def $FUNC(...):
+            ...

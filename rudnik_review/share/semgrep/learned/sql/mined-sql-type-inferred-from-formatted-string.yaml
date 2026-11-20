@@ -1,0 +1,8 @@
+rules:
+  - id: sql-type-inferred-from-formatted-string
+    metadata: {"rule": "sql-type-inferred-from-formatted-string", "evidence": ["https://github.com/apache/superset/pull/42601#discussion_r3725891334"]}
+    languages: [javascript, typescript]
+    message: Re-typing a cell as a date from its formatted string converts look-alike metrics
+    severity: WARNING
+    pattern: |
+      const $M = $CELL.v.match($ISO_DATE_RE);

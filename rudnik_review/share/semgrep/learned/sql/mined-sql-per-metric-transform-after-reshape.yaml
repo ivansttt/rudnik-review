@@ -1,0 +1,13 @@
+rules:
+  - id: sql-per-metric-transform-after-reshape
+    metadata: {"rule": "sql-per-metric-transform-after-reshape", "evidence": ["https://github.com/apache/superset/pull/42976#discussion_r3820179079"]}
+    languages: [python]
+    message: 'Per-metric percent/normalization transform runs after the level-swapping reshape. `_apply_show_values_as` is called after `df.stack(...).unstack()`, which swaps the column MultiIndex levels from (metric, category) to (category, metric), so the transform iterates categories as if they were metrics and normalizes across different metrics, producing wrong percentages. Run the transform before the reshape.'
+    severity: WARNING
+    pattern: |
+      if combine_value_with_metric:
+          ...
+          $DF = $DF.stack(...).unstack()
+      ...
+      if percent_mode is not None:
+          $DF = _apply_show_values_as($DF, ...)

@@ -1,0 +1,20 @@
+rules:
+- id: java-redundant-name-parameter
+  metadata: {"rule": "java-redundant-name-parameter", "evidence": ["https://github.com/apache/lucene/pull/13469#discussion_r1638752774", "https://github.com/apache/lucene/pull/13469#discussion_r1638754770"]}
+  languages:
+  - java
+  message: A name/identifier is passed where the class's own fixed constant should be used.
+  severity: WARNING
+  pattern-either:
+  - patterns:
+    - pattern: |
+        super($NAME, ...)
+    - metavariable-regex:
+        metavariable: $NAME
+        regex: ^[a-z][a-zA-Z0-9_]*$
+  - patterns:
+    - pattern: |
+        new $CLASS($NAME, ...)
+    - metavariable-regex:
+        metavariable: $NAME
+        regex: ^[A-Z][A-Z0-9_]*$

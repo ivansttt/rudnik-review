@@ -1,0 +1,8 @@
+rules:
+  - id: java-timeout-double-subtract
+    metadata: {"rule": "java-timeout-double-subtract", "evidence": ["https://github.com/netty/netty/pull/11504#discussion_r675022514"]}
+    languages: [java]
+    severity: WARNING
+    message: Timeout decremented by cumulative elapsed time each iteration double-counts it.
+    pattern: |
+      $TIMEOUT -= System.nanoTime() - $START

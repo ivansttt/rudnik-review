@@ -1,0 +1,10 @@
+rules:
+  - id: sql-helper-resolves-divergent-source
+    metadata: {"rule": "sql-helper-resolves-divergent-source", "evidence": ["https://github.com/apache/superset/pull/44653#discussion_r4133113881", "https://github.com/apache/superset/pull/44653#discussion_r4133118179", "https://github.com/apache/superset/pull/44082#discussion_r3986524348"]}
+    languages:
+      - python
+    message: A value is resolved from a different source than the caller's path (e.g. get_impersonation_email() reads url_object while the caller resolved from sqlalchemy_url; EXCEL_EXPORT_STORAGE_CONFIGURED reads EXCEL_EXPORT_S3_BUCKET directly while the endpoint uses is_export_storage_configured()).
+    severity: WARNING
+    pattern-either:
+      - pattern: $DB.get_impersonation_email()
+      - pattern: $CONFIG["EXCEL_EXPORT_STORAGE_CONFIGURED"] = bool(app.config["EXCEL_EXPORT_S3_BUCKET"])

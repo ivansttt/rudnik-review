@@ -1,0 +1,13 @@
+rules:
+  - id: swift-precondition-failure-for-recoverable-error
+    metadata: {"rule": "swift-precondition-failure-for-recoverable-error", "evidence": ["https://github.com/apple/swift-nio/pull/1001#discussion_r283660201", "https://github.com/apple/swift-nio/pull/414#discussion_r189435664"]}
+    languages:
+      - swift
+    message: |
+      preconditionFailure or fatalError is used for a reachable, recoverable runtime
+      condition. Report the error to the caller or through an error callback instead
+      of crashing the program.
+    severity: WARNING
+    pattern-either:
+      - pattern: preconditionFailure(...)
+      - pattern: fatalError(...)

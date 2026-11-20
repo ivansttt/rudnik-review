@@ -1,0 +1,12 @@
+rules:
+  - id: sql-over-specific-literal-segment
+    metadata: {"rule": "sql-over-specific-literal-segment", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3796#discussion_r956578385", "https://github.com/sqlfluff/sqlfluff/pull/3796#discussion_r956621150"]}
+    languages:
+      - python
+    message: Over-specific typed segment where a quoted literal is required; use QuotedLiteralSegment
+    severity: WARNING
+    patterns:
+      - pattern: Ref("$SEG")
+      - metavariable-regex:
+          metavariable: $SEG
+          regex: ^(TimeStampISO8601|PrefixPath)$

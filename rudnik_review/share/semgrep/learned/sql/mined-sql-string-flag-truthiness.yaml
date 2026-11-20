@@ -1,0 +1,8 @@
+rules:
+  - id: sql-string-flag-truthiness
+    metadata: {"rule": "sql-string-flag-truthiness", "evidence": ["https://github.com/apache/superset/pull/40426#discussion_r3463652368"]}
+    languages: [yaml]
+    message: boolean gate checks string output truthiness where '0' is truthy
+    severity: WARNING
+    patterns:
+      - pattern-regex: '^\s*if:\s*needs\.[A-Za-z0-9_-]+\.outputs\.[A-Za-z0-9_-]+\s*$'

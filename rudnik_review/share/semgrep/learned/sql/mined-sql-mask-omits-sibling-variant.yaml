@@ -1,0 +1,8 @@
+rules:
+- id: sql-mask-omits-sibling-variant
+  metadata: {"rule": "sql-mask-omits-sibling-variant", "evidence": ["https://github.com/apache/superset/pull/43827#discussion_r4021578108"]}
+  languages:
+  - python
+  severity: ERROR
+  message: Secret masking over a JSON-schema union applies only the matched variant's properties and never consults sibling variants' additionalProperties or patternProperties that mark the same key secret, so the secret is revealed.
+  pattern: _mask_against($ITEM, subs, $DEFS)

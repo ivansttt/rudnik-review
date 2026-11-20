@@ -1,0 +1,10 @@
+rules:
+  - id: php-bool-param-read-as-int
+    metadata: {"rule": "php-bool-param-read-as-int", "evidence": ["https://github.com/matomo-org/matomo/pull/24983#discussion_r3724789557"]}
+    languages: [php]
+    message: Boolean parameter read through an integer-typed request accessor
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: Common::getRequestVar($PARAM, $DEFAULT, 'integer', $REQUEST)
+          - pattern: getRequestVar($PARAM, $DEFAULT, 'integer', $REQUEST)

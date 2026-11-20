@@ -1,0 +1,7 @@
+rules:
+  - id: sql-issue-template-title-placeholder
+    metadata: {"rule": "sql-issue-template-title-placeholder", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2626#discussion_r805856359", "https://github.com/sqlfluff/sqlfluff/pull/2626#discussion_r805858794", "https://github.com/sqlfluff/sqlfluff/pull/2626#discussion_r805860032"]}
+    languages: [yaml]
+    message: Issue template title field duplicates the label and is often left unedited
+    severity: INFO
+    pattern-regex: '^title:\s*"\['

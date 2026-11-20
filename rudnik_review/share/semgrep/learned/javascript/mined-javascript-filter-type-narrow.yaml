@@ -1,0 +1,9 @@
+rules:
+  - id: javascript-filter-type-narrow
+    metadata: {"rule": "javascript-filter-type-narrow", "evidence": ["https://github.com/vercel/next.js/pull/100136#discussion_r4261862058"]}
+    languages:
+      - ts
+    message: Filtering with a type-guard predicate to narrow data instead of validating it.
+    severity: WARNING
+    pattern: |
+      $OBJ.filter(($ARG): $ARG is $TYPE => $BODY)

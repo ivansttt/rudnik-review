@@ -1,0 +1,8 @@
+rules:
+  - id: sql-lossy-nonfinite-json
+    metadata: {"rule": "sql-lossy-nonfinite-json", "evidence": ["https://github.com/apache/superset/pull/45761#discussion_r4396448564"]}
+    languages: [python]
+    message: JSON serialization coerces NaN/Infinity to null, breaking round-trip
+    severity: WARNING
+    patterns:
+      - pattern: bytes(json.dumps($VALUE), encoding="utf-8")

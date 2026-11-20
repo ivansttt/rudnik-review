@@ -1,0 +1,28 @@
+rules:
+- id: java-close-not-idempotent
+  metadata: {"rule": "java-close-not-idempotent", "evidence": ["https://github.com/netty/netty/pull/10638#discussion_r499616245", "https://github.com/netty/netty/pull/10638#discussion_r499620936"]}
+  languages:
+  - java
+  severity: WARNING
+  message: >-
+    Close/release method is not idempotent: it performs flush/close/write work
+    unconditionally without an isClosed/closed guard, so a second call repeats
+    the work or throws.
+  patterns:
+  - pattern-inside: |
+      public void close() throws IOException {
+        ...
+      }
+  - pattern: |
+      $FLAG = true;
+      ...
+      $OUT.$METHOD(...);
+  - metavariable-regex:
+      metavariable: $METHOD
+      regex: ^(close|flush|write.*)$
+  - pattern-not-inside: |
+      if ($FLAG) {
+        ...
+      } else {
+        ...
+      }

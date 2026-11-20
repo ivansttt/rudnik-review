@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-string-interpolation-in-logging
+    metadata: {"rule": "csharp-string-interpolation-in-logging", "evidence": ["https://github.com/dotnet/aspnetcore/pull/60806#discussion_r2031988323"]}
+    languages: [csharp]
+    message: Use structured logging parameters instead of building the message with concatenation/interpolation.
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: $LOGGER.$METHOD(..., "..." + $X, ...)
+          - pattern: $LOGGER.$METHOD(..., $"...{$X}...", ...)

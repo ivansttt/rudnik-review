@@ -1,0 +1,10 @@
+rules:
+  - id: sql-cache-keyed-on-unhashable
+    metadata: {"rule": "sql-cache-keyed-on-unhashable", "evidence": ["https://github.com/apache/superset/pull/44892#discussion_r4183962399"]}
+    languages: [python]
+    severity: WARNING
+    message: "@lru_cache keys on a value that may be unhashable and raises TypeError"
+    pattern: |
+      @lru_cache(...)
+      def $FUNC(...):
+        ...

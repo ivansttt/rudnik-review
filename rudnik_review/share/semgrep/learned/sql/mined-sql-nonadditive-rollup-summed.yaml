@@ -1,0 +1,12 @@
+rules:
+  - id: sql-nonadditive-rollup-summed
+    metadata: {"rule": "sql-nonadditive-rollup-summed", "evidence": ["https://github.com/apache/superset/pull/43718#discussion_r3895547029", "https://github.com/apache/superset/pull/43718#discussion_r3897851349"]}
+    languages:
+      - python
+    message: Non-additive metric rollup recomputed as a leaf sum or by dropping GROUPING SETS rollups instead of applying the metric's configured aggregator, so the total diverges from the database-computed value.
+    severity: ERROR
+    pattern-either:
+      - pattern: |
+          fraction = block.div(leaf.sum(axis=summed).replace(0, np.nan), axis=divided)
+      - pattern: |
+          df = drop_grouping_sets_rollups(df)

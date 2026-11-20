@@ -1,0 +1,63 @@
+rules:
+  - id: swift-missing-public-access
+    metadata: {"rule": "swift-missing-public-access", "evidence": ["https://github.com/apple/swift-nio/pull/1497#discussion_r417367113", "https://github.com/apple/swift-nio/pull/1497#discussion_r417368330"]}
+    languages: [swift]
+    message: >-
+      New public API member missing the public modifier. A method added to a
+      public extension without an access modifier defaults to internal and is
+      not part of the public API.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          extension $TYPE {
+            ...
+          }
+      - pattern-either:
+          - pattern: |
+              func $NAME(...) -> $RET {
+                ...
+              }
+          - pattern: |
+              func $NAME<...>(...) -> $RET {
+                ...
+              }
+      - pattern-not: |
+          public func $NAME(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          public func $NAME<...>(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          private func $NAME(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          private func $NAME<...>(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          fileprivate func $NAME(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          fileprivate func $NAME<...>(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          internal func $NAME(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          internal func $NAME<...>(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          open func $NAME(...) -> $RET {
+            ...
+          }
+      - pattern-not: |
+          open func $NAME<...>(...) -> $RET {
+            ...
+          }

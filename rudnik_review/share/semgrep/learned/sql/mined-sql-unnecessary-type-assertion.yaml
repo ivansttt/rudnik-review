@@ -1,0 +1,10 @@
+rules:
+  - id: sql-unnecessary-type-assertion
+    metadata: {"rule": "sql-unnecessary-type-assertion", "evidence": ["https://github.com/apache/superset/pull/35159#discussion_r2360478120", "https://github.com/apache/superset/pull/35159#discussion_r2360482056", "https://github.com/apache/superset/pull/35159#discussion_r2360483509", "https://github.com/apache/superset/pull/35045#discussion_r2362162471", "https://github.com/apache/superset/pull/30027#discussion_r1734880288"]}
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Redundant `as any` assertion suppresses type checking."
+    patterns:
+      - pattern-either:
+          - pattern: $X as any
+          - pattern: ($X as any)

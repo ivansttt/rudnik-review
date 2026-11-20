@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-xml-doc-generic-angle-brackets
+    metadata: {"rule": "csharp-xml-doc-generic-angle-brackets", "evidence": ["https://github.com/dotnet/aspnetcore/pull/64404#discussion_r3388255239"]}
+    languages: [csharp]
+    message: Use braces not angle brackets for generic type parameters in XML doc comments; write {double} instead of <double>.
+    severity: WARNING
+    pattern-regex: '(?m)^[ \t]*///.*\w<\w+>'

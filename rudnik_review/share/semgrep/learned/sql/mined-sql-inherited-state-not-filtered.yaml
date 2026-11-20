@@ -1,0 +1,13 @@
+rules:
+  - id: sql-inherited-state-not-filtered
+    metadata: {"rule": "sql-inherited-state-not-filtered", "evidence": ["https://github.com/apache/superset/pull/44096#discussion_r4022961559"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      A merge of previously-saved or base state into a new payload copies
+      entries the current configuration no longer defines, without intersecting
+      them against the current known keys. Filter the inherited mask to the IDs
+      the current configuration still knows about before merging.
+    pattern: |
+      {**base_mask, ...}

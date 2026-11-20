@@ -1,0 +1,11 @@
+rules:
+  - id: sql-value-exceeds-column-length
+    metadata: {"rule": "sql-value-exceeds-column-length", "evidence": ["https://github.com/apache/superset/pull/41550#discussion_r3690823328"]}
+    languages: [python]
+    message: String constant longer than the String(16)/VARCHAR(16) column it is persisted into.
+    severity: WARNING
+    patterns:
+      - pattern: $NAME = "$VALUE"
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: ".{17,}"

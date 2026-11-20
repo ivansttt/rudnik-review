@@ -1,0 +1,7 @@
+rules:
+  - id: java-stackwalker-retain-class-ref
+    metadata: {"rule": "java-stackwalker-retain-class-ref", "evidence": ["https://github.com/apache/lucene/pull/15864#discussion_r2976099954"]}
+    languages: [java]
+    severity: WARNING
+    message: "StackWalker.getInstance(RETAIN_CLASS_REFERENCE) requires elevated privileges under a SecurityManager; compare StackFrame.getClassName() strings instead."
+    pattern: StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)

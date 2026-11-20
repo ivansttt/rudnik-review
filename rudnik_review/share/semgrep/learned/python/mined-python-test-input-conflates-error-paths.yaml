@@ -1,0 +1,26 @@
+rules:
+  - id: python-test-input-conflates-error-paths
+    metadata: {"rule": "python-test-input-conflates-error-paths", "evidence": ["https://github.com/pydantic/pydantic/pull/12627#discussion_r2618579209", "https://github.com/pydantic/pydantic/pull/12627#discussion_r2618580194", "https://github.com/pydantic/pydantic/pull/12627#discussion_r2618580573"]}
+    languages: [python]
+    message: >-
+      This test passes a dict (or JSON-encoded dict) to a TypeAdapter over a
+      scalar type while asserting a config error, so it also exercises a type or
+      parse error path. Pass a scalar input instead.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $TA = TypeAdapter($SCALAR)
+          ...
+          $TA.$METHOD($INPUT, by_alias=False, by_name=False)
+      - metavariable-regex:
+          metavariable: $SCALAR
+          regex: ^(int|float|str|bool|bytes)$
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^validate_(python|json|strings)$
+      - metavariable-pattern:
+          metavariable: $INPUT
+          pattern-either:
+            - pattern: "{...}"
+            - pattern: "json.dumps({...})"
+      - focus-metavariable: $INPUT

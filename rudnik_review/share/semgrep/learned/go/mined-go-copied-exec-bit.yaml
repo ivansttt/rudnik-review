@@ -1,0 +1,7 @@
+rules:
+  - id: go-copied-exec-bit
+    metadata: {"rule": "go-copied-exec-bit", "evidence": ["https://github.com/kubernetes/kubernetes/pull/138142#discussion_r3475142966"]}
+    languages: [go]
+    message: Mask copied file permissions with 0666 so executable bits are not carried onto the written file.
+    severity: WARNING
+    pattern: os.WriteFile($DST, $DATA, $MODE.Perm())

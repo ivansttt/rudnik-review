@@ -1,0 +1,10 @@
+rules:
+  - id: swift-copy-uninitialized-bytes
+    metadata: {"rule": "swift-copy-uninitialized-bytes", "evidence": ["https://github.com/apple/swift-nio/pull/2745#discussion_r1711459373"]}
+    languages:
+      - swift
+    message: |
+      Copying a memory region that includes bytes never written (past the writer index) is undefined behavior. reallocSlice with a range extending to lowerBound + capacity can read uninitialized bytes.
+    severity: ERROR
+    pattern: |
+      $STORAGE.reallocSlice($LOWER_BOUND..< $LOWER_BOUND + $SHRUNK, capacity: $CAPACITY)

@@ -1,0 +1,13 @@
+rules:
+  - id: java-assume-instead-of-ensure
+    metadata: {"rule": "java-assume-instead-of-ensure", "evidence": ["https://github.com/netty/netty/pull/12029#discussion_r788876097", "https://github.com/netty/netty/pull/12029#discussion_r788878642"]}
+    languages:
+      - java
+    message: >
+      A test gates its setup on a mere availability check (assumeTrue(isAvailable()))
+      instead of calling the method that loads or ensures the resource is available
+      (e.g. ensureAvailability()). This silently skips or fails the test on platforms
+      where the resource is loadable but not yet loaded.
+    severity: WARNING
+    patterns:
+      - pattern: assumeTrue($OBJ.isAvailable());

@@ -1,0 +1,10 @@
+rules:
+  - id: swift-assert-instead-of-precondition
+    metadata: {"rule": "swift-assert-instead-of-precondition", "evidence": ["https://github.com/apple/swift-nio/pull/1448#discussion_r393124673"]}
+    languages: [swift]
+    message: |
+      `assert` is removed in release builds. Guarding a condition whose failure
+      leads to undefined behavior (e.g. reading uninitialized memory) must use
+      `precondition`, which also traps in release builds.
+    severity: ERROR
+    pattern: assert(...)

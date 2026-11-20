@@ -1,0 +1,11 @@
+rules:
+  - id: sql-requested-capability-silently-skipped
+    metadata: {"rule": "sql-requested-capability-silently-skipped", "evidence": ["https://github.com/apache/superset/pull/19252#discussion_r839340901"]}
+    languages: [python]
+    severity: WARNING
+    message: Requested security capability is logged as unsupported and silently skipped instead of raising.
+    pattern: |
+      logger.warning($MSG, ...)
+    metavariable-regex:
+      metavariable: $MSG
+      regex: '(?i)(not supported|unsupported|impersonat|ignor|skip)'

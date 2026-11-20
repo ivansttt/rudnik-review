@@ -1,0 +1,17 @@
+rules:
+  - id: csharp-uncached-reflection-lookup
+    metadata: {"rule": "csharp-uncached-reflection-lookup", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65772#discussion_r3110707275", "https://github.com/dotnet/aspnetcore/pull/65306#discussion_r3093297319", "https://github.com/dotnet/aspnetcore/pull/65306#discussion_r3100026094", "https://github.com/dotnet/aspnetcore/pull/58251#discussion_r1904438139"]}
+    languages:
+      - csharp
+    message: Cache reflection lookups instead of repeating them on every call.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              var $CTYPE = $OBJ.GetType();
+              ...
+              $CTYPE.GetProperty($NAME, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+          - pattern: $T.GetGenericTypeDefinition()
+          - pattern: typeof($A).IsAssignableFrom($B)
+          - pattern: $T.BaseType
+          - pattern: typeof($A).GetMethod(...)

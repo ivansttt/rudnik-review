@@ -1,0 +1,8 @@
+rules:
+  - id: sql-wrong-dao-error-variant
+    metadata: {"rule": "sql-wrong-dao-error-variant", "evidence": ["https://github.com/apache/superset/pull/22325#discussion_r1048504140", "https://github.com/apache/superset/pull/22325#discussion_r1048504583"]}
+    languages: [python]
+    patterns:
+      - pattern: DAOCreateFailedError
+    message: Update path uses DAOCreateFailedError instead of DAOUpdateFailedError
+    severity: WARNING

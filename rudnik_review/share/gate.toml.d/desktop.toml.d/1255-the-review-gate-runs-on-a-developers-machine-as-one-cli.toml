@@ -1,0 +1,58 @@
+# Spec 1255: each tool's way onto a developer's machine, `release` with its Windows and macOS sha256, or `pip`.
+[desktop.actionlint]
+release = "rhysd/actionlint/releases/download/v{v}/actionlint_{v}_{os}_{go}.{ext}"
+sha256_windows_x86_64 = "8cae2385eb69b93084ea2e6a4bce57233feb56ab16b3087bea25cbc0abadb0cc"
+sha256_darwin_x86_64 = "16b85caf792b34bcc40f7437736c4347680da0a1b034353a85012debbd71a461"
+sha256_darwin_arm64 = "ffb1f6c429a51dc9f37af9d11f96c16bd52f54b713bf7f8bd92f7fce9fd4284a"
+
+[desktop.gitleaks]
+release = "gitleaks/gitleaks/releases/download/v{v}/gitleaks_{v}_{os}_{x64}.{ext}"
+sha256_windows_x86_64 = "da6458e8864af553807de1c46a7a8eac0880bd6b99ba56288e87e86a45af884f"
+sha256_darwin_x86_64 = "edf5a507008b0d2ef4959575772772770586409c1f6f74dabf19cbe7ec341ced"
+sha256_darwin_arm64 = "d942f3ad147250c9edbaab3fed9e482f98d3b59ba10ae97b8d75647e3ade492c"
+
+[desktop.hadolint]
+release = "hadolint/hadolint/releases/download/v{v}/hadolint-{mac}-{arch}{exe}"
+sha256_windows_x86_64 = "8e0ee174f88edb14f207a68430c7a53c2883ed509cdbde9a3a26fffa140fa5e4"
+sha256_darwin_x86_64 = "2b69a853433f1eca522ffb921cd490bd1321424d03331fd8390f93b7fb4a02e9"
+sha256_darwin_arm64 = "3625e2e9f43dcfe7bd38738a5f5520ed50ce39ed28485266e6803dd7bc197b10"
+
+[desktop.osv-scanner]
+release = "google/osv-scanner/releases/download/v{v}/osv-scanner_{os}_{go}{exe}"
+sha256_windows_x86_64 = "423e310b9e5a7f896a6c3640f7bf9a482b56e677e2c593382c7837d99358275e"
+sha256_darwin_x86_64 = "589e673d8d6585fecf4384fa4d85cb9fa5aa7f6ff6a8c4e5ef1472e8217d5875"
+sha256_darwin_arm64 = "bd964925a27037db3a0426ac411a6599cd18781bb2bd72ce02adf4a6a1fe9058"
+
+[desktop.shellcheck]
+release = "koalaman/shellcheck/releases/download/v{v}/shellcheck-v{v}.{os}.{gnu}.tar.xz"
+release_windows = "koalaman/shellcheck/releases/download/v{v}/shellcheck-v{v}.zip"
+sha256_windows_x86_64 = "eb6cd53a54ea97a56540e9d296ce7e2fa68715aa507ff23574646c1e12b2e143"
+sha256_darwin_x86_64 = "ef27684f23279d112d8ad84e0823642e43f838993bbb8c0963db9b58a90464c2"
+sha256_darwin_arm64 = "bbd2f14826328eee7679da7221f2bc3afb011f6a928b848c80c321f6046ddf81"
+
+[desktop.squawk]
+release = "sbdchd/squawk/releases/download/v{v}/squawk-{os}-{x64}{exe}"
+sha256_windows_x86_64 = "3299e2f9e41ab5d6274cad64a061488a370a0310a02d17e0dcf3845ad779beec"
+sha256_darwin_x86_64 = "e0770d7641dd4bea5a0f11b3efb18829702e52a230724c6b3f725393369c467c"
+sha256_darwin_arm64 = "6132cb9779c688303e43746e10268f280b35a3fbcc70b851472021cc882ef5a2"
+
+[desktop.basedpyright]
+pip = "basedpyright"
+
+[desktop.gdlint]
+pip = "gdtoolkit"
+
+[desktop.lizard]
+pip = "lizard"
+
+[desktop.pylint]
+pip = "pylint"
+
+[desktop.ruff]
+pip = "ruff"
+
+[desktop.sqlfluff]
+pip = "sqlfluff"
+
+[desktop.vulture]
+pip = "vulture"

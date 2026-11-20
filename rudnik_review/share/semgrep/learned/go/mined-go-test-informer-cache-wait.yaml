@@ -1,0 +1,15 @@
+rules:
+  - id: go-test-informer-cache-wait
+    metadata: {"rule": "go-test-informer-cache-wait", "evidence": ["https://github.com/kubernetes/kubernetes/pull/143253#discussion_r4366039253"]}
+    languages:
+      - go
+    severity: ERROR
+    message: |
+      A test creates an object and immediately relies on a controller or admission
+      path observing it, without waiting for the informer cache to pick it up.
+      Wait (e.g. with wait.PollUntilContextTimeout) after creating before testing.
+    patterns:
+      - pattern: |
+          if $_, $ERR := $CLIENT.SchedulingV1().PriorityClasses().Create($CTX, $PC, metav1.CreateOptions{}); $ERR != nil {
+              t.Fatal($ERR)
+          }

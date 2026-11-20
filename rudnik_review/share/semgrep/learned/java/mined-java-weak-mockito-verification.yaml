@@ -1,0 +1,7 @@
+rules:
+  - id: java-weak-mockito-verification
+    metadata: {"rule": "java-weak-mockito-verification", "evidence": ["https://github.com/apache/kafka/pull/22678#discussion_r3553615807"]}
+    languages: [java]
+    message: Test verifies a call with atLeastOnce where exactly-once is required
+    severity: WARNING
+    pattern: Mockito.atLeastOnce()

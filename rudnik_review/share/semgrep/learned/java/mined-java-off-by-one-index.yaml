@@ -1,0 +1,11 @@
+rules:
+  - id: java-off-by-one-index
+    metadata: {"rule": "java-off-by-one-index", "evidence": ["https://github.com/apache/flink/pull/25503#discussion_r1798678875"]}
+    languages:
+      - java
+    severity: WARNING
+    message: "Index is already zero-based; passing `index - 1` reads or writes the wrong slot. Use `index`."
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.$METHOD(..., index - 1, ...)
+          - pattern: $ARR[index - 1]

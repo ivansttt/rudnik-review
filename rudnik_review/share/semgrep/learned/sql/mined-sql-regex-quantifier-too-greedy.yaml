@@ -1,0 +1,7 @@
+rules:
+  - id: sql-regex-quantifier-too-greedy
+    metadata: {"rule": "sql-regex-quantifier-too-greedy", "evidence": ["https://github.com/apache/superset/pull/38200#discussion_r2846768982", "https://github.com/apache/superset/pull/38200#discussion_r2846770644"]}
+    languages: [python]
+    severity: WARNING
+    message: Validation regex requires one or more body characters after the first character, rejecting valid single-character values.
+    pattern-regex: '\^\[a-z\]\(\[a-z0-9\]\+\(-\[a-z0-9\]\+\)\*\)\?\$'

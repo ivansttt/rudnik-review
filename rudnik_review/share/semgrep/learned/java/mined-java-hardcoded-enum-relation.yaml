@@ -1,0 +1,18 @@
+rules:
+  - id: java-hardcoded-enum-relation
+    metadata: {"rule": "java-hardcoded-enum-relation", "evidence": ["https://github.com/apache/flink/pull/27886#discussion_r3122022489", "https://github.com/apache/flink/pull/27886#discussion_r3122174945"]}
+    languages: [java]
+    severity: WARNING
+    message: Enum relationship hardcoded at the call site instead of a method on the enum.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if ($X == $A || $X == $B || $X == $C) {
+                ...
+              }
+          - pattern: |
+              if ($X == $A) {
+                ...
+              } else if ($X == $B) {
+                ...
+              }

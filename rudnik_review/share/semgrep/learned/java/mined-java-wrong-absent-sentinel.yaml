@@ -1,0 +1,22 @@
+rules:
+  - id: java-wrong-absent-sentinel
+    metadata: {"rule": "java-wrong-absent-sentinel", "evidence": ["https://github.com/netty/netty/pull/10826#discussion_r530498030", "https://github.com/netty/netty/pull/10826#discussion_r530498479", "https://github.com/netty/netty/pull/10826#discussion_r531174486"]}
+    message: >-
+      A primitive long is assigned from a lookup and then compared to 0 as the
+      not-found sentinel, but the lookup returns -1 for a missing key, so the
+      absent case is never detected and the invalid value is used as a real handle.
+    languages:
+      - java
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              long $X = $LOOKUP(...);
+              ...
+              if ($X == 0) {
+                ...
+              }
+          - pattern: |
+              long $X = $LOOKUP(...);
+              ...
+              assert $X == 0;

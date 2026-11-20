@@ -1,0 +1,9 @@
+{
+  "linter": {
+    "rules": {
+      "preset": "recommended",
+      "correctness": { "noUndeclaredVariables": "error", "noUnusedImports": "error", "noUnusedVariables": "error" },
+      "suspicious": { "noRedeclare": "error" }
+    }
+  }
+}

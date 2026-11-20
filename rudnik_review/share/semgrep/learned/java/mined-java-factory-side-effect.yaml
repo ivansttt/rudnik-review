@@ -1,0 +1,43 @@
+rules:
+  - id: java-factory-side-effect
+    metadata: {"rule": "java-factory-side-effect", "evidence": ["https://github.com/apache/kafka/pull/22378#discussion_r3357070146"]}
+    message: >-
+      A factory method creates a value, stores it in an instance field as a side effect,
+      and returns it. A second call orphans the previously stored value (for example leaking
+      a native resource). Make the method a pure factory and assign the result at the call site.
+    languages:
+      - java
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $RET $METHOD(...) {
+                ...
+                $FIELD = new $TYPE(...);
+                ...
+                return $FIELD;
+              }
+          - pattern: |
+              $RET $METHOD(...) {
+                ...
+                this.$FIELD = new $TYPE(...);
+                ...
+                return this.$FIELD;
+              }
+          - pattern: |
+              $RET $METHOD(...) {
+                ...
+                this.$FIELD = new $TYPE(...);
+                ...
+                return $FIELD;
+              }
+          - pattern: |
+              $RET $METHOD(...) {
+                ...
+                $FIELD = new $TYPE(...);
+                ...
+                return this.$FIELD;
+              }
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(create|build|make|new|open|init|alloc|construct)

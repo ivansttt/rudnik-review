@@ -1,0 +1,8 @@
+rules:
+  - id: sql-ci-cache-key-hashes-wrong-file
+    metadata: {"rule": "sql-ci-cache-key-hashes-wrong-file", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1957#discussion_r754552031", "https://github.com/sqlfluff/sqlfluff/pull/1957#discussion_r754554253", "https://github.com/sqlfluff/sqlfluff/pull/1957#discussion_r754555011", "https://github.com/sqlfluff/sqlfluff/pull/1957#discussion_r754560249", "https://github.com/sqlfluff/sqlfluff/pull/1957#discussion_r754560848"]}
+    languages: [yaml]
+    severity: WARNING
+    message: The dependency cache key hashes a file that does not drive the dependency install.
+    patterns:
+      - pattern-regex: "hashFiles\\('tox\\.ini'\\)"

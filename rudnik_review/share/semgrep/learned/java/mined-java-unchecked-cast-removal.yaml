@@ -1,0 +1,10 @@
+rules:
+  - id: java-unchecked-cast-removal
+    metadata: {"rule": "java-unchecked-cast-removal", "evidence": ["https://github.com/apache/flink/pull/27911#discussion_r3064538265"]}
+    languages: [java]
+    severity: WARNING
+    message: CAST node unwrapped without checking the cast's type.
+    pattern: |
+      if ($NODE.getKind() == SqlKind.CAST) {
+        return ((SqlCall) $NODE).getOperandList().get(0);
+      }

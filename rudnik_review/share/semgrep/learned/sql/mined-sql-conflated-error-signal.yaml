@@ -1,0 +1,20 @@
+rules:
+  - id: sql-conflated-error-signal
+    metadata: {"rule": "sql-conflated-error-signal", "evidence": ["https://github.com/apache/superset/pull/44094#discussion_r4001404607"]}
+    languages:
+      - python
+    message: >-
+      `permission_denied=True` is set for an externally-managed refusal, conflating a
+      structural refusal with an ACL denial. The two causes need opposite remediation:
+      granting access can never resolve a managed-externally dashboard. Use a distinct
+      field such as `managed_externally=True` so callers branching on the flag act correctly.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          if dashboard.is_managed_externally:
+              ...
+      - pattern: |
+          return ManageDashboardCertificationResponse(
+              permission_denied=True,
+              ...
+          )

@@ -1,0 +1,8 @@
+rules:
+  - id: python-test-asserts-broad-log-level
+    metadata: {"rule": "python-test-asserts-broad-log-level", "evidence": ["https://github.com/home-assistant/core/pull/188938#discussion_r4573464100"]}
+    languages: [python]
+    severity: WARNING
+    patterns:
+      - pattern: any(record.levelname == $LEVEL for record in caplog.records)
+    message: Assert on the specific log message instead of any record at a level

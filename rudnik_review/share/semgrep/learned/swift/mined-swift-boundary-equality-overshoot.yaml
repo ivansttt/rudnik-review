@@ -1,0 +1,13 @@
+rules:
+  - id: swift-boundary-equality-overshoot
+    metadata: {"rule": "swift-boundary-equality-overshoot", "evidence": ["https://github.com/apple/swift-nio/pull/933#discussion_r270361082", "https://github.com/apple/swift-nio/pull/933#discussion_r270361163"]}
+    languages: [swift]
+    message: Counter decremented by a possibly larger amount then compared to zero with == instead of <=.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $X -= $Y
+          ...
+          if $X == 0 {
+            ...
+          }

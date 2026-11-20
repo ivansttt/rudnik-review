@@ -1,0 +1,11 @@
+# The gate's analysers, each listed once (spec 1235, 8 Nov 2026: the owner's Code Quality Gate v3 §1.7, §3.1). lib/core/analyze.py
+# selects a stack tool when one of its stacks is detected in a checkout and one of its globs matches a tracked file, a cross-stack tool
+# (`stacks = ["*"]`) when any stack is; a detected stack no stack tool names is a gap. `cmd` gets the selected files at "{files}".
+# `blocks` names the rules that may block a feature, `*` every error of the tool: only the rules whose hit is a flaw by definition (spec 1557,
+# owner 9 Nov 2026); every other rule waits for its measured precision (shadow first, spec 1238; 1253).
+# `version` is each analyser's one pin (spec 1236, 9 Nov 2026): share/agent-base/structure-tools.sh installs it into the gate image, toolbox-check
+# holds the image to it, and a changed version rebuilds the image. `sha256_<machine>` is the vendor's published sha256 of its Linux release
+# (shellcheck publishes none: its sums were taken from the 0.10.0 release on 9 Nov 2026); a download that differs is refused.
+# This file is the head of the list; its entries are gate.toml.d/<name>.toml, one a tool, and the list is this file and them in name order
+# (lib/core/analyze.py's `assembled`, structure-tools.sh's `registry`). Split 9 Nov 2026 (spec 1505): six ready specs each added an entry
+# here, so they landed one a round.

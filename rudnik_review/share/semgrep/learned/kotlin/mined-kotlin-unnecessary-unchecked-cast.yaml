@@ -1,0 +1,19 @@
+rules:
+  - id: kotlin-unnecessary-unchecked-cast
+    metadata: {"rule": "kotlin-unnecessary-unchecked-cast", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/1869#discussion_r393171445"]}
+    languages:
+      - kotlin
+    severity: WARNING
+    message: >-
+      `$V` stores a generic value in an `Any?`/`Any` placeholder and is later cast with an
+      unchecked `as $T` cast. Declare it as `T?` so the cast is unnecessary.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              var $V: Any? = $INIT
+              ...
+              return $V as $T
+          - pattern: |
+              var $V: Any = $INIT
+              ...
+              return $V as $T

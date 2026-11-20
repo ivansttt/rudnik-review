@@ -1,0 +1,13 @@
+rules:
+  - id: java-zero-sentinel
+    metadata: {"rule": "java-zero-sentinel", "evidence": ["https://github.com/netty/netty/pull/16596#discussion_r3034870793", "https://github.com/apache/kafka/pull/22654#discussion_r3606423962", "https://github.com/netty/netty/pull/14262#discussion_r1733194539"]}
+    languages: [java]
+    message: Zero used as a meaningful sentinel where zero also means empty or unset
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          private static final byte $NAME = 0;
+      - pattern: |
+          $VAR = 0;
+      - pattern: |
+          return 0;

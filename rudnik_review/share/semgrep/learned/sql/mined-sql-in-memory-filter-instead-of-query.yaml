@@ -1,0 +1,9 @@
+rules:
+  - id: sql-in-memory-filter-instead-of-query
+    metadata: {"rule": "sql-in-memory-filter-instead-of-query", "evidence": ["https://github.com/apache/superset/pull/39567#discussion_r3148124664"]}
+    languages: [python]
+    message: Full table loaded via .all() and filtered in Python; push the predicate into the database query.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          [$OBJ for $OBJ in $QUERY.all() if $COND]

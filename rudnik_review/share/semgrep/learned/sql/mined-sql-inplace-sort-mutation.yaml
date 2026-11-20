@@ -1,0 +1,9 @@
+rules:
+  - id: sql-inplace-sort-mutation
+    metadata: {"rule": "sql-inplace-sort-mutation", "evidence": ["https://github.com/apache/superset/pull/36302#discussion_r2578300839", "https://github.com/apache/superset/pull/36302#discussion_r2578301842"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: .sort() mutates the array in place; copy with spread first
+    patterns:
+      - pattern: $X.sort(...)
+      - pattern-not-regex: '\[\.\.\..*\]\.sort'

@@ -1,0 +1,10 @@
+rules:
+  - id: java-reflection-internals
+    metadata: {"rule": "java-reflection-internals", "evidence": ["https://github.com/apache/kafka/pull/21396#discussion_r2775606833", "https://github.com/netty/netty/pull/12465#discussion_r895992689"]}
+    languages: [java]
+    message: Private state reached via reflection instead of the exposed metric or API
+    severity: INFO
+    patterns:
+      - pattern-either:
+          - pattern: $X.getDeclaredField(...)
+          - pattern: $X.setAccessible(true)

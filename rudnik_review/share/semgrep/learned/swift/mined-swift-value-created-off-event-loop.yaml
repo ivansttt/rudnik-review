@@ -1,0 +1,13 @@
+rules:
+  - id: swift-value-created-off-event-loop
+    metadata: {"rule": "swift-value-created-off-event-loop", "evidence": ["https://github.com/apple/swift-nio/pull/3065#discussion_r1922008256", "https://github.com/apple/swift-nio/pull/3065#discussion_r1922010884", "https://github.com/apple/swift-nio/pull/3065#discussion_r1922011209", "https://github.com/apple/swift-nio/pull/3065#discussion_r1922011564", "https://github.com/apple/swift-nio/pull/3065#discussion_r1922012003"]}
+    languages:
+      - swift
+    message: A value that must only be created on the event loop is created before the inEventLoop check.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          let $X = $Y(...)
+          if $EL.inEventLoop {
+            ...
+          }

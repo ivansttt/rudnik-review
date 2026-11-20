@@ -1,0 +1,9 @@
+rules:
+  - id: sql-wrong-label-getter
+    metadata: {"rule": "sql-wrong-label-getter", "evidence": ["https://github.com/apache/superset/pull/22453#discussion_r1052482575", "https://github.com/apache/superset/pull/22453#discussion_r1052482962"]}
+    languages:
+      - javascript
+      - typescript
+    severity: ERROR
+    message: Use getColumnLabel for column (QueryFormColumn/groupby) values, not getMetricLabel.
+    pattern-regex: '\bgetMetricLabel\b'

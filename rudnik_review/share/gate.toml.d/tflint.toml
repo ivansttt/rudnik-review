@@ -1,0 +1,19 @@
+# Terraform (spec 1705, 12 Nov 2026): tflint over every module, read as SARIF, and `terraform fmt`, the formatter Terraform itself ships.
+# The sha256 are the vendor's (GitHub's release API, 12 Nov 2026); the command line is from its documentation, not yet run here, and
+# blocks nothing.
+[[tool]]
+name = "tflint"
+version = "0.66.0"
+stacks = ["terraform"]
+signals = ["*.tf"]
+globs = ["*.tf"]
+cmd = ["tflint", "--recursive", "--format", "sarif", "--force"]
+adapter = "sarif"
+blocks = []
+fmt = [["terraform", "fmt", "{files}"]]
+release = "terraform-linters/tflint/releases/download/v{v}/tflint_{os}_{go}.zip"
+sha256_x86_64 = "22be11cadc25cd02401e94c0ccc91aa63467debb8485c2a755d98f4c0a9d1e2e"
+sha256_aarch64 = "1105a0a5ddee7cdac7957a3475571a946b839192ea1bc0c722c6c4686001067e"
+sha256_darwin_x86_64 = "e2d98b60adb2602a252ee9efb036e237edf13c8fda91f4d513d3357e1a01a889"
+sha256_darwin_arm64 = "859b26af07ead7e65cee7eec9d050b2e2571dc28395b7a39191cae088cd67803"
+sha256_windows_x86_64 = "e3acd1d89c735ce6e09108c9277f26076ebeb385c1f77a73c1cbf1826ed626a7"

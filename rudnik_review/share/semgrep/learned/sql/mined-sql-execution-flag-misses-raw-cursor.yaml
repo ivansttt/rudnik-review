@@ -1,0 +1,19 @@
+rules:
+  - id: sql-execution-flag-misses-raw-cursor
+    metadata: {"rule": "sql-execution-flag-misses-raw-cursor", "evidence": ["https://github.com/apache/superset/pull/42598#discussion_r3830710061"]}
+    languages:
+      - python
+    message: >-
+      A per-execution flag or state is set only in the SQLAlchemy dialect's
+      do_execute* hooks, so the raw connection and DBAPI cursor.execute path
+      (e.g. SQL Lab via engine.raw_connection()) runs with the flag unset.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          def $HOOK(...):
+            ...
+            with self._flag_multi_table_query($STATEMENT):
+              ...
+      - metavariable-regex:
+          metavariable: $HOOK
+          regex: ^do_execute

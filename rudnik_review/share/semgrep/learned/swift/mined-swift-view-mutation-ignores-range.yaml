@@ -1,0 +1,11 @@
+rules:
+  - id: swift-view-mutation-ignores-range
+    metadata: {"rule": "swift-view-mutation-ignores-range", "evidence": ["https://github.com/apple/swift-nio/pull/2309#discussion_r1015920159"]}
+    languages: [swift]
+    severity: WARNING
+    message: |
+      Writing bytes into the backing ByteBuffer without updating `self._range` leaves the
+      view's `endIndex` and `count` stale.
+    patterns:
+      - pattern: |
+          self._buffer.writeBytes(...)

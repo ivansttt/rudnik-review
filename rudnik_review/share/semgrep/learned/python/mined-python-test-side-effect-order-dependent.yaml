@@ -1,0 +1,12 @@
+rules:
+  - id: python-test-side-effect-order-dependent
+    metadata: {"rule": "python-test-side-effect-order-dependent", "evidence": ["https://github.com/home-assistant/core/pull/178125#discussion_r4355264066"]}
+    languages:
+      - python
+    message: >-
+      The side_effect list depends on the internal call order of the patched
+      function; reordering the calls silently changes which value is asserted.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          patch(..., side_effect=[$A, $B, ...])

@@ -1,0 +1,15 @@
+rules:
+  - id: sql-export-diverges-from-renderer
+    metadata: {"rule": "sql-export-diverges-from-renderer", "evidence": ["https://github.com/apache/superset/pull/43718#discussion_r3897851352", "https://github.com/apache/superset/pull/43718#discussion_r3902936561", "https://github.com/apache/superset/pull/43718#discussion_r3902936574"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Export re-derives a rollup or percent with a rule that diverges from the chart renderer
+    pattern-either:
+      - pattern: |
+          return found.pop() if len(found) == 1 else DEFAULT_ROLLUP_REDUCER
+      - pattern: |
+          if percent_mode and not apply_metrics_on_rows and rollup_levels:
+              ...
+      - pattern: |
+          denominator = denominators.combine_first(derived)

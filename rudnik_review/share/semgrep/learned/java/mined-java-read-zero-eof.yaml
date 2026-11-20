@@ -1,0 +1,34 @@
+rules:
+  - id: java-read-zero-eof
+    metadata: {"rule": "java-read-zero-eof", "evidence": ["https://github.com/netty/netty/pull/13531#discussion_r1526530964"]}
+    languages:
+      - java
+    severity: WARNING
+    message: >-
+      A zero-byte read is conflated with end-of-stream. Stream reads can return
+      0 to mean no data currently available (for example a continuous or
+      non-blocking InputStream such as ZstdInputStream with setContinuous(true)
+      needs more input), not EOF, which is signaled by -1. Treating 0 as
+      end-of-stream or an error, or failing to handle it distinctly from -1,
+      stops the read before the stream is complete or spins without progress.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $T $N = $SRC.readableBytes();
+              ...
+              if ($N == 0) {
+                ...
+                return;
+              }
+          - pattern: |
+              $T $N = $IN.read($BUF);
+              ...
+              if ($N == 0) {
+                ...
+                return;
+              }
+          - pattern: |
+              if ($IN.read($BUF) == 0) {
+                ...
+                return;
+              }

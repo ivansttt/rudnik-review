@@ -1,0 +1,11 @@
+rules:
+  - id: sql-query-param-not-url-encoded
+    metadata: {"rule": "sql-query-param-not-url-encoded", "evidence": ["https://github.com/apache/superset/pull/45591#discussion_r4352859415", "https://github.com/apache/superset/pull/45591#discussion_r4352859436"]}
+    languages:
+      - javascript
+      - typescript
+    message: Query parameter value appended without URL-encoding
+    severity: ERROR
+    pattern-either:
+      - pattern: "rison.encode(...)"
+      - pattern: "rison.decode($E.split('?q=')[$IDX])"

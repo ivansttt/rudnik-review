@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-dropwhile-as-filter
+    metadata: {"rule": "kotlin-dropwhile-as-filter", "evidence": ["https://github.com/detekt/detekt/pull/3661#discussion_r611240876", "https://github.com/detekt/detekt/pull/3661#discussion_r611244231"]}
+    languages: [kotlin]
+    message: "dropWhile drops only a leading run of matches; use filterNot/filter to keep or remove every matching element"
+    severity: WARNING
+    pattern: $X.dropWhile { ... }

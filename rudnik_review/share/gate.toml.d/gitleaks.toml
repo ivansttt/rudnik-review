@@ -1,0 +1,10 @@
+[[tool]]
+name = "gitleaks"
+version = "8.28.0"
+sha256_x86_64 = "a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb"
+sha256_aarch64 = "eff65261156100e5d94a6b3dec313d532fddfe19ae1590bf7a2b4f2699128356"
+stacks = ["*"]
+globs = ["*"]
+cmd = ["gitleaks", "dir", "--report-format", "json", "--report-path", "-", "{files}"]
+adapter = "gitleaks"
+blocks = ["*"]

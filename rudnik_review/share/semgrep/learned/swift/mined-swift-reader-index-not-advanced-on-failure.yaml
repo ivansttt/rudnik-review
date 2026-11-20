@@ -1,0 +1,22 @@
+rules:
+  - id: swift-reader-index-not-advanced-on-failure
+    metadata: {"rule": "swift-reader-index-not-advanced-on-failure", "evidence": ["https://github.com/apple/swift-nio/pull/1902#discussion_r673930556"]}
+    languages:
+      - swift
+    severity: ERROR
+    message: >-
+      A callback that can return nil or throw is invoked after bytes are read from
+      the buffer, but the reader index is advanced only on the success path. Move
+      the reader index forward before invoking the callback so a failed read does
+      not re-read the consumed bytes.
+    patterns:
+      - pattern-either:
+          - pattern: |
+              guard let $RESULT = try $CALLBACK(...) else { ... }
+              _moveReaderIndex(forwardBy: ...)
+          - pattern: |
+              guard let $RESULT = try $CALLBACK(...) else { ... }
+              moveReaderIndex(forwardBy: ...)
+          - pattern: |
+              guard let $RESULT = try $CALLBACK(...) else { ... }
+              moveForward(forwardBy: ...)

@@ -1,0 +1,17 @@
+# The developers' registry (spec 1700, 12 Nov 2026): what only rudnik-review's setup needs, staged by bin/review-release into the wheel's
+# share/gate.toml.d beside the gate's fragments; the gate, its image and the kit's tree never read it (a pin in share/ rebuilt agent-base on
+# every box). A tool's one [desktop.<name>] table, laid over its fragment, says how a machine gets it: `pip`, the package installed at the
+# tool's version, or `release`, the vendor's asset under github.com in cli.py's WORDS ({v} the version), `release_<os>` where one OS's is shaped
+# otherwise. A tool with neither, or with no sha256 for this machine, is a gap setup says (semgrep: its cmd names the image's rule folders).
+# The Windows and macOS sha256 (spec 1255) are the vendors' published digests (GitHub's release asset sha256), shellcheck's taken from the
+# 0.10.0 assets on 11 Nov 2026 (it publishes none); a changed version in the tool's fragment needs them taken again. Linux's sha256 is here
+# only for a tool whose fragment pins none, as the image gets it otherwise (Biome by npm, spec 1702), so no digest is written twice. No
+# [[tool]]: the list stays the tools' own fragments'.
+# `fmt` (spec 1703, 12 Nov 2026) is the tool's formatter alone, in `fix`'s shape, for `rudnik-review fmt` and an agent's finish: never `fix`,
+# whose lint fixes, run as a file is written, remove the import the next edit was about to use. No command passes a style: each formatter
+# finds the repository's own config from the file.
+# `blocks` (spec 1740, 12 Nov 2026), where a table has it, is the developers' list of the rules that block, in place of the tool's.
+# SQL's, with the repository's dialect, is spec 1727's.
+# The tables live in desktop.toml.d/, one fragment a spec named <spec>.toml (spec 1757, 12 Nov 2026: three specs adding keys here landed
+# one a round). cli.desktop merges them in name order, each tool's keys laid over the earlier fragments', and refuses a key two set:
+# two specs add keys to one tool's table, which TOML refuses as text. This file holds no table.

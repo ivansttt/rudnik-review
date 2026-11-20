@@ -1,0 +1,17 @@
+rules:
+  - id: rust-os-suffix-string-return
+    metadata: {"rule": "rust-os-suffix-string-return", "evidence": ["https://github.com/rust-lang/cargo/pull/11727#discussion_r1110072549"]}
+    languages: [rust]
+    message: Function with an `_os` suffix returns a `String` type instead of `OsString`, losing non-UTF-8 data
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              fn $FUNC(...) -> Option<String> { ... }
+          - pattern: |
+              fn $FUNC(...) -> String { ... }
+          - pattern: |
+              fn $FUNC(...) -> CargoResult<String> { ... }
+      - metavariable-regex:
+          metavariable: $FUNC
+          regex: ".*_os$"

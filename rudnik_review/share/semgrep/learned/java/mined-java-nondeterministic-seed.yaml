@@ -1,0 +1,11 @@
+rules:
+  - id: java-nondeterministic-seed
+    metadata: {"rule": "java-nondeterministic-seed", "evidence": ["https://github.com/apache/lucene/pull/14896#discussion_r2186773187"]}
+    languages: [java]
+    severity: WARNING
+    message: PRNG seeded from wall-clock time makes results non-reproducible
+    pattern-either:
+      - pattern: new Random(System.currentTimeMillis())
+      - pattern: new Random(System.nanoTime())
+      - pattern: new SplittableRandom(System.currentTimeMillis())
+      - pattern: new SplittableRandom(System.nanoTime())

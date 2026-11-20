@@ -1,0 +1,7 @@
+rules:
+  - id: java-wrong-ulp-type
+    metadata: {"rule": "java-wrong-ulp-type", "evidence": ["https://github.com/apache/lucene/pull/14827#discussion_r2180967735"]}
+    languages: [java]
+    severity: WARNING
+    message: Math.ulp computed on a double-cast of a float instead of the float itself
+    pattern: Math.ulp((double) $X)

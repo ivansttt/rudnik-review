@@ -1,0 +1,13 @@
+rules:
+  - id: sql-unvalidated-container-operation
+    metadata: {"rule": "sql-unvalidated-container-operation", "evidence": ["https://github.com/apache/superset/pull/44405#discussion_r4048917024", "https://github.com/apache/superset/pull/43771#discussion_r4189744211"]}
+    languages:
+      - python
+    severity: WARNING
+    message: Container operation (reversed or iteration) applied to a value whose type is not guarded; a malformed entry raises TypeError.
+    patterns:
+      - pattern-either:
+          - pattern: reversed($X.get($KEY) or [])
+          - pattern: |
+              for $V in $X.get($KEY, []):
+                  ...

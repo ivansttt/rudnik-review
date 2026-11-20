@@ -1,0 +1,14 @@
+rules:
+  - id: sql-optout-null-drops-context
+    metadata: {"rule": "sql-optout-null-drops-context", "evidence": ["https://github.com/apache/superset/pull/44465#discussion_r4060343294"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      Opting out by passing None for the whole context drops other context-derived
+      values (e.g. the execution deadline), so the callee falls back to a smaller default.
+    patterns:
+      - pattern: $CTX if $COND else None
+      - metavariable-pattern:
+          metavariable: $CTX
+          pattern: self._report_execution_context

@@ -1,0 +1,11 @@
+rules:
+  - id: lua-cache-key-missing-param
+    metadata: {"rule": "lua-cache-key-missing-param", "evidence": ["https://github.com/koreader/koreader/pull/16346#discussion_r4522884620"]}
+    languages: [lua]
+    message: Cache key built by concatenation may omit a parameter that affects the cached value
+    severity: ERROR
+    patterns:
+      - pattern: $KEY = $HASH .. "|" .. tostring($VAR)
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: .*(hash|cache|key).*

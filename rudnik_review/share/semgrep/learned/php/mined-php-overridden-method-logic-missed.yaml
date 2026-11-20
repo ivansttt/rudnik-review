@@ -1,0 +1,21 @@
+rules:
+  - id: php-overridden-method-logic-missed
+    metadata: {"rule": "php-overridden-method-logic-missed", "evidence": ["https://github.com/matomo-org/matomo/pull/25372#discussion_r4189313792"]}
+    languages:
+      - php
+    message: >-
+      Logic added inside a public or protected method can be silently skipped
+      by subclasses that override the method without calling the parent.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              public function $FUNC(...) {
+                ...
+              }
+          - pattern-inside: |
+              protected function $FUNC(...) {
+                ...
+              }
+      - pattern: |
+          $this->resetIfBuiltForAnotherScope()

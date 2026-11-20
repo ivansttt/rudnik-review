@@ -1,0 +1,15 @@
+rules:
+  - id: sql-wrong-reference-segment
+    metadata: {"rule": "sql-wrong-reference-segment", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/5146#discussion_r1313383369", "https://github.com/sqlfluff/sqlfluff/pull/5146#discussion_r1313384723", "https://github.com/sqlfluff/sqlfluff/pull/5146#discussion_r1313384910", "https://github.com/sqlfluff/sqlfluff/pull/4771#discussion_r1168856256", "https://github.com/sqlfluff/sqlfluff/pull/2041#discussion_r764256804", "https://github.com/sqlfluff/sqlfluff/pull/320#discussion_r424056749", "https://github.com/sqlfluff/sqlfluff/pull/9169#discussion_r4578405396"]}
+    message: Reference segment type does not match the object the clause refers to
+    severity: WARNING
+    languages:
+      - python
+    pattern-either:
+      - pattern: 'Sequence("USING", Ref("ObjectReferenceSegment"))'
+      - pattern: 'Sequence("ON", Ref("ObjectReferenceSegment"))'
+      - pattern: 'Ref("ObjectReferenceSegment", optional=True)'
+      - pattern: 'Sequence("EXECUTE", "TASK", Ref("SchemaReferenceSegment"))'
+      - pattern: 'Sequence("SET", "SCHEMA", Ref("ParameterNameSegment"))'
+      - pattern: "Sequence(Ref('ObjectReferenceSegment'), Ref('EqualsSegment'), ...)"
+      - pattern: 'Delimited(Ref("ObjectReferenceSegment"), terminators=["ON"])'

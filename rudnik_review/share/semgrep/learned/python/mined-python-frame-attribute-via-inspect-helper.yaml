@@ -1,0 +1,10 @@
+rules:
+  - id: python-frame-attribute-via-inspect-helper
+    metadata: {"rule": "python-frame-attribute-via-inspect-helper", "evidence": ["https://github.com/pydantic/pydantic/pull/10157#discussion_r1719863467", "https://github.com/pydantic/pydantic/pull/10113#discussion_r1715648194"]}
+    languages: [python]
+    severity: INFO
+    message: Read frame attributes (f_code.co_name, f_globals, f_locals) directly instead of via inspect helpers.
+    patterns:
+      - pattern-either:
+        - pattern: inspect.getmodule($FRAME)
+        - pattern: inspect.getframeinfo($FRAME).function

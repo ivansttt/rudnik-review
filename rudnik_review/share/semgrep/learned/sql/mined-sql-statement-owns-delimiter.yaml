@@ -1,0 +1,9 @@
+rules:
+  - id: sql-statement-owns-delimiter
+    metadata: {"rule": "sql-statement-owns-delimiter", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951154603", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157066", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157210", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157369", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157503", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157655", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951157859", "https://github.com/sqlfluff/sqlfluff/pull/6635#discussion_r1951158061"]}
+    languages:
+      - python
+    message: A statement segment owns the statement delimiter; the file-level grammar should own it
+    severity: WARNING
+    pattern: |
+      Ref("DelimiterGrammar", optional=True)

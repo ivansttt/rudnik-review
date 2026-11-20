@@ -1,0 +1,7 @@
+rules:
+  - id: sql-identifier-compare-ignores-folding
+    metadata: {"rule": "sql-identifier-compare-ignores-folding", "evidence": ["https://github.com/apache/superset/pull/44650#discussion_r4105931908"]}
+    languages: [python]
+    severity: WARNING
+    message: Identifier qualifier compared without case folding.
+    pattern: $NODE.table in $SET

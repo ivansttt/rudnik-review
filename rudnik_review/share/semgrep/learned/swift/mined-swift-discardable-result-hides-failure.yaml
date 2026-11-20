@@ -1,0 +1,14 @@
+rules:
+  - id: swift-discardable-result-hides-failure
+    metadata: {"rule": "swift-discardable-result-hides-failure", "evidence": ["https://github.com/apple/swift-nio/pull/1417#discussion_r384669800", "https://github.com/apple/swift-nio/pull/1417#discussion_r384670008"]}
+    languages: [swift]
+    severity: WARNING
+    message: "@discardableResult hides a meaningful return value (a Bool success indicator or the previous value), letting callers silently ignore whether the operation succeeded."
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @discardableResult
+              public func $FUNC(...) -> Bool { ... }
+          - pattern: |
+              @discardableResult
+              public func $FUNC(...) -> T { ... }

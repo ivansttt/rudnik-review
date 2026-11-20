@@ -1,0 +1,8 @@
+rules:
+  - id: sql-silent-skip-partial-set
+    metadata: {"rule": "sql-silent-skip-partial-set", "evidence": ["https://github.com/apache/superset/pull/42472#discussion_r3656450852"]}
+    languages:
+      - python
+    message: Conversion helper silently skips groups with no matching Subject row, returning a partial set the caller treats as complete. Get-or-create the subject or fail explicitly.
+    severity: WARNING
+    pattern-regex: 'Silently skips groups without a matching'

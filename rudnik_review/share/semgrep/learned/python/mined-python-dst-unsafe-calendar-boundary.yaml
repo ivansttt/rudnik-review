@@ -1,0 +1,8 @@
+rules:
+  - id: python-dst-unsafe-calendar-boundary
+    metadata: {"rule": "python-dst-unsafe-calendar-boundary", "evidence": ["https://github.com/home-assistant/core/pull/187674#discussion_r4331778867"]}
+    languages:
+      - python
+    message: Computing a calendar hour boundary by subtracting local wall-clock minutes from a UTC timestamp is wrong across DST transitions; use a timezone-aware start-of-hour helper.
+    severity: WARNING
+    pattern: timedelta(minutes=$X.minute, ...)

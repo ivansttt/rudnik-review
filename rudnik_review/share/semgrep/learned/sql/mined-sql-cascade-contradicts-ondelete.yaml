@@ -1,0 +1,19 @@
+rules:
+  - id: sql-cascade-contradicts-ondelete
+    metadata: {"rule": "sql-cascade-contradicts-ondelete", "evidence": ["https://github.com/apache/superset/pull/39171#discussion_r3539743092"]}
+    languages:
+      - python
+    message: >-
+      SQLAlchemy relationship declares cascade="$CASCADE", which contradicts the
+      foreign key's ondelete="SET NULL", so deletes and orphans are handled
+      inconsistently.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              relationship(..., cascade=$CASCADE, ...)
+          - pattern: |
+              backref(..., cascade=$CASCADE, ...)
+      - metavariable-regex:
+          metavariable: $CASCADE
+          regex: ".*delete-orphan.*"

@@ -1,0 +1,14 @@
+rules:
+  - id: python-guarded-call-outside-try
+    metadata: {"rule": "python-guarded-call-outside-try", "evidence": ["https://github.com/home-assistant/core/pull/184773#discussion_r4223086588", "https://github.com/home-assistant/core/pull/184773#discussion_r4223140101"]}
+    languages: [python]
+    message: An awaited call that can raise the handled exception is placed before the try block.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          await $CALL
+          try:
+            ...
+          except $EXC as $ERR:
+            ...
+      - focus-metavariable: $CALL

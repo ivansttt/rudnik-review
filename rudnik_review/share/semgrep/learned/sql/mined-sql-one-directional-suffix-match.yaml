@@ -1,0 +1,17 @@
+rules:
+  - id: sql-one-directional-suffix-match
+    metadata: {"rule": "sql-one-directional-suffix-match", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2336#discussion_r788046863"]}
+    languages:
+      - python
+    message: >-
+      A suffix match checks only one ordering (shorter vs longer); the reverse
+      direction is never checked, so it can never match.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if len($A) < len($B) and $A == $B[-len($A):]:
+                  ...
+          - pattern: |
+              if len($A) < len($B) and $A == $B[-len($A) :]:
+                  ...

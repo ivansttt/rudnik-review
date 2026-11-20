@@ -1,0 +1,10 @@
+rules:
+  - id: go-non-strict-decode
+    metadata: {"rule": "go-non-strict-decode", "evidence": ["https://github.com/kubernetes/kubernetes/pull/138564#discussion_r3882951704"]}
+    languages:
+      - go
+    message: >-
+      Input is decoded without strict mode, so misspelled or unknown fields are
+      silently dropped instead of rejected. Use a strict deserializer.
+    severity: WARNING
+    pattern: $CODECS.Codecs.UniversalDeserializer().Decode(...)

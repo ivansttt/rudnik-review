@@ -1,0 +1,21 @@
+rules:
+  - id: sql-orderby-unvalidated-target
+    metadata: {"rule": "sql-orderby-unvalidated-target", "evidence": ["https://github.com/apache/superset/pull/44464#discussion_r4115242712"]}
+    languages:
+      - python
+    severity: ERROR
+    message: >
+      An order-by target taken from a saved sort value is assigned to the
+      query order-by clause without validating that it names a real metric or
+      column, so a stale or synthetic value fails at execution with an
+      unknown-column error.
+    patterns:
+      - pattern: |
+          $TARGET = _resolve_x_axis_sort_target(...)
+          ...
+          $QD["orderby"] = [($TARGET, $ASC)]
+      - pattern-not: |
+          $TARGET = _resolve_x_axis_sort_target(...)
+          ...
+          if $TARGET in $A or $TARGET in $B:
+              $QD["orderby"] = [($TARGET, $ASC)]

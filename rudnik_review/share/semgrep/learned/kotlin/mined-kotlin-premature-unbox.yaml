@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-premature-unbox
+    metadata: {"rule": "kotlin-premature-unbox", "evidence": ["https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233578499", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233578790", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233579268", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233579740", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233580500", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233581205", "https://github.com/Kotlin/kotlinx.coroutines/pull/837#discussion_r233581397"]}
+    languages: [kotlin]
+    message: Boxed state is unboxed into a local before the boxed or incomplete state is checked
+    severity: WARNING
+    pattern-regex: '^\s*val\s+\w+\s*=\s*\S+\.unbox\w*\(\)'

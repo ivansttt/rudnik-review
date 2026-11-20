@@ -1,0 +1,10 @@
+rules:
+  - id: swift-eventloop-identity-check
+    metadata: {"rule": "swift-eventloop-identity-check", "evidence": ["https://github.com/apple/swift-nio/pull/943#discussion_r272069714"]}
+    languages: [swift]
+    message: Event-loop membership decided by identity comparison instead of inEventLoop.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $A.eventLoop === $B
+          - pattern: $A === $B.eventLoop

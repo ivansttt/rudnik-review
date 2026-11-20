@@ -1,0 +1,15 @@
+rules:
+  - id: java-unbounded-accumulation
+    metadata: {"rule": "java-unbounded-accumulation", "evidence": ["https://github.com/apache/flink/pull/29129#discussion_r3971397481", "https://github.com/apache/lucene/pull/16705#discussion_r4141847904"]}
+    languages:
+      - java
+    message: >-
+      Accumulates an entire paginated or streamed listing into an unbounded in-memory
+      collection before processing, risking OOM on large result sets.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              final List<$TYPE> $ACC = new ArrayList<>();
+          - pattern: |
+              final $TYPE[][] $ACC = new $TYPE[$SIZE.size()][];

@@ -1,0 +1,7 @@
+rules:
+  - id: java-optional-ofnullable-null
+    metadata: {"rule": "java-optional-ofnullable-null", "evidence": ["https://github.com/apache/kafka/pull/22901#discussion_r3669063294"]}
+    languages: [java]
+    severity: WARNING
+    message: Optional.ofNullable maps a null value to empty, conflating null with absent.
+    pattern: $O.ofNullable($V)

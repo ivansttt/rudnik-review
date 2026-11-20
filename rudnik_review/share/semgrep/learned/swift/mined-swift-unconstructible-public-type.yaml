@@ -1,0 +1,23 @@
+rules:
+  - id: swift-unconstructible-public-type
+    metadata: {"rule": "swift-unconstructible-public-type", "evidence": ["https://github.com/apple/swift-nio/pull/1888#discussion_r662798200"]}
+    languages:
+      - swift
+    message: >-
+      Public struct declares stored properties but no public initializer, so
+      code outside the module cannot construct an instance of it.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          public struct $STRUCT { ... }
+      - pattern-either:
+          - pattern: |
+              public let $PROP: $TYPE
+          - pattern: |
+              public var $PROP: $TYPE
+      - pattern-not-inside: |
+          public struct $STRUCT {
+            ...
+            init(...) { ... }
+            ...
+          }

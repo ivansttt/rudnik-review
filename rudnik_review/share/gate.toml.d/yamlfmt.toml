@@ -1,0 +1,17 @@
+# YAML's formatter (spec 1706, 12 Nov 2026), a formatter alone: one pinned binary on all three systems, where Prettier needs Node. The
+# sha256 are the vendor's for 0.21.0. It reads the repository's .yamlfmt; its defaults drop the blank lines between blocks.
+[[tool]]
+name = "yamlfmt"
+version = "0.21.0"
+stacks = ["yaml"]
+signals = ["*.yml", "*.yaml"]
+globs = ["*.yml", "*.yaml"]
+fmt = [["yamlfmt", "{files}"]]
+release = "google/yamlfmt/releases/download/v{v}/yamlfmt_{v}_Linux_{arch}.tar.gz"
+release_darwin = "google/yamlfmt/releases/download/v{v}/yamlfmt_{v}_Darwin_{arch}.tar.gz"
+release_windows = "google/yamlfmt/releases/download/v{v}/yamlfmt_{v}_Windows_{arch}.tar.gz"
+sha256_x86_64 = "1f300d9257b232bb3b541d7fb1b0e6b3c121bcbab381c86cd38cb8722be8a566"
+sha256_aarch64 = "5b2689c963b177271330c5ce8ca7396751107e5a826be46f03d2cb9b6f0c7784"
+sha256_darwin_x86_64 = "060e943bcb8583c456810eb1ff4721b4f46c4a0c1a4432449d5dc3bbfe29a22b"
+sha256_darwin_arm64 = "4b417ecb94339d57e4c122ecc948c1a00fe328b5853266de9806e652a92858fa"
+sha256_windows_x86_64 = "07f80ce5d741eb4b0a9380ac78a19c7cb5bd44e2a9a47a5a04839e3ba54dd463"

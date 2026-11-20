@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-try-result-unchecked
+    metadata: {"rule": "csharp-try-result-unchecked", "evidence": ["https://github.com/dotnet/aspnetcore/pull/59424#discussion_r1934802603", "https://github.com/dotnet/aspnetcore/pull/59424#discussion_r1999674641"]}
+    languages:
+      - csharp
+    message: Discarded the success and bytes-written result of a Try* hash/compute call.
+    severity: WARNING
+    patterns:
+      - pattern: $RECV.$TRY($...ARGS, out $OUT)
+      - metavariable-regex:
+          metavariable: $TRY
+          regex: ^Try(HashData|ComputeHash)$
+      - metavariable-regex:
+          metavariable: $OUT
+          regex: ^_$

@@ -1,0 +1,7 @@
+rules:
+  - id: c-wrong-sanitize-charset
+    metadata: {"rule": "c-wrong-sanitize-charset", "evidence": ["https://github.com/bitcoin/bitcoin/pull/32520#discussion_r2093391212"]}
+    languages: [cpp]
+    severity: WARNING
+    message: Sanitizing with the default safe-character set leaks context characters (e.g. '+' in a URI); pass the matching SAFE_CHARS_* set.
+    pattern: SanitizeString($STR)

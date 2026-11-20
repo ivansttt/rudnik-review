@@ -1,0 +1,12 @@
+rules:
+  - id: python-add-formatted-values
+    metadata: {"rule": "python-add-formatted-values", "evidence": ["https://github.com/pypa/pip/pull/11143#discussion_r1317956836"]}
+    message: Summed formatted values instead of formatting the sum of the raw values.
+    languages:
+      - python
+    severity: WARNING
+    pattern-either:
+      - pattern: |
+          $OBJ.format_size($A) + $OBJ.format_size($B)
+      - pattern: |
+          $OBJ.format_directory_size($A) + $OBJ.format_directory_size($B)

@@ -1,0 +1,22 @@
+rules:
+  - id: python-eq-accesses-other-before-class-check
+    metadata: {"rule": "python-eq-accesses-other-before-class-check", "evidence": ["https://github.com/pydantic/pydantic/pull/10798#discussion_r1834904078"]}
+    languages:
+      - python
+    message: >
+      `__eq__` reads an attribute of the other argument before confirming the
+      other argument is the same class. Comparing unrelated objects raises
+      `AttributeError` instead of returning `False`.
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          def __eq__(self, ...):
+              ...
+      - pattern: |
+          return $LEFT and $RIGHT
+      - metavariable-regex:
+          metavariable: $RIGHT
+          regex: .*(__class__|type\().*
+      - metavariable-regex:
+          metavariable: $LEFT
+          regex: .*\b(?!self\.)[A-Za-z_]\w*\.(?!__class__\b)[A-Za-z_]\w*.*

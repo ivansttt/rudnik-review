@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-self-comparison-validation
+    metadata: {"rule": "csharp-self-comparison-validation", "evidence": ["https://github.com/dotnet/aspnetcore/pull/56420#discussion_r1651789936"]}
+    languages: [csharp]
+    message: Argument validation compares a value against itself, so the range check never fires.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: ArgumentOutOfRangeException.ThrowIfGreaterThan($X, $X, ...)
+          - pattern: ArgumentOutOfRangeException.ThrowIfLessThan($X, $X, ...)

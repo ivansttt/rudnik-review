@@ -1,0 +1,8 @@
+rules:
+  - id: sql-unclosed-file-handle
+    metadata: {"rule": "sql-unclosed-file-handle", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/899#discussion_r602632189"]}
+    languages: [python]
+    severity: WARNING
+    message: "File opened without a with block or close()."
+    patterns:
+      - pattern-regex: 'open\([^)]*\)\.read\(\)'

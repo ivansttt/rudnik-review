@@ -1,0 +1,13 @@
+rules:
+  - id: sql-focused-test-left-in
+    metadata: {"rule": "sql-focused-test-left-in", "evidence": ["https://github.com/apache/superset/pull/31972#discussion_r1935503552", "https://github.com/apache/superset/pull/23547#discussion_r1157578993", "https://github.com/apache/superset/pull/22007#discussion_r1015484043"]}
+    languages: [javascript, typescript]
+    message: Focused test .only left in the suite skips other tests in CI
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: it.only(...)
+          - pattern: describe.only(...)
+          - pattern: test.only(...)
+          - pattern: context.only(...)
+          - pattern: fit.only(...)

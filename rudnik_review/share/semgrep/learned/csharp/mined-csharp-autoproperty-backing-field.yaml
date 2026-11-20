@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-autoproperty-backing-field
+    metadata: {"rule": "csharp-autoproperty-backing-field", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67383#discussion_r3465826417"]}
+    languages: [csharp]
+    message: Check properties before fields when scanning type members so auto-implemented properties are not misclassified via their synthesized private backing field.
+    severity: WARNING
+    pattern: |
+      if ($M is IFieldSymbol $F && $C1)
+      {
+        ...
+      }
+      ...
+      if ($M is IPropertySymbol $P && $C2)
+      {
+        ...
+      }

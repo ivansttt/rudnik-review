@@ -1,0 +1,11 @@
+rules:
+  - id: java-suppress-removal-warning
+    metadata: {"rule": "java-suppress-removal-warning", "evidence": ["https://github.com/apache/kafka/pull/21522#discussion_r2872957658", "https://github.com/apache/kafka/pull/21522#discussion_r2872958810", "https://github.com/apache/kafka/pull/21522#discussion_r2890281763", "https://github.com/apache/kafka/pull/21522#discussion_r2904157497"]}
+    languages: [java]
+    severity: WARNING
+    message: "@SuppressWarnings(\"removal\") hides a deprecated-for-removal usage instead of removing it; remove the deprecated usage rather than suppressing the warning."
+    pattern-either:
+      - pattern: |
+          @SuppressWarnings("removal")
+      - pattern: |
+          @SuppressWarnings({..., "removal", ...})

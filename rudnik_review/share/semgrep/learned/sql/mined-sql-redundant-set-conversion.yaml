@@ -1,0 +1,12 @@
+rules:
+  - id: sql-redundant-set-conversion
+    metadata: {"rule": "sql-redundant-set-conversion", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/3717#discussion_r944413120", "https://github.com/sqlfluff/sqlfluff/pull/3717#discussion_r944417257"]}
+    languages: [python]
+    severity: INFO
+    message: Redundant set() wrapper around an already-set value
+    patterns:
+      - pattern-either:
+          - pattern: |
+              set(chain.from_iterable(set($X) for $Y in $Z))
+          - pattern: |
+              $A | set($B)

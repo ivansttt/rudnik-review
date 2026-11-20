@@ -1,0 +1,6 @@
+{
+  "extraKnownMarketplaces": {
+    "rudnik-review": { "source": { "source": "github", "repo": "ivansttt/rudnik-review" } }
+  },
+  "enabledPlugins": { "rudnik-review@rudnik-review": true }
+}

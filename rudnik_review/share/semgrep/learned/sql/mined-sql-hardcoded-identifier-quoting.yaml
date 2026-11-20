@@ -1,0 +1,10 @@
+rules:
+  - id: sql-hardcoded-identifier-quoting
+    metadata: {"rule": "sql-hardcoded-identifier-quoting", "evidence": ["https://github.com/apache/superset/pull/35553#discussion_r2496319814"]}
+    languages: [python]
+    message: SQL identifier checked or wrapped with a hardcoded double quote instead of the dialect's quote_identifier
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $EXPR.startswith('"')
+          - pattern: $EXPR.endswith('"')

@@ -1,0 +1,9 @@
+rules:
+  - id: sql-orm-model-instantiated-in-loop
+    metadata: {"rule": "sql-orm-model-instantiated-in-loop", "evidence": ["https://github.com/apache/superset/pull/22789#discussion_r1082245627", "https://github.com/apache/superset/pull/22789#discussion_r1082281538"]}
+    languages: [python]
+    message: ORM model instantiated only to read a derived property or URL
+    severity: WARNING
+    pattern-either:
+      - pattern: $MODEL(id=$ID, slug=$SLUG).url
+      - pattern: $MODEL(id=$ID, slice_name=$NAME).slice_url

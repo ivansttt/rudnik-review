@@ -1,0 +1,14 @@
+rules:
+  - id: csharp-public-interface-member-binary-breaking
+    metadata: {"rule": "csharp-public-interface-member-binary-breaking", "evidence": ["https://github.com/dotnet/aspnetcore/pull/66700#discussion_r3290526327"]}
+    languages: [csharp]
+    message: Adding an abstract member to a published interface is binary-breaking; provide a default implementation.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          interface $NAME
+          {
+            ...
+          }
+      - pattern: |
+          $RET $METHOD(...);

@@ -1,0 +1,12 @@
+[[tool]]
+name = "osv-scanner"
+version = "2.2.4"
+sha256_x86_64 = "7702cd1e5d9f5059dd9570f4ad967f27d3c5f5391b371ec937b384c238177f55"
+sha256_aarch64 = "94d1c520b30a7e28b0189b2a1dd24c7b08f41887186e8ae3f811067ec9ed7043"
+stacks = ["*"]
+globs = ["uv.lock", "poetry.lock", "Pipfile.lock", "pdm.lock", "requirements*.txt", "package-lock.json", "yarn.lock",
+         "pnpm-lock.yaml", "packages.lock.json", "gradle.lockfile", "pom.xml", "Cargo.lock", "go.sum"]
+cmd = ["osv-scanner", "scan", "--format", "json", "{files}"]
+adapter = "osv"
+blocks = []
+network = true  # its job is to ask api.osv.dev of the lockfile's packages: gate.sandbox opens the net for it alone (spec 1777)

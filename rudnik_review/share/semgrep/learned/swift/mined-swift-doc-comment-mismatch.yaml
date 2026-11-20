@@ -1,0 +1,7 @@
+rules:
+  - id: swift-doc-comment-mismatch
+    metadata: {"rule": "swift-doc-comment-mismatch", "evidence": ["https://github.com/apple/swift-nio/pull/975#discussion_r276798256", "https://github.com/apple/swift-nio/pull/975#discussion_r279371289"]}
+    languages: [swift]
+    message: Documentation comment describes a parameter or behavior that differs from the actual code it documents
+    severity: ERROR
+    pattern-regex: '///.*forReadingAtPath:.*for writing|///.*mode:.*\.readOnly'

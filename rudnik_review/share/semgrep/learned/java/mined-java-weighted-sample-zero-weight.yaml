@@ -1,0 +1,13 @@
+rules:
+  - id: java-weighted-sample-zero-weight
+    metadata: {"rule": "java-weighted-sample-zero-weight", "evidence": ["https://github.com/apache/lucene/pull/13604#discussion_r1698331085"]}
+    languages:
+      - java
+    message: Cumulative weighted selection should require a positive weight to avoid selecting a zero-weight candidate
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($SUM >= $R) {
+            $IDX = $I;
+            break;
+          }

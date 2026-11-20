@@ -1,0 +1,8 @@
+rules:
+  - id: sql-log-format-without-argument
+    metadata: {"rule": "sql-log-format-without-argument", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/1027#discussion_r628746349"]}
+    languages: [python]
+    severity: WARNING
+    message: "Log message contains a %-format placeholder but no argument is passed."
+    patterns:
+      - pattern-regex: '%[rsd]"[ \t]*$'

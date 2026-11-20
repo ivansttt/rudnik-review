@@ -1,0 +1,17 @@
+rules:
+  - id: sql-config-access-breaks-context-free
+    metadata: {"rule": "sql-config-access-breaks-context-free", "evidence": ["https://github.com/apache/superset/pull/43337#discussion_r3817481834"]}
+    languages:
+      - python
+    severity: WARNING
+    message: |
+      Reading Flask current_app.config unconditionally breaks callers that run
+      outside an app/request context (raises RuntimeError). Guard with
+      try/except RuntimeError or read lazily.
+    patterns:
+      - pattern: current_app.config.get(...)
+      - pattern-not-inside: |
+          try:
+            ...
+          except RuntimeError:
+            ...

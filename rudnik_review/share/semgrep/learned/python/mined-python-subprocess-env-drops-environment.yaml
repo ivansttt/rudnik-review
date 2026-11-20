@@ -1,0 +1,9 @@
+rules:
+  - id: python-subprocess-env-drops-environment
+    metadata: {"rule": "python-subprocess-env-drops-environment", "evidence": ["https://github.com/pypa/pip/pull/11589#discussion_r1018858055"]}
+    languages: [python]
+    severity: INFO
+    message: Pass a modified copy of os.environ to subprocess env; a fresh dict drops all other environment variables.
+    pattern-either:
+      - pattern: subprocess.$FUNC(..., env=dict(...))
+      - pattern: subprocess.$FUNC(..., env={...})

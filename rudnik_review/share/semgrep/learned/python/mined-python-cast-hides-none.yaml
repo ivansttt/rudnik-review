@@ -1,0 +1,8 @@
+rules:
+  - id: python-cast-hides-none
+    metadata: {"rule": "python-cast-hides-none", "evidence": ["https://github.com/home-assistant/core/pull/188856#discussion_r4387168758", "https://github.com/home-assistant/core/pull/188856#discussion_r4387171748"]}
+    languages: [python]
+    severity: WARNING
+    patterns:
+      - pattern: cast($TYPE, $EXPR)
+    message: typing.cast forces a possibly-None value to a non-None type at runtime; handle the None case instead

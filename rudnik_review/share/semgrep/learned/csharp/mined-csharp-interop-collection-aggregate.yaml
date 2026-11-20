@@ -1,0 +1,17 @@
+rules:
+  - id: csharp-interop-collection-aggregate
+    metadata: {"rule": "csharp-interop-collection-aggregate", "evidence": ["https://github.com/dotnet/aspnetcore/pull/64964#discussion_r2949337033"]}
+    languages:
+      - csharp
+    message: Passing a whole collection across an interop boundary only to sum and count it is wasteful; send the sum and count scalars instead.
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          $RET $M(..., $T $COLL, ...)
+          {
+            ...
+          }
+      - pattern: |
+          $A += $COLL.Sum();
+          ...
+          $B += $COLL.Length;

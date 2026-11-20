@@ -1,0 +1,14 @@
+rules:
+  - id: java-missing-retain
+    metadata: {"rule": "java-missing-retain", "evidence": ["https://github.com/netty/netty/pull/10175#discussion_r405561234"]}
+    languages:
+      - java
+    message: Reference-counted message stored without retain(); the framework releases it after channelRead0 returns
+    severity: ERROR
+    patterns:
+      - pattern-inside: |
+          protected void channelRead0(ChannelHandlerContext $CTX, $TYPE $MSG) throws Exception {
+            ...
+          }
+      - pattern: $HOLDER.set($MSG)
+      - pattern-not: $HOLDER.set($MSG.retain())

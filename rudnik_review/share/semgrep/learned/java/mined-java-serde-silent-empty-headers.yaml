@@ -1,0 +1,11 @@
+rules:
+  - id: java-serde-silent-empty-headers
+    metadata: {"rule": "java-serde-silent-empty-headers", "evidence": ["https://github.com/apache/kafka/pull/21851#discussion_r3019026859", "https://github.com/apache/kafka/pull/21851#discussion_r3019028804"]}
+    languages:
+      - java
+    severity: WARNING
+    message: Serde silently delegates to the headers-aware overload with empty headers instead of throwing
+    patterns:
+      - pattern-either:
+          - pattern: return serialize($TOPIC, new RecordHeaders(), $DATA);
+          - pattern: return deserialize($TOPIC, new RecordHeaders(), $DATA);

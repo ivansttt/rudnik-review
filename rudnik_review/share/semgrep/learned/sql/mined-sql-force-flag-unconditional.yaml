@@ -1,0 +1,11 @@
+rules:
+  - id: sql-force-flag-unconditional
+    metadata: {"rule": "sql-force-flag-unconditional", "evidence": ["https://github.com/apache/superset/pull/40426#discussion_r3463652367"]}
+    languages:
+      - generic
+    severity: WARNING
+    message: >-
+      `--force-latest` is passed unconditionally. Gate it on the condition the
+      flag is meant to override so the fallback or maintenance case does not
+      also get the force behavior.
+    pattern-regex: '(?m)^\s*--force-latest\s*\\\s*$'

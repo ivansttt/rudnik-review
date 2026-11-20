@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-check-api-presence-directly
+    metadata: {"rule": "csharp-check-api-presence-directly", "evidence": ["https://github.com/dotnet/runtime/pull/133599#discussion_r3981694714", "https://github.com/dotnet/runtime/pull/133599#discussion_r3989794609", "https://github.com/dotnet/runtime/pull/133599#discussion_r3989916637", "https://github.com/dotnet/runtime/pull/133310#discussion_r3942192104"]}
+    languages: [csharp]
+    message: Prefer checking the specific API member or the language-version-aware API directly instead of an indirect proxy such as the core-library/assembly name, a raw feature-list key, or an environment variable.
+    severity: WARNING
+    pattern-either:
+      - pattern: $X.ContainingAssembly.Name
+      - pattern: $X.Features.ContainsKey($Y)
+      - pattern: Environment.GetEnvironmentVariable($X)

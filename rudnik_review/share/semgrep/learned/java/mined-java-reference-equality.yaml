@@ -1,0 +1,13 @@
+rules:
+  - id: java-reference-equality
+    metadata: {"rule": "java-reference-equality", "evidence": ["https://github.com/netty/netty/pull/16596#discussion_r3034879294"]}
+    languages:
+      - java
+    message: Object compared with == instead of equals()
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ == $CLASS.$FIELD
+          - pattern: $CLASS.$FIELD == $OBJ
+          - pattern: $OBJ != $CLASS.$FIELD
+          - pattern: $CLASS.$FIELD != $OBJ

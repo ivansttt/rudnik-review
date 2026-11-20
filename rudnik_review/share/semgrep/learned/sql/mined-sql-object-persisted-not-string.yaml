@@ -1,0 +1,10 @@
+rules:
+  - id: sql-object-persisted-not-string
+    metadata: {"rule": "sql-object-persisted-not-string", "evidence": ["https://github.com/apache/superset/pull/42053#discussion_r3718431356"]}
+    languages:
+      - ts
+    message: >-
+      Control persists an RGBColor object where a backward-compatible string is expected; the
+      stored value serializes to invalid output when read back by string-only readers.
+    severity: ERROR
+    pattern: onChange(rgb)

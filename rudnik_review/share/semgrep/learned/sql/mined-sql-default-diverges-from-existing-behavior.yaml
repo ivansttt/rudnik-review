@@ -1,0 +1,10 @@
+rules:
+  - id: sql-default-diverges-from-existing-behavior
+    metadata: {"rule": "sql-default-diverges-from-existing-behavior", "evidence": ["https://github.com/apache/superset/pull/35622#discussion_r2433653905", "https://github.com/apache/superset/pull/35622#discussion_r2433654624", "https://github.com/apache/superset/pull/35622#discussion_r2433664738"]}
+    languages:
+      - python
+    message: Config default changes the previously hardcoded retry count of 2 to 5, silently changing behavior for users who do not set the config.
+    severity: WARNING
+    pattern-either:
+      - pattern: $OBJ.config.get("SLACK_API_RATE_LIMIT_RETRY_COUNT", 5)
+      - pattern: SLACK_API_RATE_LIMIT_RETRY_COUNT = 5

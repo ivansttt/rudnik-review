@@ -1,0 +1,6 @@
+# The review's categories as the day's precision pass sets them (spec 1626, graph.precision): one under 80% correct over its last 30 outcomes
+# is `quiet`, its confirmed findings notes (findings.blocks), until it is back at 90%. `held` names the categories the owner keeps as they are:
+# the pass never changes them. A tool's own `held = [...]` does the same for its rules.
+[review]
+quiet = ["TESTS"]
+held = []

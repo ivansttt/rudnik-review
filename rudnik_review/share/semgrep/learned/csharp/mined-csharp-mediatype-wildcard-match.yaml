@@ -1,0 +1,8 @@
+rules:
+  - id: csharp-mediatype-wildcard-match
+    metadata: {"rule": "csharp-mediatype-wildcard-match", "evidence": ["https://github.com/dotnet/aspnetcore/pull/67461#discussion_r3516201198"]}
+    languages: [csharp]
+    message: MatchesMediaType matches wildcards; use an exact MediaType comparison when only one type is wanted.
+    severity: WARNING
+    patterns:
+      - pattern: $X.MatchesMediaType($ARG)

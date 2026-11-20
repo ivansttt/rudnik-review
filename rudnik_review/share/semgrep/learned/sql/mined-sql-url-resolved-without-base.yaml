@@ -1,0 +1,14 @@
+rules:
+  - id: sql-url-resolved-without-base
+    metadata: {"rule": "sql-url-resolved-without-base", "evidence": ["https://github.com/apache/superset/pull/43689#discussion_r3888579290"]}
+    languages:
+      - javascript
+      - typescript
+    severity: WARNING
+    message: >-
+      A possibly root-relative URL is parsed with new URL without a base, so the
+      parse throws and the code silently falls back to a degraded path instead of
+      resolving against the page location.
+    patterns:
+      - pattern: new URL($URL)
+      - pattern-not: new URL($URL, $BASE)

@@ -1,0 +1,20 @@
+rules:
+  - id: python-exception-for-control-flow
+    metadata: {"rule": "python-exception-for-control-flow", "evidence": ["https://github.com/home-assistant/core/pull/190102#discussion_r4446648124", "https://github.com/pypa/pip/pull/13550#discussion_r2296145559"]}
+    languages:
+      - python
+    severity: WARNING
+    message: >-
+      Exception is caught for normal control flow. Prefer a direct lookup that
+      returns a None sentinel instead of raising and catching an exception.
+    pattern-either:
+      - pattern: |
+          try:
+            return $FUNC(...)
+          except $EXC:
+            ...
+      - pattern: |
+          try:
+            $OBJ.$METHOD(...)
+          except $EXC:
+            ...

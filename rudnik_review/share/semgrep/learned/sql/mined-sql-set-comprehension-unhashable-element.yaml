@@ -1,0 +1,15 @@
+rules:
+  - id: sql-set-comprehension-unhashable-element
+    metadata: {"rule": "sql-set-comprehension-unhashable-element", "evidence": ["https://github.com/apache/superset/pull/45104#discussion_r4226120693"]}
+    languages:
+      - python
+    message: >-
+      Set comprehension may hash an unhashable element (e.g. a dict in an
+      orderby tuple), raising TypeError. Filter to hashable or string members
+      first.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: "{$X[0] for $X in $ITER}"
+          - pattern: "{$X[$K] for $X in $ITER}"
+      - pattern-not: "{$X[0] for $X in $ITER if isinstance($X[0], $T)}"

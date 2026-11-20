@@ -1,0 +1,10 @@
+rules:
+  - id: swift-redundant-run-after-advance-time
+    metadata: {"rule": "swift-redundant-run-after-advance-time", "evidence": ["https://github.com/apple/swift-nio/pull/1497#discussion_r417884579", "https://github.com/apple/swift-nio/pull/1497#discussion_r417885738", "https://github.com/apple/swift-nio/pull/1497#discussion_r417885825", "https://github.com/apple/swift-nio/pull/1497#discussion_r417885881", "https://github.com/apple/swift-nio/pull/1497#discussion_r417885952", "https://github.com/apple/swift-nio/pull/1497#discussion_r417885989", "https://github.com/apple/swift-nio/pull/1497#discussion_r417886030", "https://github.com/apple/swift-nio/pull/1497#discussion_r417886078"]}
+    languages: [swift]
+    message: Calling run() immediately after advanceTime(by:) is redundant because advancing time already runs the event loop.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $LOOP.advanceTime(by: $AMOUNT)
+          $LOOP.run()

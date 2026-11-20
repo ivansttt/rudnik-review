@@ -1,0 +1,16 @@
+rules:
+  - id: csharp-argumentexception-for-invalid-argument
+    metadata: {"rule": "csharp-argumentexception-for-invalid-argument", "evidence": ["https://github.com/dotnet/aspnetcore/pull/68129#discussion_r3803831013"]}
+    languages:
+      - csharp
+    message: >-
+      Throw ArgumentException (or ArgumentNullException) for invalid caller-supplied
+      arguments, not InvalidOperationException. When two caller-supplied arguments
+      disagree, throw ArgumentException with a paramName so callers get a
+      machine-readable ParamName.
+    severity: WARNING
+    patterns:
+      - pattern: throw new InvalidOperationException($MSG)
+      - metavariable-regex:
+          metavariable: $MSG
+          regex: .*does not match.*

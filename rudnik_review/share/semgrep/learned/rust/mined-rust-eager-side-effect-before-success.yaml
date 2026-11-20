@@ -1,0 +1,13 @@
+rules:
+  - id: rust-eager-side-effect-before-success
+    metadata: {"rule": "rust-eager-side-effect-before-success", "evidence": ["https://github.com/rust-lang/cargo/pull/14326#discussion_r1702445658"]}
+    languages:
+      - rust
+    message: Directory created eagerly before validating inputs/success; a later bail leaves a dangling artifact behind
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if !$PATH.exists() {
+            ...
+            paths::create_dir_all($PARENT)?;
+          }

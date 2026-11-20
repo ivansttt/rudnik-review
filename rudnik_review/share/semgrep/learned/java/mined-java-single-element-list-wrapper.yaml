@@ -1,0 +1,7 @@
+rules:
+  - id: java-single-element-list-wrapper
+    metadata: {"rule": "java-single-element-list-wrapper", "evidence": ["https://github.com/apache/flink/pull/27994#discussion_r3122911108", "https://github.com/apache/flink/pull/27994#discussion_r3122912643", "https://github.com/apache/flink/pull/27994#discussion_r3122913266"]}
+    languages: [java]
+    severity: WARNING
+    message: A single value is wrapped in List.of() before being passed to a collection factory that expects the value itself, producing a nested collection.
+    pattern: ColumnList.of(List.of($X))

@@ -1,0 +1,7 @@
+rules:
+  - id: rust-test-absence-positive-assert
+    metadata: {"rule": "rust-test-absence-positive-assert", "evidence": ["https://github.com/rust-lang/cargo/pull/14100#discussion_r1647769638"]}
+    languages: [rust]
+    severity: WARNING
+    message: Test asserts a value's absence only via a positive full-output or substring match, so the offending text is never checked to be missing.
+    pattern-regex: '(?m)^[ \t]*//[^\n]*\b(?:without|absent|missing|does not|should not|must not)\b[^\n]*\n[ \t]*\.with_(?:stderr|stdout)(?:_data|_contains)?\('

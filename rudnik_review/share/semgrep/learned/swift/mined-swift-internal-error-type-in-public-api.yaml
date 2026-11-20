@@ -1,0 +1,25 @@
+rules:
+  - id: swift-internal-error-type-in-public-api
+    metadata: {"rule": "swift-internal-error-type-in-public-api", "evidence": ["https://github.com/apple/swift-nio/pull/1823#discussion_r621862815"]}
+    languages:
+      - swift
+    message: Error type conforming to `Error` is declared without `public` access; callers cannot catch or match it by type.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              enum $NAME: Swift.Error {
+                ...
+              }
+          - pattern: |
+              enum $NAME: Error {
+                ...
+              }
+      - pattern-not: |
+          public enum $NAME: Error {
+            ...
+          }
+      - pattern-not: |
+          public enum $NAME: Swift.Error {
+            ...
+          }

@@ -1,0 +1,15 @@
+rules:
+  - id: python-wrong-negation-scope
+    metadata: {"rule": "python-wrong-negation-scope", "evidence": ["https://github.com/pypa/pip/pull/10625#discussion_r744239621"]}
+    mode: search
+    message: >-
+      Negation is applied to one operand instead of the whole conjunction.
+      When $A is false the skip/filter branch is taken incorrectly. Use
+      `not ($A and $B)`.
+    languages:
+      - python
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if $A and not $B and $C:
+              ...

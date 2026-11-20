@@ -1,0 +1,21 @@
+rules:
+  - id: csharp-shell-command-concatenated
+    languages: [csharp]
+    severity: WARNING
+    message: >-
+      A shell is started with a command line built by concatenation or interpolation: a value holding ; | $( or a quote runs
+      commands of its own (command injection); start the program itself with ProcessStartInfo.ArgumentList.
+    patterns:
+      - pattern-either:
+          - pattern: System.Diagnostics.Process.Start($SH, $ARGS)
+          - pattern: Process.Start($SH, $ARGS)
+      - metavariable-regex:
+          metavariable: $SH
+          regex: ^"(/bin/|/usr/bin/)?(ba|z|da)?sh"$|^"(cmd|powershell|pwsh)(\.exe)?"$
+      - metavariable-pattern:
+          metavariable: $ARGS
+          patterns:
+            - pattern-either:
+                - pattern: $X + $Y
+                - pattern: string.Format(...)
+                - pattern: $"..."

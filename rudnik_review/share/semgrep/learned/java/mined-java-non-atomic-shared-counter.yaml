@@ -1,0 +1,28 @@
+rules:
+  - id: java-non-atomic-shared-counter
+    metadata: {"rule": "java-non-atomic-shared-counter", "evidence": ["https://github.com/apache/lucene/pull/15585#discussion_r2704668163"]}
+    languages: [java]
+    severity: WARNING
+    message: Shared counter field is a plain int/long mutated with ++/-- or assignment without volatile or atomic types; concurrent updates can be lost or observed stale.
+    patterns:
+      - pattern-inside: |
+          class $CLASS {
+            ...
+            $TYPE $FIELD;
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $TYPE
+          regex: ^(int|long)$
+      - pattern-either:
+          - pattern: $FIELD++
+          - pattern: ++$FIELD
+          - pattern: $FIELD--
+          - pattern: --$FIELD
+          - pattern: $FIELD = $VALUE
+      - pattern-not-inside: |
+          class $CLASS {
+            ...
+            volatile $TYPE $FIELD;
+            ...
+          }

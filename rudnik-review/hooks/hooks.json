@@ -1,0 +1,27 @@
+{
+ "hooks": {
+  "PostToolUse": [
+   {
+    "matcher": "Edit|Write|MultiEdit",
+    "hooks": [
+     {
+      "type": "command",
+      "command": "command -v rudnik-review >/dev/null && exec rudnik-review hook claude-post; m=\"${TMPDIR:-/tmp}/rr-$(grep -o '\"session_id\": *\"[^\"]*\"' | tr -cd 'a-zA-Z0-9-')\"; [ -e \"$m\" ] || { : >\"$m\"; echo '{\"systemMessage\": \"rudnik-review is not on the PATH\"}'; }",
+      "timeout": 60
+     }
+    ]
+   }
+  ],
+  "Stop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "command -v rudnik-review >/dev/null && exec rudnik-review hook claude-stop; m=\"${TMPDIR:-/tmp}/rr-$(grep -o '\"session_id\": *\"[^\"]*\"' | tr -cd 'a-zA-Z0-9-')\"; [ -e \"$m\" ] || { : >\"$m\"; echo '{\"systemMessage\": \"rudnik-review is not on the PATH\"}'; }",
+      "timeout": 600
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,9 @@
+rules:
+  - id: python-rounding-drops-below-scale-minimum
+    metadata: {"rule": "python-rounding-drops-below-scale-minimum", "evidence": ["https://github.com/home-assistant/core/pull/188577#discussion_r4381854537"]}
+    languages: [python]
+    message: Rounded value not clamped to the scale's minimum
+    severity: WARNING
+    patterns:
+      - pattern: round(brightness_to_value(...))
+      - pattern-not-inside: max(...)

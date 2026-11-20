@@ -1,0 +1,9 @@
+rules:
+  - id: sql-generic-response-schema
+    metadata: {"rule": "sql-generic-response-schema", "evidence": ["https://github.com/apache/superset/pull/23655#discussion_r1164001692", "https://github.com/apache/superset/pull/23655#discussion_r1169597164", "https://github.com/apache/superset/pull/23655#discussion_r1169597318"]}
+    languages:
+      - python
+      - yaml
+    message: Response schema is declared generic, dropping field names and types from API docs.
+    severity: WARNING
+    pattern-regex: '(?m)^[+ \t]*type: object[ \t]*$(?![ \t]*\n[+ \t]*properties:)|fields\.List\(fields\.Dict\(\)\)|fields\.Dict\(\)'

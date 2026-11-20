@@ -1,0 +1,13 @@
+rules:
+  - id: java-partial-state-validation
+    metadata: {"rule": "java-partial-state-validation", "evidence": ["https://github.com/netty/netty/pull/15919#discussion_r2681822800", "https://github.com/netty/netty/pull/15919#discussion_r2681824214"]}
+    languages: [java]
+    message: Validating elements inside the same loop that mutates state leaves partial state when validation fails.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          for ($T $X : $ITER) {
+            ...
+            $OBJ.$LIST.add(checkNotNull($X, ...));
+            ...
+          }

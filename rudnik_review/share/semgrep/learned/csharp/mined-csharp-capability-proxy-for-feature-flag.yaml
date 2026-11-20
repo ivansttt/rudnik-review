@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-capability-proxy-for-feature-flag
+    metadata: {"rule": "csharp-capability-proxy-for-feature-flag", "evidence": ["https://github.com/dotnet/aspnetcore/pull/56827#discussion_r1684618759"]}
+    languages:
+      - csharp
+    message: >-
+      A call to a RequiresUnreferencedCode/RequiresDynamicCode-annotated method is gated
+      only on RuntimeFeature.IsDynamicCodeSupported. This covers the dynamic-code requirement
+      but not trimming; gate on the feature flag that disables the whole feature instead.
+    severity: WARNING
+    pattern: |
+      if (RuntimeFeature.IsDynamicCodeSupported)
+      {
+          ...
+      }

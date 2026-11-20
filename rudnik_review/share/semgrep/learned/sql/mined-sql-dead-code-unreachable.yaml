@@ -1,0 +1,9 @@
+rules:
+  - id: sql-dead-code-unreachable
+    metadata: {"rule": "sql-dead-code-unreachable", "evidence": ["https://github.com/apache/superset/pull/43374#discussion_r3855820137"]}
+    languages: [python]
+    message: "Rebuilding a result while preserving is_error is dead code: an upstream middleware already rebuilt the result and dropped the flag before this code runs, so the guarded failure case is unreachable."
+    severity: ERROR
+    patterns:
+      - pattern: |
+          $RESULT = ToolResult(..., is_error=$RESULT.is_error, ...)

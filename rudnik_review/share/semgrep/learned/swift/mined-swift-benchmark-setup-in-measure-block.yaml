@@ -1,0 +1,18 @@
+rules:
+  - id: swift-benchmark-setup-in-measure-block
+    metadata: {"rule": "swift-benchmark-setup-in-measure-block", "evidence": ["https://github.com/apple/swift-nio/pull/1755#discussion_r579109553", "https://github.com/apple/swift-nio/pull/1755#discussion_r579110443"]}
+    languages: [swift]
+    message: Setup and teardown inside the measured block skews benchmark results
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          measure(identifier: $ID) {
+            ...
+          }
+      - pattern-either:
+          - pattern: |
+              defer {
+                ...
+              }
+          - pattern: |
+              let $X = MultiThreadedEventLoopGroup(...)

@@ -1,0 +1,24 @@
+rules:
+  - id: java-cleanup-loop-short-circuits
+    metadata: {"rule": "java-cleanup-loop-short-circuits", "evidence": ["https://github.com/netty/netty/pull/12235#discussion_r835541857"]}
+    languages:
+      - java
+    message: >-
+      A loop closes or releases resources one by one without guarding each call.
+      An exception from one close()/release() aborts the loop and leaks the
+      remaining resources. Wrap each call in try/catch and aggregate suppressed exceptions.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $VAR.close(...)
+          - pattern: $VAR.release(...)
+      - pattern-inside: |
+          for ($TYPE $VAR : $RESOURCES) {
+            ...
+          }
+      - pattern-not-inside: |
+          try {
+            ...
+          } catch (...) {
+            ...
+          }

@@ -1,0 +1,16 @@
+rules:
+  - id: javascript-silent-coalesced-overwrite
+    metadata: {"rule": "javascript-silent-coalesced-overwrite", "evidence": ["https://github.com/vercel/next.js/pull/100113#discussion_r4260827341"]}
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: A coalesced/pending value is overwritten without asserting it matches the already-stored value.
+    patterns:
+      - pattern: |
+          if (...) {
+            ...
+          } else {
+            $SLOT = $VALUE
+          }
+      - metavariable-regex:
+          metavariable: $SLOT
+          regex: (?i)pending|inflight|dedup|coalesc

@@ -1,0 +1,15 @@
+rules:
+  - id: csharp-missing-volatile-read
+    metadata: {"rule": "csharp-missing-volatile-read", "evidence": ["https://github.com/dotnet/runtime/pull/132757#discussion_r3858526821"]}
+    languages:
+      - cpp
+      - csharp
+    severity: WARNING
+    message: >-
+      Shared field $FIELD is written with a volatile or Interlocked store but read with a plain field access; use the matching Volatile.Read/Interlocked read so the read observes the value the write published.
+    patterns:
+      - pattern: |
+          return $FIELD;
+      - metavariable-regex:
+          metavariable: $FIELD
+          regex: "^m_"

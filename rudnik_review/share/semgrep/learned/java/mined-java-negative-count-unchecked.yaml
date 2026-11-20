@@ -1,0 +1,14 @@
+rules:
+  - id: java-negative-count-unchecked
+    metadata: {"rule": "java-negative-count-unchecked", "evidence": ["https://github.com/apache/kafka/pull/22465#discussion_r3355009913", "https://github.com/apache/kafka/pull/22463#discussion_r3354879327"]}
+    languages: [java]
+    message: A count or size read from a stream is checked only against an upper bound and negative values are not rejected
+    severity: WARNING
+    patterns:
+      - pattern: |
+          if ($X > $Y) {
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $X
+          regex: (?i)(count|size|length|entrysize|nullindexlistsize)

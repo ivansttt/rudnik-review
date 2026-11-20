@@ -1,0 +1,7 @@
+rules:
+  - id: java-truncate-serialized-bytes
+    metadata: {"rule": "java-truncate-serialized-bytes", "evidence": ["https://github.com/apache/flink/pull/27778#discussion_r2979389942"]}
+    languages: [java]
+    severity: WARNING
+    message: Trimming or padding serialized object bytes corrupts the serialization format.
+    pattern: trimOrPadByteArray($RET, $LEN, $BYTES, $WRITER)

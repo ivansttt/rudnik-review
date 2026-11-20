@@ -1,0 +1,7 @@
+rules:
+  - id: kotlin-unexpanded-test-name
+    metadata: {"rule": "kotlin-unexpanded-test-name", "evidence": ["https://github.com/detekt/detekt/pull/4575#discussion_r841190691", "https://github.com/detekt/detekt/pull/4575#discussion_r841190755", "https://github.com/detekt/detekt/pull/4575#discussion_r841190845"]}
+    languages: [kotlin]
+    message: Backtick test name contains an unexpanded $variable placeholder.
+    severity: INFO
+    pattern-regex: 'fun `[^`]*\$[^`]*`'

@@ -1,0 +1,12 @@
+rules:
+  - id: sql-workflow-trigger-misses-mutating-event
+    metadata: {"rule": "sql-workflow-trigger-misses-mutating-event", "evidence": ["https://github.com/apache/superset/pull/43681#discussion_r3886665927"]}
+    languages: [yaml]
+    severity: ERROR
+    message: >-
+      This guard reads `github.event.pull_request.labels`, which is set by the
+      `labeled` event. The workflow's trigger list does not include `labeled`,
+      so the guard is never re-evaluated after that property changes. Add
+      `labeled` to the `on` triggers (or otherwise run after label assignment).
+    pattern: |
+      if: contains(github.event.pull_request.labels.*.name, 'patch')

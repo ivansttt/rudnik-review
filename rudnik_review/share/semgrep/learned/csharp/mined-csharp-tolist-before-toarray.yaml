@@ -1,0 +1,7 @@
+rules:
+  - id: csharp-tolist-before-toarray
+    metadata: {"rule": "csharp-tolist-before-toarray", "evidence": ["https://github.com/dotnet/aspnetcore/pull/62905#discussion_r2242117889"]}
+    languages: [csharp]
+    message: "Call .ToArray() directly instead of .ToList().ToArray()"
+    severity: WARNING
+    pattern: $X.ToList().ToArray()

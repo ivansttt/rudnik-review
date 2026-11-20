@@ -1,0 +1,11 @@
+rules:
+  - id: java-off-by-one-loop-bound
+    metadata: {"rule": "java-off-by-one-loop-bound", "evidence": ["https://github.com/apache/kafka/pull/21644#discussion_r2895640575", "https://github.com/apache/kafka/pull/21644#discussion_r2895644549", "https://github.com/apache/kafka/pull/21644#discussion_r2895653750", "https://github.com/apache/kafka/pull/21644#discussion_r2895656032"]}
+    message: For-loop uses strict '<' against an inclusive end bound, skipping the last element/offset.
+    languages:
+      - java
+    severity: WARNING
+    pattern: |
+      for ($TYPE $VAR = $START; $VAR < $END; $VAR++) {
+        ...
+      }

@@ -1,0 +1,12 @@
+# Rust's formatter (spec 1768, 12 Nov 2026), from the developer's own toolchain (rustup), so `from = "rustup"`: setup installs nothing.
+# `cargo fmt --all` takes no {files}: rustfmt alone on a file assumes the 2015 edition, and only cargo reads the edition from Cargo.toml.
+# fmt runs it on a copy of the working tree and writes back the selected .rs files it changed. No `cmd`: Clippy compiles the crate, twice
+# for a check against the base, and prints JSON lines no adapter reads, so Rust stays a gap.
+[[tool]]
+name = "rustfmt"
+version = "toolchain"
+from = "rustup"
+stacks = ["rust"]
+signals = ["Cargo.toml", "*.rs"]
+globs = ["*.rs"]
+fmt = [["cargo", "fmt", "--all"]]

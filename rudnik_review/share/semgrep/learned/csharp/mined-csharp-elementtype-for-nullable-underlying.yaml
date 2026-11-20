@@ -1,0 +1,10 @@
+rules:
+  - id: csharp-elementtype-for-nullable-underlying
+    metadata: {"rule": "csharp-elementtype-for-nullable-underlying", "evidence": ["https://github.com/dotnet/aspnetcore/pull/65245#discussion_r3349645897"]}
+    languages: [csharp]
+    message: >-
+      Use Nullable.GetUnderlyingType to unwrap nullable value types, not ElementType.
+      ElementType also unwraps collection/IEnumerable element types and inspects the wrong type.
+    severity: WARNING
+    patterns:
+      - pattern: ($T.ElementType ?? $T.Type).GetCustomAttributes(...)

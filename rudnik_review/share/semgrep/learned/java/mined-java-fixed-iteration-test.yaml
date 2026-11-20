@@ -1,0 +1,19 @@
+rules:
+  - id: java-fixed-iteration-test
+    metadata: {"rule": "java-fixed-iteration-test", "evidence": ["https://github.com/apache/kafka/pull/23911#discussion_r4348618709"]}
+    languages: [java]
+    message: >-
+      Test bounded by a fixed iteration count instead of running until completion.
+      Loop until all records/work are delivered so missing records fail the test,
+      rather than a hardcoded poll count that may pass without consuming everything.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          for (int $I = 0; $I < $COUNT; $I++) {
+            ...
+            $OBJ.poll(...);
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $COUNT
+          regex: "^([A-Z][A-Z0-9_]*|[0-9]+)$"

@@ -1,0 +1,8 @@
+rules:
+  - id: python-count-before-split
+    metadata: {"rule": "python-count-before-split", "evidence": ["https://github.com/pypa/pip/pull/12656#discussion_r1600929601"]}
+    languages:
+      - python
+    severity: INFO
+    message: Counting a delimiter with == 1 to decide how to split misparses values that legitimately contain the delimiter; use partition() or split(maxsplit=...).
+    pattern: $STR.count($DELIM) == 1

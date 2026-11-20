@@ -1,0 +1,17 @@
+rules:
+  - id: java-content-vs-reference-assertion
+    metadata: {"rule": "java-content-vs-reference-assertion", "evidence": ["https://github.com/apache/kafka/pull/21913#discussion_r3036587939"]}
+    languages: [java]
+    message: Test method name/purpose promises identity or reference semantics (e.g. "backed by same array") but asserts content equality. Use assertSame to check reference identity.
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: assertEquals(...)
+          - pattern: assertArrayEquals(...)
+      - pattern-inside: |
+          $RET $METHOD(...) {
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: (?i).*(same|identical|identity|reference|backed).*

@@ -1,0 +1,9 @@
+rules:
+  - id: java-assertthrows-message-not-checked
+    metadata: {"rule": "java-assertthrows-message-not-checked", "evidence": ["https://github.com/apache/kafka/pull/23199#discussion_r3882072369"]}
+    languages: [java]
+    severity: WARNING
+    message: The third argument of assertThrows is an assertion-failure message, not an expected-message matcher; the thrown exception's message is never verified.
+    pattern-either:
+      - pattern: assertThrows($CLASS, $EXEC, "...")
+      - pattern: org.junit.jupiter.api.Assertions.assertThrows($CLASS, $EXEC, "...")

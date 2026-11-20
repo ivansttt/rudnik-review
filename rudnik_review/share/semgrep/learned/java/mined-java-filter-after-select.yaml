@@ -1,0 +1,24 @@
+rules:
+  - id: java-filter-after-select
+    metadata: {"rule": "java-filter-after-select", "evidence": ["https://github.com/apache/kafka/pull/23588#discussion_r4387877383"]}
+    languages:
+      - java
+    message: >-
+      The best candidate is selected first and an eligibility predicate is applied only to that
+      single selected candidate. An ineligible best candidate can hide an eligible runner-up;
+      filter candidates by the predicate before or during selection instead.
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $TYPE $VAR = findPrevMemberWithLeastLoad(...);
+              if ($VAR != null && hasUnfulfilledTaskQuota(...)) {
+                return $VAR;
+              }
+              return null;
+          - pattern: |
+              final $TYPE $VAR = findPrevMemberWithLeastLoad(...);
+              if ($VAR != null && hasUnfulfilledTaskQuota(...)) {
+                return $VAR;
+              }
+              return null;

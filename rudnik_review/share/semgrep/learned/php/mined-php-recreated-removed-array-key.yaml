@@ -1,0 +1,18 @@
+rules:
+  - id: php-recreated-removed-array-key
+    metadata: {"rule": "php-recreated-removed-array-key", "evidence": ["https://github.com/matomo-org/matomo/pull/24983#discussion_r3731980491"]}
+    languages:
+      - php
+    message: >-
+      An unconditional write into a nested array key recreates a key that another code
+      path removes when a flag is set (e.g. unset($reportMetadata['metricsDocumentation'])
+      when hideMetricsDoc=1), silently undoing the flag. Guard the write with isset()
+      on the parent key.
+    severity: WARNING
+    patterns:
+      - pattern: |
+          $ARRAY['metricsDocumentation'][$KEY] = $VALUE;
+      - pattern-not-inside: |
+          if (isset($ARRAY['metricsDocumentation'])) {
+            ...
+          }

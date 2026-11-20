@@ -1,0 +1,356 @@
+[[rule]]
+id = "rust-option-none-equality"
+tier = "info"
+title = "Comparing two Options with == lets None == None match"
+look_for = "Code compares two Option values directly with == or != so that None == None is treated as a match instead of only comparing the inner Some values."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/163571#discussion_r4484205219", "fix" = "2e1670b73658f69dabbd2848615d723f1d4fe9d7"}, {"url" = "https://github.com/rust-lang/rust/pull/163571#discussion_r4484206756", "fix" = "2e1670b73658f69dabbd2848615d723f1d4fe9d7"}]
+measured = {}
+trigger = ""
+question = "Does the hunk compare two Option values with == or != in a way where None == None would be wrongly treated as a match?"
+examples = ["@@ -26,6 +27,14 @@ impl Impl {\n         self.inner_impl().trait_.as_ref().map(|t| t.def_id())\n     }\n \n+    pub(crate) fn is_deref_trait(&self, tcx: TyCtxt<'_>) -> bool {\n+        self.trait_did() == tcx.lang_items().deref_trait()", "@@ -28,11 +28,11 @@ impl Impl {\n     }\n \n     pub(crate) fn is_deref_trait(&self, tcx: TyCtxt<'_>) -> bool {\n+        self.trait_did().is_some_and(|did| Some(did) == tcx.lang_items().deref_trait())\n     }\n \n     pub(crate) fn is_deref_mut_trait(&self, tcx: TyCtxt<'_>) -> bool {\n+        self.trait_did().is_some_and(|did| Some(did) == tcx.lang_items().deref_mut_trait())\n     }\n \n     /// This function is used to extract a `DefId` to be used as a key for the `Cache::impls` field."]
+semgrep_asks = 2
+semgrep = "semgrep/learned/rust/mined-rust-option-none-equality.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-doc-url-doubled-segment"
+tier = "info"
+title = "Documentation URL repeats a path segment"
+look_for = "A documentation link URL repeats the same path segment twice in a row, producing a broken link (for example /std/std/ or /stable/stable/)."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/165522#discussion_r4531997965", "fix" = "234c935d00a7761bf0bcb7ca727c5ff7ff873baa"}, {"url" = "https://github.com/rust-lang/rust/pull/165522#discussion_r4532000346", "fix" = "234c935d00a7761bf0bcb7ca727c5ff7ff873baa"}]
+measured = {}
+trigger = "https"
+question = "Does the hunk add a documentation URL with a doubled path segment such as /std/std/ or /stable/stable/?"
+examples = ["@@ -1,3 +1,148 @@\n+Version 1.100.0 (2026-11-12)\n+==========================\n+\n+<a id=\"1.100.0-Language\"></a>\n+\n+Language\n+--------\n+- [Stabilize never type](https://github.com/rust-lang/rust/pull/155499)\n+- [Lint against repeated `#[repr(..)]` attributes](https://github.com/rust-lang/rust/pull/157036)\n+- [Stabilize `extern \"custom\"`](https://github.com/rust-lang/rust/pull/158504)\n+- [Extend `dropping_references`, `dropping_copy_types` and `undropped_manually_drops` lints to `drop_in_place`](https://github.com/rust-lang/rust/pull/160229)\n+- [`unfulfilled_lint_expectations` no longer fires on `#[expect(dead_code)]` inside code that is covered by a dead parent's diagnostic](https://github.com/rust-lang/rust/pull/161005)\n+- [Turn the error for `repr(align)` fields in a `repr(packed)` type into a deny-by-default lint `aligned_fields_in_packed`](https://github.com/rust-lang/rust/pull/162160)\n+- [volatile: allow accesses to non-AM memory to trap](https://github.com/rust-lang/rust/pull/160564/)\n+\n+\n+<a id=\"1.100.0-Compiler\"></a>\n+\n+Compiler\n+--------\n+- [Stabilize `-Cprofile-sample-use`](https://github.com/rust-lang/rust/pull/155942)\n+- [Enable next solver by default in orphanck](https://github.com/rust-lang/rust/pull/160668)\n+\n+\n+<a id=\"1.100.0-Platform-Support\"></a>\n+\n+Platform Support\n+----------------\n+- [`i686-pc-windows-gnu` is now a tier 2 without host tools target](https://github.com/rust-lang/rust/pull/161681)\n+- [Promote `wasm32-wasip3` to Tier 2](https://github.com/rust-lang/rust/pull/161940)\n+- [Add new Tier 3 target `powerpc64-sony-ps3`](https://github.com/rust-lang/rust/pull/162072)\n+\n+\n+Refer to Rust's [platform support page][platform-support-doc]\n+for more information on Rust's tiered platform support.\n+\n+[platform-support-doc]: https://doc.rust-lang.org/rustc/platform-support.html\n+\n+<a id=\"1.100.0-Libraries\"></a>\n+\n+Libraries\n+---------\n+- [Stabilize custom allocators](https://github.com/rust-lang/rust/pull/156882)\n+- [Map `ENOTSUP` to `ErrorKind::Unsupported`](https://github.com/rust-lang/rust/pull/158580)\n+- [Fix soundness issues in `std::sys::pal::sgx::waitqueue::unsafe_list`](https://github.com/rust-lang/rust/pull/161334)\n+\n+\n+<a id=\"1.100.0-Stabilized-APIs\"></a>\n+\n+Stabilized APIs\n+---------------\n+\n+- [`impl PartialEq<Cow<'_, [U]>> for Vec<T, A>`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#impl-PartialEq%3CCow%3C'_,+%5BU%5D%3E%3E-for-Vec%3CT,+A%3E)\n+- [`impl PartialEq<Cow<'_, [U]>> for &[T]`](https://doc.rust-lang.org/stable/std/primitive.slice.html#impl-PartialEq%3CCow%3C'_,+%5BU%5D%3E%3E-for-%26%5BT%5D)\n+- [`impl PartialEq<Cow<'_, [U]>> for &mut [T]`](https://doc.rust-lang.org/stable/std/primitive.slice.html#impl-PartialEq%3CCow%3C'_,+%5BU%5D%3E%3E-for-%26mut+%5BT%5D)\n+- [`std::alloc::Allocator`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html)\n+- [`std::alloc::Global`](https://doc.rust-lang.org/stable/std/alloc/struct.Global.html)\n+- [`std::alloc::System`](https://doc.rust-lang.org/stable/std/alloc/struct.System.html)\n+- [`impl Allocator for Global`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-Global)\n+- [`impl Allocator for System`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-System)\n+- [`impl<A: Allocator> Allocator for &A`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-%26A)\n+- [`impl<T: Allocator, A: Allocator> Allocator for Box<T, A>`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-Box%3CT,+A%3E)\n+- [`impl<A: Allocator> Allocator for &mut A`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-%26mut+A)\n+- [`impl<T: Allocator, A: Allocator> Allocator for Arc<T, A>`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-Arc%3CT,+A%3E)\n+- [`impl<T: Allocator, A: Allocator> Allocator for Rc<T, A>`](https://doc.rust-lang.org/stable/std/alloc/trait.Allocator.html#impl-Allocator-for-Rc%3CT,+A%3E)\n+- [`Box::new_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.new_in)\n+- [`Box::from_raw_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.from_raw_in)\n+- [`Box::from_non_null_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.from_non_null_in)\n+- [`Box::into_raw_with_allocator`](https://doc.rust-lang.org/std/std/boxed/struct.Box.html#method.into_raw_with_allocator)", "@@ -66,13 +66,13 @@ Stabilized APIs\n - [`Box::new_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.new_in)\n - [`Box::from_raw_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.from_raw_in)\n - [`Box::from_non_null_in`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.from_non_null_in)\n+- [`Box::into_raw_with_allocator`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.into_raw_with_allocator)\n - [`Box::into_non_null_with_allocator`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.into_non_null_with_allocator)\n - [`Box::allocator`](https://doc.rust-lang.org/stable/std/boxed/struct.Box.html#method.allocator)\n - [`Vec::new_in`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.new_in)\n - [`Vec::with_capacity_in`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.with_capacity_in)\n - [`Vec::from_raw_parts_in`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.from_raw_parts_in)\n+- [`Vec::from_parts_in`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.from_parts_in)\n - [`Vec::into_raw_parts_with_allocator`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.into_raw_parts_with_allocator)\n - [`Vec::into_parts_with_allocator`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.into_parts_with_allocator)\n - [`Vec::allocator`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html#method.allocator)"]
+semgrep_asks = 2
+semgrep = "semgrep/learned/rust/mined-rust-doc-url-doubled-segment.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-test-passes-before-fix"
+tier = "warning"
+title = "Test cannot distinguish fixed behavior from buggy behavior"
+look_for = "A newly added test's fixture setup or expected output cannot distinguish the fixed behavior from the old buggy behavior, so the test passes with or without the fix."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/17574#discussion_r4298171026", "fix" = "c8021adb1681abd8e0fc28e6af90b9aee3ff073a"}, {"url" = "https://github.com/rust-lang/cargo/pull/17562#discussion_r4243997270", "fix" = "3289bca423f1c7d360da2f01e9571e51f64a53a4"}, {"url" = "https://github.com/rust-lang/rust/pull/157886#discussion_r3429351374", "fix" = "4c61dd2ede5a8399abeaa83893c719310bfb0e78"}, {"url" = "https://github.com/rust-lang/rust/pull/157791#discussion_r3401876743", "fix" = "bf8a123858db334586cd29eb91bd1e78d83f7762"}, {"url" = "https://github.com/rust-lang/rust/pull/156727#discussion_r3265796946", "fix" = "afedb8727e5ade1e789758028bedfc427ff737e9"}]
+measured = {}
+trigger = "CHECK|test|has|assert|fn|const"
+question = "Does this test's fixture setup or expected output fail to distinguish the fixed behavior from the old buggy behavior, so it would pass even without the fix?"
+examples = ["@@ -0,0 +1,13 @@\n+#![feature(min_generic_const_args, adt_const_params)]\n+\n+#[derive(Eq, PartialEq, std::marker::ConstParamTy)]\n+enum E {\n+    S {}\n+}\n+\n+fn foo<const N: E>() {}\n+\n+fn main() {\n+    E::S { x: const { 1 } };", "@@ -8,6 +8,6 @@ enum E {\n fn foo<const N: E>() {}\n \n fn main() {\n+    foo::<{E::S { x: const { 1 } }}>();\n         //~^ ERROR variant `E::S` has no field named `x` [E0559]\n }"]
+semgrep_asks = 2
+
+[[rule]]
+id = "rust-nth-one-emptiness-check"
+tier = "info"
+title = "chars().nth(1).is_none() used as an emptiness check"
+look_for = "Code uses chars().nth(1).is_none() (or a similar one-based length probe) as an emptiness check, which also rejects single-character values when only empty values should be rejected."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/165568#discussion_r4541239760", "fix" = "7686ab010c318d85ab98da3236230b5e78851cfa"}]
+measured = {}
+trigger = "is_none"
+question = "Does the hunk use chars().nth(1).is_none() as an emptiness or length check that wrongly rejects one-character values?"
+examples = ["@@ -2145,6 +2209,50 @@ fn resolution_failure(\n                 {\n                     use DefKind::*;\n \n+                    // Match the original link label, rather than the path produced by\n+                    // Rust-specific preprocessing.\n+                    let reference_candidate = reference_labels.and_then(|labels| {\n+                        let label = diag_info.ori_link;\n+\n+                        if labels.is_empty() || label.chars().nth(1).is_none() {", "@@ -2209,12 +2226,12 @@ fn resolution_failure(\n                 {\n                     use DefKind::*;\n \n+                    let reference_candidate = refdef_labels.and_then(|labels| {\n+                        // Match the original link label, rather than the path produced by\n+                        // Rust-specific preprocessing.\n                         let label = diag_info.ori_link;\n \n+                        if labels.is_empty() || label.is_empty() {\n                             return None;\n                         }\n \n@@ -2222,15 +2239,14 @@ fn resolution_failure(\n                         let candidates = labels\n                             .iter()\n                             .map(|reference_label| Symbol::intern(reference_label))\n                             .collect::<Vec<_>>();\n \n+                        find_best_match_for_reference_label(&candidates, lookup)\n                     });\n \n                     // Both a replacement and plain help count as reference-label advice.\n                     // Suppress the Rust-item typo and bracket-escaping fallbacks after either.\n+                    let refdef_label_was_suggested = reference_candidate.is_some_and(|candidate| {\n                         let replacement = candidate.as_str();\n                         let message =\n                             format!(\"there is a similarly named reference label `{replacement}`\");"]
+semgrep = "semgrep/learned/rust/mined-rust-nth-one-emptiness-check.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-path-existence-check"
+tier = "info"
+title = "Existence checked with is_file or is_dir instead of exists"
+look_for = "Code checks whether a path exists or does not exist with Path::is_file() or Path::is_dir(), which returns false for the other file type, instead of Path::exists()."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/14326#discussion_r1710179416", "fix" = "d18c60d44fc371f1b8d207775a8e33803810c80d"}]
+measured = {}
+trigger = "is_file|is_dir|exists"
+question = "Does the added assertion check a path's absence with !is_file() or !is_dir(), so a directory (or file) of the other type would satisfy it instead of requiring the path not to exist?"
+examples = ["@@ -0,0 +1,420 @@\n+//! Tests for `lockfile-path` flag\n+\n+use std::fs;\n+\n+use cargo_test_support::registry::RegistryBuilder;\n+use cargo_test_support::{\n+    basic_bin_manifest, cargo_test, project, symlink_supported, Execs, ProjectBuilder,\n+};\n+\n+const VALID_LOCKFILE: &str = r#\"# Test lockfile\n+version = 3\n+\n+[[package]]\n+name = \"test_foo\"\n+version = \"0.5.0\"\n+\"#;\n+\n+const LIB_TOML: &str = r#\"\n+        [package]\n+        name = \"test_bar\"\n+        version = \"0.1.0\"\n+        edition = \"2021\"\n+    \"#;\n+\n+fn make_basic_project() -> ProjectBuilder {\n+    return project()\n+        .file(\"Cargo.toml\", &basic_bin_manifest(\"test_foo\"))\n+        .file(\"src/main.rs\", \"fn main() {}\");\n+}\n+\n+fn make_basic_command(execs: &mut Execs, lockfile_path_argument: String) -> &mut Execs {\n+    return execs\n+        .masquerade_as_nightly_cargo(&[\"unstable-options\"])\n+        .arg(\"-Zunstable-options\")\n+        .arg(\"--lockfile-path\")\n+        .arg(lockfile_path_argument);\n+}\n+\n+fn lockfile_must_exist(command: &str) -> bool {\n+    return command == \"pkgid\" || command == \"publish\" || command == \"package\";\n+}\n+\n+fn assert_lockfile_created(\n+    command: &str,\n+    make_execs: impl Fn(&mut Execs, String) -> &mut Execs,\n+    make_project: impl FnOnce() -> ProjectBuilder,\n+) {\n+    if lockfile_must_exist(command) {\n+        return;\n+    }\n+\n+    let lockfile_path_argument = \"mylockfile/is/burried/Cargo.lock\";\n+    let p = make_project().build();\n+    let registry = RegistryBuilder::new().http_api().http_index().build();\n+\n+    make_execs(&mut p.cargo(command), lockfile_path_argument.to_string())\n+        .replace_crates_io(registry.index_url())\n+        .run();\n+    assert!(!p.root().join(\"Cargo.lock\").is_file());\n+    assert!(p.root().join(lockfile_path_argument).is_file());\n+}\n+\n+fn assert_lockfile_read(\n+    command: &str,\n+    make_execs: impl Fn(&mut Execs, String) -> &mut Execs,\n+    make_project: impl FnOnce() -> ProjectBuilder,\n+) {\n+    let lockfile_path_argument = \"mylockfile/Cargo.lock\";\n+    let p = make_project()\n+        .file(\"mylockfile/Cargo.lock\", VALID_LOCKFILE)\n+        .build();\n+    let registry = RegistryBuilder::new().http_api().http_index().build();\n+\n+    make_execs(&mut p.cargo(command), lockfile_path_argument.to_string())\n+        .replace_crates_io(registry.index_url())\n+        .run();\n+\n+    assert!(!p.root().join(\"Cargo.lock\").is_file());\n+    assert!(p.root().join(lockfile_path_argument).is_file());\n+}\n+\n+fn assert_lockfile_override(\n+    command: &str,\n+    make_execs: impl Fn(&mut Execs, String) -> &mut Execs,\n+    make_project: impl FnOnce() -> ProjectBuilder,\n+) {\n+    if lockfile_must_exist(command) {\n+        return;\n+    }\n+\n+    let lockfile_path_argument = \"mylockfile/Cargo.lock\";\n+    let p = make_project()\n+        .file(\"Cargo.lock\", \"This is an invalid lock file!\")\n+        .build();\n+    let registry = RegistryBuilder::new().http_api().http_index().build();\n+\n+    make_execs(&mut p.cargo(command), lockfile_path_argument.to_string())\n+        .replace_crates_io(registry.index_url())\n+        .run();\n+\n+    assert!(p.root().join(lockfile_path_argument).is_file());\n+}\n+\n+fn assert_symlink_in_path(\n+    command: &str,\n+    make_execs: impl Fn(&mut Execs, String) -> &mut Execs,\n+    make_project: impl FnOnce() -> ProjectBuilder,\n+) {\n+    if !symlink_supported() || lockfile_must_exist(command) {\n+        return;\n+    }\n+\n+    let dst = \"dst\";\n+    let src = \"somedir/link\";\n+    let lockfile_path_argument = format!(\"{src}/Cargo.lock\");\n+\n+    let p = make_project().symlink_dir(dst, src).build();\n+    let registry = RegistryBuilder::new().http_api().http_index().build();\n+", "@@ -404,7 +415,7 @@ hello = \"1.0.0\"\n \n         make_basic_command(&mut p.cargo(\"package\"), lockfile_path_argument.to_string()).run();\n \n+        assert!(!p.root().join(\"Cargo.lock\").exists());\n         assert!(p.root().join(lockfile_path_argument).is_file());\n \n         assert!(p"]
+semgrep_asks = 2
+proposed = "warning"
+
+[[rule]]
+id = "rust-hash-pointer-not-value"
+tier = "info"
+title = "Hash hashes a pointer or address instead of the value"
+look_for = "A Hash implementation (or hash helper) feeds a pointer or raw address derived from a value to the hasher instead of hashing the value's fields, so hashing diverges from Eq/PartialEq and from the standard hash of the equivalent type."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/14915#discussion_r1878746152", "fix" = "2cafa2876cb8f197ffb29571f34fd5e02ef3fb27"}]
+measured = {}
+trigger = "hash|Hasher|NonNull|ptr"
+question = "Does the added Hash implementation or hash helper hash a pointer or raw address taken from the value, so equal values (or lookups using the equivalent type) hash differently from Eq and from the standard hash?"
+examples = ["@@ -90,6 +90,12 @@ impl InternedString {\n     pub fn as_str(&self) -> &'static str {\n         self.inner\n     }\n+\n+    /// A faster implementation of hash that is completely compatible with HashMap,\n+    /// but does not have a stable value between runs of the program.\n+    pub fn fast_hash<H: std::hash::Hasher>(&self, state: &mut H) {", "@@ -90,12 +90,6 @@ impl InternedString {\n     pub fn as_str(&self) -> &'static str {\n         self.inner\n     }\n }\n \n impl Deref for InternedString {"]
+semgrep = "semgrep/learned/rust/mined-rust-hash-pointer-not-value.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-test-absence-positive-assert"
+tier = "info"
+title = "Test asserting a value's absence only matches other output"
+look_for = "A test whose purpose is to verify that some text or flag is absent asserts only a full-output or positive substring match with wildcards, so the offending text is never actually checked to be missing."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/14100#discussion_r1647769638", "fix" = "a50e0a121c7a673806a09bb6896c6eca85760d9f"}]
+measured = {}
+trigger = "with_stderr_data|with_stdout_data|with_stderr_line_without|with_stderr_contains|without|assert"
+question = "Does the added test intend to verify that a value or flag is absent but only assert a full-output or positive substring match (with wildcards), so the assertion never checks that the offending text is missing?"
+examples = ["@@ -1114,29 +1205,42 @@ fn proc_macro_ws() {\n         .build();\n \n     p.cargo(\"check -p pm -v\")\n-        .with_stderr_contains(\"[RUNNING] `rustc --crate-name foo [..]--cfg[..]feat1[..]\")\n+        .with_stderr_data(str![[r#\"\n+...\n+[RUNNING] `rustc --crate-name foo [..]--cfg[..]feat1[..]`\n+...\n+\"#]])\n         .run();\n     // This may be surprising that `foo` doesn't get built separately. It is\n     // because pm might have other units (binaries, tests, etc.), and so the\n     // feature resolver must assume that normal deps get unified with it. This\n     // is related to the bigger issue where the features selected in a\n     // workspace depend on which packages are selected.\n     p.cargo(\"check --workspace -v\")\n-        .with_stderr(\n-            \"\\\n-[FRESH] foo v0.1.0 [..]\n-[FRESH] pm v0.1.0 [..]\n-[FINISHED] `dev` profile [..]\n-\",\n-        )\n+        .with_stderr_data(str![[r#\"\n+[FRESH] foo v0.1.0 ([ROOT]/foo/foo)\n+[FRESH] pm v0.1.0 ([ROOT]/foo/pm)\n+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s\n+\n+\"#]])\n         .run();\n     // Selecting just foo will build without unification.\n+    let expected = if cfg!(target_os = \"macos\") {\n+        str![[r#\"\n+...\n+[RUNNING] `rustc --crate-name foo --edition=2015 foo/src/lib.rs --error-format=json --json=[..] --crate-type lib --emit=[..] -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg\n+...\n+\"#]]\n+    } else {\n+        str![[r#\"\n+...\n+[RUNNING] `rustc --crate-name foo --edition=2015 foo/src/lib.rs --error-format=json --json=[..] --crate-type lib --emit=[..] -C embed-bitcode=no -C debuginfo=2 --check-cfg[..] --check-cfg[..] -C meta\n+...\n+\"#]]\n+    };", "@@ -1225,22 +1226,12 @@ fn proc_macro_ws() {\n \"#]])\n         .run();\n     // Selecting just foo will build without unification.\n     p.cargo(\"check -p foo -v\")\n         // Make sure `foo` is built without feat1\n+        .with_stderr_line_without(\n+            &[\"[RUNNING] `rustc --crate-name foo --edition=2015\"],\n+            &[\"--cfg[..]feat1\"],\n+        )\n         .run();\n }\n "]
+semgrep = "semgrep/learned/rust/mined-rust-test-absence-positive-assert.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "rust-invariant-masked-with-fallback"
+tier = "info"
+title = "Invariant-guaranteed Option/Result is silently defaulted or ignored"
+look_for = "Code handles an Option or Result that an invariant guarantees is Some/Ok by substituting a default (unwrap_or with Default::default) or discarding it (let _ =), instead of asserting the invariant with expect/unwrap or an abort."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/162910#discussion_r4104072768", "fix" = "5e0bd1ac99ff370970a30fb2640cac7fc62eccdc"}, {"url" = "https://github.com/rust-lang/rust/pull/160219#discussion_r3741767392", "fix" = "71be0e93f7e21b122a9752851d272e7f5837b343"}]
+measured = {}
+trigger = "unwrap_or|set"
+question = "Does the added line silently substitute a default or discard a value for an Option/Result that the surrounding code guarantees is Some/Ok, instead of asserting the invariant (e.g. with expect/unwrap or an abort)?"
+examples = ["@@ -29,12 +35,14 @@ impl DefPathHashMapRef<'_> {\n impl<'a, 'tcx> Encodable<EncodeContext<'a, 'tcx>> for DefPathHashMapRef<'tcx> {\n     fn encode(&self, e: &mut EncodeContext<'a, 'tcx>) {\n         match *self {\n-            DefPathHashMapRef::BorrowedFromTcx(def_path_hash_map) => {\n-                let bytes = def_path_hash_map.raw_bytes();\n+            DefPathHashMapRef::BorrowedFromTcx(map) => {\n+                let bytes = map.det_part.raw_bytes();\n                 e.emit_usize(bytes.len());\n                 e.emit_raw_bytes(bytes);\n+\n+                map.non_det_part.as_ref().unwrap_or(&Default::default()).range(..).encode(e);", "@@ -36,11 +36,15 @@ impl<'a, 'tcx> Encodable<EncodeContext<'a, 'tcx>> for DefPathHashMapRef<'tcx> {\n     fn encode(&self, e: &mut EncodeContext<'a, 'tcx>) {\n         match *self {\n             DefPathHashMapRef::BorrowedFromTcx(map) => {\n+                let bytes = map.before_parallel_alloc.raw_bytes();\n                 e.emit_usize(bytes.len());\n                 e.emit_raw_bytes(bytes);\n \n+                map.after_parallel_alloc\n+                    .as_ref()\n+                    .expect(\"must be set before metadata encoding\")\n+                    .range(..)\n+                    .encode(e);\n             }\n             DefPathHashMapRef::OwnedFromMetadata(..) => {\n                 panic!(\"DefPathHashMap::OwnedFromMetadata variant only exists for deserialization\")"]
+semgrep = "semgrep/learned/rust/mined-rust-invariant-masked-with-fallback.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-doc-claim-mismatch"
+tier = "info"
+title = "Documentation states something the code does not do"
+look_for = "A doc comment, doc table, or documentation string states a capability, status, or behavior that contradicts what the referenced code actually does (for example a feature marked as detected that is not, or an operation described as a no-op that actually loops)."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/162552#discussion_r3990232221", "fix" = "a33e6eb2ca3b4bcb6479b7c94e85586216c26ff8"}, {"url" = "https://github.com/rust-lang/rust/pull/161141#discussion_r3790636383", "fix" = "ea31c35e770e1c4ee8aaba2ca32589b604a8bbb0"}, {"url" = "https://github.com/rust-lang/rust/pull/157694#discussion_r3392297524", "fix" = "0954d4c64447fcce89c388af8d13e473db43b383"}, {"url" = "https://github.com/rust-lang/rust/pull/157667#discussion_r3394665321", "fix" = "ad6fa337d43d62a33f44d7651590efbd407f76f7"}, {"url" = "https://github.com/rust-lang/cargo/pull/12388#discussion_r1270812850", "fix" = "ca89fafa91a0dbd53d19e7f800de444ccc9b1487"}, {"url" = "https://github.com/rust-lang/cargo/pull/15731#discussion_r2187665994", "fix" = "6713b1ad467e9c5957194edd066501c7b46fab6a"}]
+measured = {}
+trigger = ""
+question = "Does the documentation present a list or claim as complete that the referenced code actually does not match?"
+examples = ["@@ -9,13 +9,19 @@ is a string which is used to uniquely refer to one package within a graph of\n packages.\n \n The specification may be fully qualified, such as\n-`https://github.com/rust-lang/crates.io-index#regex@1.4.3` or it may be\n+`registry+https://github.com/rust-lang/crates.io-index#regex@1.4.3` or it may be\n abbreviated, such as `regex`. The abbreviated form may be used as long as it\n uniquely identifies a single package in the dependency graph. If there is\n ambiguity, additional qualifiers can be added to make it unique. For example,\n if there are two versions of the `regex` package in the graph, then it can be\n qualified with a version to make it unique, such as `regex@1.4.3`.\n \n+Fully qualified package ID specifications are output by Cargo in:", "@@ -16,11 +16,7 @@ ambiguity, additional qualifiers can be added to make it unique. For example,\n if there are two versions of the `regex` package in the graph, then it can be\n qualified with a version to make it unique, such as `regex@1.4.3`.\n \n+Package ID specifications output by cargo, for example in [cargo metadata](../commands/cargo-metadata.md) output, are fully qualified.\n \n ### Specification grammar\n "]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-float-negative-zero-equality"
+tier = "info"
+title = "Float equality cannot distinguish -0.0 from 0.0"
+look_for = "Code asserts floating-point equality against 0.0 or -0.0 (or otherwise compares floats with ==) to check the sign of zero, which always treats -0.0 and 0.0 as equal."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/163279#discussion_r4102235237", "fix" = "3f2e9ee8614715d3579ae7571985663e6de8f4e3"}]
+measured = {}
+trigger = ""
+question = "Does the assert_eq! compare a floating-point value against a 0.0 or -0.0 literal, so it cannot distinguish negative zero from positive zero?"
+examples = ["", "@@ -163,10 +165,13 @@ macro_rules! check_float_clamp {\n         assert_eq!((-3.0 as $t).clamp_magnitude(3.0), -3.0);\n \n         // Zero cases\n+        type Float = $t;\n+        assert_biteq!((0.0 as $t).clamp_magnitude(1.0), 0.0);\n+        assert_biteq!((-0.0 as $t).clamp_magnitude(1.0), -0.0);\n+        assert_biteq!((5.0 as $t).clamp_magnitude(0.0), 0.0);\n+        assert_biteq!((-5.0 as $t).clamp_magnitude(0.0), -0.0);\n+        assert_biteq!((5.0 as $t).clamp_magnitude(-0.0), 0.0);\n+        assert_biteq!((-5.0 as $t).clamp_magnitude(-0.0), -0.0);\n \n         // Special values - Infinity\n         let inf = <$t>::INFINITY;"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-doc-comment-four-slashes"
+tier = "info"
+title = "Four slashes make a doc comment instead of a plain comment"
+look_for = "A comment line begins with four slashes (////), which makes it a doc comment whose text starts with a slash rather than a plain comment."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/162552#discussion_r3990193324", "fix" = "a33e6eb2ca3b4bcb6479b7c94e85586216c26ff8"}]
+measured = {}
+trigger = ""
+question = "Does the added line begin with four slashes (////), making it a doc comment whose text starts with a slash instead of a plain comment?"
+examples = ["@@ -220,6 +221,8 @@ features! {\n \n     @FEATURE: #[stable(feature = \"riscv_ratified\", since = \"1.78.0\")] m: \"m\";\n     /// \"M\" Extension for Integer Multiplication and Division\n+    @FEATURE: #[unstable(feature = \"stdarch_riscv_feature_detection\", issue = \"111192\")] zmmul: \"zmmul\";\n+    //// \"Zmmul\" Extension for Integer Multiplication", "@@ -222,7 +222,7 @@ features! {\n     @FEATURE: #[stable(feature = \"riscv_ratified\", since = \"1.78.0\")] m: \"m\";\n     /// \"M\" Extension for Integer Multiplication and Division\n     @FEATURE: #[unstable(feature = \"stdarch_riscv_feature_detection\", issue = \"111192\")] zmmul: \"zmmul\";\n+    /// \"Zmmul\" Extension for Integer Multiplication\n \n     @FEATURE: #[stable(feature = \"riscv_ratified\", since = \"1.78.0\")] a: \"a\";\n     /// \"A\" Extension for Atomic Instructions"]
+semgrep = "semgrep/learned/rust/mined-rust-doc-comment-four-slashes.yaml"
+
+[[rule]]
+id = "rust-zero-sentinel-for-id"
+tier = "info"
+title = "Zero used as a sentinel for an id that can be zero"
+look_for = "Code uses 0 (or another fixed value) as the unknown/not-set sentinel for an identifier that the source (for example an operating system thread id) does not guarantee to be non-zero."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/160219#discussion_r3683460376", "fix" = "84d2f10e28ff07f057497664bdb093ddde5bbc4d"}]
+measured = {}
+trigger = ""
+question = "Does the added code use 0 as the unknown/not-set sentinel for an identifier (such as an OS id) that is not guaranteed to be non-zero?"
+examples = ["@@ -40,6 +41,59 @@ mod thread_name_string {\n \n use thread_name_string::ThreadNameString;\n \n+// The handle of a spawned thread exists before the thread does, so the thread\n+// stores its own id once it starts running, hence the atomic. 0 means \"not known\".", "@@ -41,59 +41,6 @@ mod thread_name_string {\n \n use thread_name_string::ThreadNameString;\n \n /// The internal representation of a `Thread` handle\n ///\n /// We explicitly set the alignment for our guarantee in Thread::into_raw. This"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "rust-expect-false-invariant"
+tier = "info"
+title = "Expect/panic message asserts an invariant ordinary input can violate"
+look_for = "An expect, panic, or unwrap message asserts that an operation 'should not' or 'cannot' happen when the failure is actually reachable from ordinary input (for example 'length should not overflow usize' on a value users control), so the message mislabels a valid error as an invariant."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/159821#discussion_r3653194737", "fix" = "10a5e9da29cbd79e3673731c978e2e1306f07690"}, {"url" = "https://github.com/rust-lang/rust/pull/159821#discussion_r3653195481", "fix" = "10a5e9da29cbd79e3673731c978e2e1306f07690"}]
+measured = {}
+trigger = "expect|panic|should not|cannot"
+question = "Does an added expect or panic message claim that something 'should not' or 'cannot' happen when it is actually reachable from ordinary input?"
+examples = ["@@ -1105,7 +1105,7 @@ impl<T, A: Allocator> VecDeque<T, A> {\n     #[stable(feature = \"rust1\", since = \"1.0.0\")]\n     #[cfg_attr(not(test), rustc_diagnostic_item = \"vecdeque_reserve\")]\n     pub fn reserve(&mut self, additional: usize) {\n-        let new_cap = self.len.checked_add(additional).expect(\"capacity overflow\");\n+        let new_cap = self.len.checked_add(additional).expect(\"length should not overflow usize\");", "@@ -1105,7 +1105,7 @@ impl<T, A: Allocator> VecDeque<T, A> {\n     #[stable(feature = \"rust1\", since = \"1.0.0\")]\n     #[cfg_attr(not(test), rustc_diagnostic_item = \"vecdeque_reserve\")]\n     pub fn reserve(&mut self, additional: usize) {\n+        let new_cap = self.len.checked_add(additional).expect(\"capacity overflow\");\n         let old_cap = self.capacity();\n \n         if new_cap > old_cap {"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-cfg-attr-doc-ignore"
+tier = "info"
+title = "Doc example conditionally ignored with cfg_attr instead of target-specific ignore"
+look_for = "A doc comment uses #[cfg_attr(...)] to swap a code example's fence to ```ignore on specific targets instead of using the target-specific ignore attribute, duplicating the fence logic."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/158327#discussion_r3490928604", "fix" = "cca8cd1736adb36920f6721e540bd9df4298c80f"}, {"url" = "https://github.com/rust-lang/rust/pull/158327#discussion_r3490930517", "fix" = "cca8cd1736adb36920f6721e540bd9df4298c80f"}]
+measured = {}
+trigger = "cfg_attr|doc|ignore"
+question = "Does an added hunk use #[cfg_attr(...)] to set a doc code fence to ```ignore for a target instead of using the target-specific ignore attribute?"
+examples = ["@@ -1306,7 +1294,11 @@ mod return_keyword {}\n /// manner to computed goto).\n ///\n /// Example of using `become` to implement functional-style `fold`:\n-/// ```\n+#[cfg_attr(\n+    target_family = \"wasm\",\n+    doc = \"```ignore (tail-call target feature not enabled by default on wasm)\"\n+)]\n+#[cfg_attr(not(target_family = \"wasm\"), doc = \"```\")]", "@@ -1294,11 +1294,8 @@ mod return_keyword {}\n /// manner to computed goto).\n ///\n /// Example of using `become` to implement functional-style `fold`:\n+///\n+/// ```ignore-wasm (tail-call target feature not enabled by default on wasm)\n /// #![feature(explicit_tail_calls)]\n /// #![expect(incomplete_features)]\n ///"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-test-failure-reason-unchecked"
+tier = "info"
+title = "Expected-failure test does not assert the failure reason"
+look_for = "A test that expects a command or compile to fail asserts only that it failed (run_fail/exit status) without checking the expected error message, so it passes when the failure happens for the wrong reason."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/159717#discussion_r3638943641", "fix" = "b2ed4e878fc9e3d4c72358ef6d0bbbdde36ad324"}]
+measured = {}
+trigger = "run_fail"
+question = "Does an added hunk invoke run_fail() to expect a failure without asserting the expected error message?"
+examples = ["@@ -0,0 +1,34 @@\n+use run_make_support::rfs::create_dir_all;\n+use run_make_support::{rustc, target};\n+\n+fn main() {\n+    // Create test sysroot\n+    let test_sysroot = format!(\"./testsysroot/lib/rustlib/{}/lib/\", target());\n+    create_dir_all(&test_sysroot);\n+\n+    // Layout:\n+    // - Foo depends directly on Bar\n+    // - Bar depends directly on Baz\n+    // - Baz can be found in the sysroot.\n+\n+    // 1) Depending transitively on a lib in the sysroot resolves\n+    // fine with `-Zimplicit-sysroot-deps=false`\n+    rustc().input(\"baz.rs\").crate_type(\"lib\").out_dir(test_sysroot).run();\n+    rustc().input(\"bar.rs\").crate_type(\"lib\").sysroot(\"./testsysroot\").run();\n+    rustc()\n+        .input(\"foo.rs\")\n+        .crate_type(\"lib\")\n+        .extern_(\"bar\", \"libbar.rlib\")\n+        .sysroot(\"./testsysroot\")\n+        .arg(\"-Zimplicit-sysroot-deps=false\")\n+        .run();\n+\n+    // 2) Depending directly on a lib in the sysroot does not resolve\n+    // implicitly with `-Zimplicit-sysroot-deps=false`\n+    rustc()\n+        .input(\"bar.rs\")\n+        .crate_type(\"lib\")\n+        .sysroot(\"./testsysroot\")\n+        .arg(\"-Zimplicit-sysroot-deps=false\")\n+        .run_fail();", "@@ -30,5 +33,6 @@ fn main() {\n         .crate_type(\"lib\")\n         .sysroot(\"./testsysroot\")\n         .arg(\"-Zimplicit-sysroot-deps=false\")\n+        .run_fail()\n+        .assert_stderr_contains(\"can't find crate for `baz`\");\n }"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-catch-all-mislabel"
+tier = "info"
+title = "Catch-all match branch mislabels unknown values as a known case"
+look_for = "A match on a numeric handle, id, or error code uses a `_` catch-all branch that maps every unlisted value to one of the known named cases (for example `_ => \"stderr\"`) instead of reporting the unknown value."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/159425#discussion_r3608108582", "fix" = "d9ac1a5bc7c9eb680130a0d47efe9d5a1e3049d0"}]
+measured = {}
+trigger = "match|stderr|stdout|stdin"
+question = "Does an added match on a handle/id use a `_` catch-all that returns a fixed named value (like \"stderr\") for every other value instead of reporting the unknown value?"
+examples = ["@@ -640,7 +640,21 @@ impl Stdio {\n                 opts.read(stdio_id == c::STD_INPUT_HANDLE);\n                 opts.write(stdio_id != c::STD_INPUT_HANDLE);\n                 opts.inherit_handle(true);\n-                File::open(Path::new(r\"\\\\.\\NUL\"), &opts).map(|file| file.into_inner())\n+                File::open(Path::new(r\"\\\\.\\NUL\"), &opts).map(|file| file.into_inner()).map_err(\n+                    |e| {\n+                        // A raw `NotFound` here is easily mistaken for the program\n+                        // being missing, so say what actually failed to open.\n+                        let stream = match stdio_id {\n+                            c::STD_INPUT_HANDLE => \"stdin\",\n+                            c::STD_OUTPUT_HANDLE => \"stdout\",\n+                            _ => \"stderr\",", "@@ -644,10 +644,13 @@ impl Stdio {\n                     |e| {\n                         // A raw `NotFound` here is easily mistaken for the program\n                         // being missing, so say what actually failed to open.\n+                        // `spawn` only passes the three standard ids, but print\n+                        // anything else as a number rather than mislabeling it.\n                         let stream = match stdio_id {\n+                            c::STD_INPUT_HANDLE => \"stdin\".to_string(),\n+                            c::STD_OUTPUT_HANDLE => \"stdout\".to_string(),\n+                            c::STD_ERROR_HANDLE => \"stderr\".to_string(),\n+                            id => format!(\"stdio handle {id}\"),\n                         };\n                         Error::new(\n                             e.kind(),"]
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "rust-hardcoded-lib-name"
+tier = "info"
+title = "Hardcoded platform-specific library filename"
+look_for = "Code hardcodes a platform-specific compiled-library filename such as \"libbar.rlib\" or \"bar.so\" instead of using the platform-aware library naming helper, so it breaks on other targets."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/159717#discussion_r3638683093", "fix" = "b2ed4e878fc9e3d4c72358ef6d0bbbdde36ad324"}]
+measured = {}
+trigger = "extern_|rlib|library_search_path|dylib"
+question = "Does an added line hardcode a platform-specific library filename such as \"libbar.rlib\" instead of using the platform-aware naming helper?"
+examples = ["@@ -0,0 +1,34 @@\n+use run_make_support::rfs::create_dir_all;\n+use run_make_support::{rustc, target};\n+\n+fn main() {\n+    // Create test sysroot\n+    let test_sysroot = format!(\"./testsysroot/lib/rustlib/{}/lib/\", target());\n+    create_dir_all(&test_sysroot);\n+\n+    // Layout:\n+    // - Foo depends directly on Bar\n+    // - Bar depends directly on Baz\n+    // - Baz can be found in the sysroot.\n+\n+    // 1) Depending transitively on a lib in the sysroot resolves\n+    // fine with `-Zimplicit-sysroot-deps=false`\n+    rustc().input(\"baz.rs\").crate_type(\"lib\").out_dir(test_sysroot).run();\n+    rustc().input(\"bar.rs\").crate_type(\"lib\").sysroot(\"./testsysroot\").run();\n+    rustc()\n+        .input(\"foo.rs\")\n+        .crate_type(\"lib\")\n+        .extern_(\"bar\", \"libbar.rlib\")", "@@ -18,7 +21,7 @@ fn main() {\n     rustc()\n         .input(\"foo.rs\")\n         .crate_type(\"lib\")\n+        .extern_(\"bar\", rust_lib_name(\"bar\"))\n         .sysroot(\"./testsysroot\")\n         .arg(\"-Zimplicit-sysroot-deps=false\")\n         .run();"]
+semgrep = "semgrep/learned/rust/mined-rust-hardcoded-lib-name.yaml"
+
+[[rule]]
+id = "rust-self-contradictory-message"
+tier = "info"
+title = "Diagnostic message contradicts itself"
+look_for = "A diagnostic or error message states two clauses that contradict each other (for example 'not supported on index 255 or greater, but is on index 256'), confusing the reader about the actual condition."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/158645#discussion_r3536995329", "fix" = "d20d049725e0af1c2d2f9ead19d7fc168014b74c"}]
+measured = {}
+trigger = "not supported|greater|but is on"
+question = "Does an added diagnostic message contain two clauses that contradict each other (for example 'not supported on 255 or greater, but is on 256')?"
+examples = ["@@ -68,7 +68,7 @@ fn s_256_terminal(\n     _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A,\n     _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A,\n     _: A,\n-    #[splat] (_a, _b): (u32, i8), //~ ERROR `#[splat]` is not supported on argument index 256\n+    #[splat] (_a, _b): (u32, i8), //~ ERROR `#[splat]` is not supported on argument index 255 or greater, but is on index 256", "@@ -68,7 +68,7 @@ fn s_256_terminal(\n     _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A,\n     _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A, _: A,\n     _: A,\n+    #[splat] (_a, _b): (u32, i8), //~ ERROR `#[splat]` is only supported on argument index 254 or less, this `#[splat]` is on index 256\n ) {}\n \n #[rustfmt::skip]"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-wrong-decompressor"
+tier = "info"
+title = "Archive decompressed with a mismatched decompressor"
+look_for = "A shell pipeline decompresses an archive with a tool that targets a different compression format than the archive's extension (for example xzcat on a .tar.gz file)."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/159844#discussion_r3699183897", "fix" = "388388d0c7617ff501402ccc44f26c1812f8541f"}]
+measured = {}
+trigger = "xzcat|zcat|bzcat|tar|gzip"
+question = "Does an added shell command decompress an archive with a tool whose format does not match the archive extension (for example xzcat on a .tar.gz file)?"
+examples = ["@@ -3,6 +3,14 @@ set -eux\n \n source shared.sh\n \n+# We need to install a newer version of `make` to be able to build `gcc`.\n+curl https://ci-mirrors.rust-lang.org/rustc/gcc/make-4.4.1.tar.gz | xzcat | tar xf -", "@@ -4,7 +4,7 @@ set -eux\n source shared.sh\n \n # We need to install a newer version of `make` to be able to build `gcc`.\n+curl https://ci-mirrors.rust-lang.org/rustc/gcc/make-4.4.1.tar.gz | tar --extract --gzip\n cd make-4.4.1\n hide_output ./configure --prefix=/rustroot\n hide_output make"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-doc-wrong-reference"
+tier = "info"
+title = "Documentation link or reference points to the wrong item"
+look_for = "A documentation link URL or doc-comment backtick reference names a different item than its visible label or the code it documents, so it leads to the wrong page or type."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/156932#discussion_r3315508480", "fix" = "63d96cbcc78dc191db6bc5388de75ef15bbb1628"}, {"url" = "https://github.com/rust-lang/rust/pull/156973#discussion_r3309336202", "fix" = "90fe8cc66f63070eeafed09ec683e95d820316c0"}]
+measured = {}
+trigger = "https|layout|link|macro|docs|must"
+question = "Does this link or backtick reference point to a different item than its visible label or the type being documented?"
+examples = ["@@ -1,3 +1,96 @@\n+Version 1.96.0 (2026-05-28)\n+==========================\n+\n+<a id=\"1.96.0-Language\"></a>\n+\n+Language\n+--------\n+- [Allow passing `expr` metavariable to `cfg`](https://github.com/rust-lang/rust/pull/146961)\n+- [Always coerce never types in tuple expressions](https://github.com/rust-lang/rust/pull/147834)\n+- [Avoid incorrect inference guidance of function arguments in rare cases](https://github.com/rust-lang/rust/pull/150316)\n+- [Support s390x vector registers in inline assembly](https://github.com/rust-lang/rust/pull/154184)\n+- [Allow using constants of type `ManuallyDrop` as patterns (fixing a regression introduced in 1.94.0)](https://github.com/rust-lang/rust/pull/154891)\n+\n+<a id=\"1.96.0-Compiler\"></a>\n+\n+Compiler\n+--------\n+- [Enable link relaxation feature for LoongArch Linux targets](https://github.com/rust-lang/rust/pull/153427)\n+- [Update `riscv64gc-unknown-fuchsia` baseline to RVA22 + vector](https://github.com/rust-lang/rust/pull/155072)\n+\n+<a id=\"1.96.0-Libraries\"></a>\n+\n+Libraries\n+---------\n+- [Support iterating over ranges of `NonZero` integers](https://github.com/rust-lang/rust/pull/127534)\n+- [refactor 'valid for read/write' definition: exclude null; add that as an exception on individual methods instead](https://github.com/rust-lang/rust/pull/152615)\n+- [Fix SGX delayed host lookup via ToSocketAddr](https://github.com/rust-lang/rust/pull/152851)\n+\n+<a id=\"1.96.0-Stabilized-APIs\"></a>\n+\n+Stabilized APIs\n+---------------\n+\n+- [`assert_matches!`](https://doc.rust-lang.org/stable/std/macro.debug_assert_matches.html)", "@@ -31,7 +31,7 @@ Libraries\n Stabilized APIs\n ---------------\n \n+- [`assert_matches!`](https://doc.rust-lang.org/stable/std/macro.assert_matches.html)\n - [`debug_assert_matches!`](https://doc.rust-lang.org/stable/std/macro.debug_assert_matches.html)\n - [`From<T> for AssertUnwindSafe<T>`](https://doc.rust-lang.org/stable/std/panic/struct.AssertUnwindSafe.html#impl-From%3CT%3E-for-AssertUnwindSafe%3CT%3E)\n - [`From<T> for LazyCell<T, F>`](https://doc.rust-lang.org/stable/std/cell/struct.LazyCell.html#impl-From%3CT%3E-for-LazyCell%3CT,+F%3E)"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-test-redundant-fixtures"
+tier = "info"
+title = "Test registers more fixture variants than it asserts against"
+look_for = "A new test creates or publishes many fixture variants (multiple package names, versions, or cases) in loops when only one is asserted against, needlessly slowing the suite and consuming CI resources without added coverage."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/13046#discussion_r1405057558", "fix" = "07ba57dd8ba2a4c4f0e4aac8198a3fc69b48e07b"}, {"url" = "https://github.com/rust-lang/cargo/pull/13046#discussion_r1405305800", "fix" = "07ba57dd8ba2a4c4f0e4aac8198a3fc69b48e07b"}]
+measured = {}
+trigger = "for|publish|ver|name"
+question = "Does this test loop over multiple package names/versions or fixture variants and publish all of them when only one is actually exercised by the assertions?"
+examples = ["@@ -0,0 +1,39 @@\n+use cargo_test_support::compare::assert_ui;\n+use cargo_test_support::prelude::*;\n+use cargo_test_support::Project;\n+\n+use cargo_test_support::curr_dir;\n+\n+#[cargo_test]\n+fn case() {\n+    cargo_test_support::registry::init();\n+    for name in [\"my-package1\", \"my-package2\"] {", "@@ -7,27 +7,14 @@ use cargo_test_support::curr_dir;\n #[cargo_test]\n fn case() {\n     cargo_test_support::registry::init();\n+    cargo_test_support::registry::Package::new(\"my-package\", \"0.1.0\").publish();\n     let project = Project::from_template(curr_dir!().join(\"in\"));\n     let project_root = project.root();\n     let cwd = &project_root;\n \n     snapbox::cmd::Command::cargo_ui()\n         .arg(\"add\")\n+        .arg_line(\"my-package@0.1.0 --no-public\")\n         .current_dir(cwd)\n         .masquerade_as_nightly_cargo(&[\"public-dependency\"])\n         .assert()"]
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-os-suffix-string-return"
+tier = "info"
+title = "Function with `_os` suffix returns String instead of OsString"
+look_for = "A function or method whose name ends in `_os` returns `String`, `Option<String>`, or another String-typed result instead of `OsString`/`Option<OsString>`, silently discarding non-UTF-8 values that the `_os` suffix promises to preserve."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/11727#discussion_r1110072549", "fix" = "b86426246c62ca1c946ff82215868ffc12765a40"}]
+measured = {}
+trigger = "_os"
+question = "Does the hunk add a function or method whose name ends in `_os` and whose return type is `String`, `Option<String>`, or another String-typed result rather than `OsString` or `Option<OsString>`?"
+examples = ["@@ -764,6 +765,26 @@ impl Config {\n         }\n     }\n \n+    /// Get the value of environment variable `key` through the `Config` snapshot.\n+    ///\n+    /// This can be used similarly to `std::env::var`.\n+    pub fn get_env(&self, key: impl AsRef<str>) -> CargoResult<String> {\n+        match self.env.get(key.as_ref()) {\n+            Some(s) => Ok(s.clone()),\n+            None => bail!(\n+                \"{} could not be found in the environment snapshot\",\n+                key.as_ref()\n+            ),\n+        }\n+    }\n+\n+    /// Get the value of environment variable `key` through the `Config` snapshot.\n+    ///\n+    /// This can be used similarly to `std::env::var_os`.\n+    pub fn get_env_os(&self, key: impl AsRef<str>) -> Option<String> {\n+        self.env.get(key.as_ref()).cloned()\n+    }", "@@ -768,33 +769,45 @@ impl Config {\n     /// Get the value of environment variable `key` through the `Config` snapshot.\n     ///\n     /// This can be used similarly to `std::env::var`.\n+    pub fn get_env(&self, key: impl AsRef<OsStr>) -> CargoResult<String> {\n+        let key = key.as_ref();\n+        let s = match self.env.get(key) {\n+            Some(s) => s,\n+            None => bail!(\"{key:?} could not be found in the environment snapshot\",),\n+        };\n+        match s.to_str() {\n+            Some(s) => Ok(s.to_owned()),\n+            None => bail!(\"environment variable value is not valid unicode: {s:?}\"),\n         }\n     }\n \n     /// Get the value of environment variable `key` through the `Config` snapshot.\n     ///\n     /// This can be used similarly to `std::env::var_os`.\n+    pub fn get_env_os(&self, key: impl AsRef<OsStr>) -> Option<OsString> {\n         self.env.get(key.as_ref()).cloned()\n     }\n \n+    /// Get the value of environment variable `key`.\n+    /// Returns `None` if `key` is not in `self.env` or if the value is not valid UTF-8.\n+    fn get_env_str(&self, key: impl AsRef<OsStr>) -> Option<&str> {\n+        self.env.get(key.as_ref()).and_then(|s| s.to_str())\n+    }\n+\n+    fn env_has_key(&self, key: impl AsRef<OsStr>) -> bool {\n+        self.env.contains_key(key.as_ref())\n+    }\n+\n     /// Check if the [`Config`] contains a given [`ConfigKey`].\n     ///\n     /// See `ConfigMapAccess` for a description of `env_prefix_ok`.\n     fn has_key(&self, key: &ConfigKey, env_prefix_ok: bool) -> CargoResult<bool> {\n+        if self.env_has_key(key.as_env_key()) {\n             return Ok(true);\n         }\n         if env_prefix_ok {\n             let env_prefix = format!(\"{}_\", key.as_env_key());\n+            if self.env_keys().any(|k| k.starts_with(&env_prefix)) {\n                 return Ok(true);\n             }\n         }"]
+semgrep = "semgrep/learned/rust/mined-rust-os-suffix-string-return.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-counter-gated-on-success"
+tier = "info"
+title = "Counter or happened-flag updated only on success"
+look_for = "Code increments a counter or sets a happened-flag only inside a success branch, so failed attempts are never recorded even though the purpose is to detect that the operation was attempted at all."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/163730#discussion_r4371065959", "fix" = "7209fb3ce2077acbc342104fbde91ae0ad1f2c1d"}]
+measured = {}
+trigger = "fetch_add|store|swap|ALLOCATED"
+question = "Is a counter or happened-flag incremented only inside a success branch, so failed attempts are never recorded?"
+examples = ["@@ -0,0 +1,119 @@\n+//! test for <https://github.com/rust-lang/rust/issues/160776>\n+//@ run-pass\n+//@ needs-threads\n+//@ only-unix because we use pthread\n+\n+#![feature(rustc_private)]\n+extern crate libc;\n+\n+use std::alloc::{GlobalAlloc, Layout, System};\n+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};\n+use std::thread::Thread;\n+use std::{mem, ptr};\n+\n+static ALLOCATED: AtomicUsize = AtomicUsize::new(0);\n+static PTHREAD_ACTIVE: AtomicBool = AtomicBool::new(false);\n+static PTHREAD_SUCCEEDED_ALLOC: AtomicBool = AtomicBool::new(false);\n+static PTHREAD_SUCCEEDED_DEALLOC: AtomicBool = AtomicBool::new(false);\n+\n+#[global_allocator]\n+static ALLOC: Alloc = Alloc;\n+struct Alloc;\n+\n+fn call_function(f: impl FnOnce()) {\n+    ALLOCATED.store(0, Ordering::Relaxed);\n+    f();\n+    assert_eq!(ALLOCATED.load(Ordering::Relaxed), 0);\n+}\n+\n+// https://doc.rust-lang.org/nightly/std/alloc/trait.GlobalAlloc.html#re-entrance\n+fn guarantee_functions() {\n+    call_function(|| {\n+        drop(std::thread::current());\n+    });\n+\n+    call_function(|| {\n+        std::thread::current().unpark();\n+    });\n+\n+    call_function(std::thread::park);\n+\n+    call_function(|| {\n+        drop(std::thread::current().clone());\n+    });\n+\n+    call_function(|| {\n+        LOCAL_FOR_ALLOCATOR_WITH_DROP\n+            .with(|local| assert!(local.0.id() == std::thread::current().id()))\n+    });\n+}\n+\n+extern \"C\" fn start(c: *mut libc::c_void) -> *mut libc::c_void {\n+    PTHREAD_ACTIVE.swap(true, Ordering::Relaxed);\n+    std::hint::black_box(vec![1, 2]);\n+\n+    guarantee_functions();\n+\n+    unsafe {\n+        let c: *mut u32 = c.cast();\n+        drop(Box::from_raw(c))\n+    }\n+\n+    PTHREAD_ACTIVE.swap(false, Ordering::Relaxed);\n+    ptr::null_mut()\n+}\n+\n+struct LocalForAllocatorWithDrop(Thread);\n+\n+thread_local! {\n+    static LOCAL_FOR_ALLOCATOR_WITH_DROP: LocalForAllocatorWithDrop = {\n+        LocalForAllocatorWithDrop(std::thread::current())\n+    }\n+}\n+\n+unsafe impl GlobalAlloc for Alloc {\n+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {\n+        if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n+            PTHREAD_SUCCEEDED_ALLOC.swap(true, Ordering::Relaxed);\n+        }\n+\n+        let ret = unsafe { System.alloc(layout) };\n+        if !ret.is_null() {\n+            ALLOCATED.fetch_add(1, Ordering::Relaxed);", "@@ -73,18 +62,18 @@ thread_local! {\n \n unsafe impl GlobalAlloc for Alloc {\n     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {\n+        #[cfg(unix)]\n         if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n             PTHREAD_SUCCEEDED_ALLOC.swap(true, Ordering::Relaxed);\n         }\n \n         let ret = unsafe { System.alloc(layout) };\n+        ALLOCATED.fetch_add(1, Ordering::Relaxed);\n         ret\n     }\n \n     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {\n+        #[cfg(unix)]\n         if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n             PTHREAD_SUCCEEDED_DEALLOC.swap(true, Ordering::Relaxed);\n         }"]
+semgrep = "semgrep/learned/rust/mined-rust-counter-gated-on-success.yaml"
+proposed = "warning"
+
+[[rule]]
+id = "rust-eager-side-effect-before-success"
+tier = "info"
+title = "Directory created eagerly before success"
+look_for = "Code performs a persistent side effect such as creating a directory before validating inputs or before the steps that make it necessary will succeed, so a later bail leaves a dangling artifact behind."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/cargo/pull/14326#discussion_r1702445658", "fix" = "d1b1b65a54bdbdf700d9a19cbbd8f4831fea5dc9"}]
+measured = {}
+trigger = "create_dir_all|create_dir|mkdir"
+question = "Does the code create a directory before it is certain the later operation will succeed, so a later bail leaves a dangling empty directory behind?"
+examples = ["@@ -986,6 +1001,41 @@ pub fn root_manifest(manifest_path: Option<&Path>, gctx: &GlobalContext) -> Carg\n     }\n }\n \n+pub fn lockfile_path(\n+    lockfile_path: Option<&Path>,\n+    gctx: &GlobalContext,\n+) -> CargoResult<Option<PathBuf>> {\n+    let Some(lockfile_path) = lockfile_path else {\n+        return Ok(None);\n+    };\n+\n+    gctx.cli_unstable()\n+        .fail_if_stable_opt(\"--lockfile-path\", 5707)?;\n+\n+    let path = gctx.cwd().join(lockfile_path);\n+\n+    if !path.ends_with(LOCKFILE_NAME) && !crate::util::toml::is_embedded(&path) {\n+        bail!(\n+            \"the lockfile-path must be a path to a {} file\",\n+            LOCKFILE_NAME\n+        )\n+    }\n+    if path.is_dir() {\n+        bail!(\n+            \"lockfile path `{}` is a directory but expected a file\",\n+            lockfile_path.display()\n+        )\n+    }\n+    if !path.exists() {\n+        // Root case should already be covered above\n+        let parent_path = lockfile_path.parent().expect(\"lockfile path can't be root\");\n+\n+        paths::create_dir_all(parent_path)?;", "@@ -1023,12 +1023,6 @@ pub fn lockfile_path(\n             lockfile_path.display()\n         )\n     }\n \n     return Ok(Some(path));\n }"]
+semgrep = "semgrep/learned/rust/mined-rust-eager-side-effect-before-success.yaml"
+semgrep_asks = 1
+
+[[rule]]
+id = "rust-global-allocator-reentrance"
+tier = "info"
+title = "Panic in a global allocator without reentrance guard"
+look_for = "A global allocator's alloc/dealloc/realloc method panics (assert!, panic!, expect, unwrap) without returning early on reentrance, so the panic re-enters the allocator during unwinding and recurses."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/163730#discussion_r4177714609", "fix" = "13623d50d33a060a7dc340ff20bdadb5b303f4e4"}]
+measured = {}
+trigger = "alloc|dealloc|GlobalAlloc|assert|panic"
+question = "Does this global allocator method panic without returning early on reentrance, so a panic re-enters the allocator and recurses?"
+examples = ["@@ -0,0 +1,126 @@\n+//! test for <https://github.com/rust-lang/rust/issues/160776>\n+//@ run-pass\n+//@ needs-threads\n+//@ only-unix because we use pthread\n+\n+#![feature(rustc_private)]\n+extern crate libc;\n+\n+use std::alloc::{GlobalAlloc, Layout, System};\n+use std::ptr;\n+use std::mem;\n+use std::sync::atomic::{AtomicBool, Ordering};\n+use std::thread::Thread;\n+\n+static SHOULD_PANIC_ON_GLOBAL_ALLOC_ACCESS: AtomicBool = AtomicBool::new(false);\n+static PTHREAD_ACTIVE: AtomicBool = AtomicBool::new(false);\n+static PTHREAD_SUCCEEDED_ALLOC: AtomicBool = AtomicBool::new(false);\n+static PTHREAD_SUCCEEDED_DEALLOC: AtomicBool = AtomicBool::new(false);\n+static LOCAL_TRY_WITH_SUCCEEDED_ALLOC: AtomicBool = AtomicBool::new(false);\n+static LOCAL_TRY_WITH_SUCCEEDED_DEALLOC: AtomicBool = AtomicBool::new(false);\n+\n+\n+#[global_allocator]\n+static ALLOC: Alloc = Alloc;\n+struct Alloc;\n+\n+extern \"C\" fn start(c: *mut libc::c_void) -> *mut libc::c_void {\n+    PTHREAD_ACTIVE.store(true, Ordering::Relaxed);\n+    std::hint::black_box(vec![1, 2]);\n+    unsafe {\n+        let c: *mut u32 = c.cast();\n+        drop(Box::from_raw(c))\n+    }\n+\n+    PTHREAD_ACTIVE.store(false, Ordering::Relaxed);\n+    ptr::null_mut()\n+}\n+\n+struct LocalForAllocatorWithDrop(Thread);\n+\n+thread_local! {\n+    static LOCAL_FOR_ALLOCATOR_WITH_DROP: LocalForAllocatorWithDrop = {\n+        LocalForAllocatorWithDrop(std::thread::current())\n+    }\n+}\n+\n+unsafe impl GlobalAlloc for Alloc {\n+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {\n+        assert!(!SHOULD_PANIC_ON_GLOBAL_ALLOC_ACCESS.load(Ordering::Relaxed));\n+        SHOULD_PANIC_ON_GLOBAL_ALLOC_ACCESS.store(true, Ordering::Relaxed);\n+\n+        if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n+            PTHREAD_SUCCEEDED_ALLOC.store(true, Ordering::Relaxed);\n+        }\n+\n+        // https://doc.rust-lang.org/nightly/std/alloc/trait.GlobalAlloc.html#re-entrance\n+        let th : Thread = std::thread::current();\n+        th.unpark();\n+        std::thread::park();\n+        drop(th.clone());\n+\n+        let try_with_ret = LOCAL_FOR_ALLOCATOR_WITH_DROP.try_with(|local| {\n+            assert!(local.0.id() == std::thread::current().id());", "@@ -46,61 +73,33 @@ thread_local! {\n \n unsafe impl GlobalAlloc for Alloc {\n     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {\n         if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n+            PTHREAD_SUCCEEDED_ALLOC.swap(true, Ordering::Relaxed);\n         }\n \n+        let ret = unsafe { System.alloc(layout) };\n+        if !ret.is_null() {\n+            ALLOCATED.fetch_add(1, Ordering::Relaxed);\n+        }\n         ret\n     }\n \n     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {\n         if PTHREAD_ACTIVE.load(Ordering::Relaxed) {\n+            PTHREAD_SUCCEEDED_DEALLOC.swap(true, Ordering::Relaxed);\n         }\n \n         unsafe {\n             System.dealloc(ptr, layout);\n         }\n+        ALLOCATED.fetch_add(1, Ordering::Relaxed);\n     }\n }\n \n fn main() {\n     unsafe {\n+        let c: *mut u32 = Box::into_raw(Box::new(1));\n+        let mut t: libc::pthread_t = mem::zeroed();\n         libc::pthread_create(&mut t, ptr::null(), start, c.cast());\n         libc::pthread_join(t, ptr::null_mut());\n     }"]
+semgrep = "semgrep/learned/rust/mined-rust-global-allocator-reentrance.yaml"
+semgrep_asks = 1
+proposed = "warning"
+
+[[rule]]
+id = "rust-test-missing-revision"
+tier = "info"
+title = "UI test covers only one revision"
+look_for = "A UI test sets a compile flag to run only one configuration without adding revisions that also cover the default or alternate mode, so the regression is only checked in one mode."
+stack = "rust"
+evidence = [{"url" = "https://github.com/rust-lang/rust/pull/164767#discussion_r4358597590", "fix" = "e97ea967e2657c24ad05674818dfbd09d3c84182"}]
+measured = {}
+trigger = "solver|revision|compile_flags"
+question = "Does this UI test set a compile flag to run only one mode, without revisions that also cover the default or alternate mode?"
+examples = ["@@ -0,0 +1,14 @@\n+// Regression test for: https://github.com/rust-lang/rust/issues/154536\n+// @compile-flags: -Znext-solver", "@@ -1,5 +1,7 @@\n // Regression test for: https://github.com/rust-lang/rust/issues/154536\n+//@ revisions: old next\n+//@ ignore-compare-mode-next-solver (explicit revisions)\n+//@ [next] compile-flags: -Znext-solver\n \n #![feature(transmutability)]\n #![feature(unboxed_closures)]"]
+semgrep = "semgrep/learned/rust/mined-rust-test-missing-revision.yaml"
+semgrep_asks = 1
+

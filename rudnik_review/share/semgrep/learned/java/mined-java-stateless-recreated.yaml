@@ -1,0 +1,14 @@
+rules:
+  - id: java-stateless-recreated
+    metadata: {"rule": "java-stateless-recreated", "evidence": ["https://github.com/apache/lucene/pull/13339#discussion_r1607992706", "https://github.com/apache/lucene/pull/13339#discussion_r1607996056", "https://github.com/apache/lucene/pull/13339#discussion_r1607997832", "https://github.com/apache/lucene/pull/13339#discussion_r1608084373", "https://github.com/netty/netty/pull/11480#discussion_r667789809", "https://github.com/netty/netty/pull/10492#discussion_r474167252", "https://github.com/netty/netty/pull/10492#discussion_r474163729", "https://github.com/netty/netty/pull/10492#discussion_r474164275"]}
+    message: >-
+      Stateless object is recreated on every call instead of being reused via a shared
+      static/constant instance.
+    severity: WARNING
+    languages:
+      - java
+    patterns:
+      - pattern-either:
+          - pattern: |
+              new $CLASS()
+          - pattern-regex: 'new[A-Z]\w*\s*\('

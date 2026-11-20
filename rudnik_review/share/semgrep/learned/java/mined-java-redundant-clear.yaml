@@ -1,0 +1,11 @@
+rules:
+  - id: java-redundant-clear
+    metadata: {"rule": "java-redundant-clear", "evidence": ["https://github.com/netty/netty/pull/10492#discussion_r477396077", "https://github.com/netty/netty/pull/10492#discussion_r477402139"]}
+    languages: [java]
+    message: clear() on a collection that is no longer used
+    severity: INFO
+    patterns:
+      - pattern: $LIST.clear();
+      - metavariable-regex:
+          metavariable: $LIST
+          regex: ^[a-z]

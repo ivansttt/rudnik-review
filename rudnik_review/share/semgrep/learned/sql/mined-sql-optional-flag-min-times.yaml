@@ -1,0 +1,8 @@
+rules:
+  - id: sql-optional-flag-min-times
+    metadata: {"rule": "sql-optional-flag-min-times", "evidence": ["https://github.com/sqlfluff/sqlfluff/pull/2687#discussion_r810144875"]}
+    languages: [python]
+    message: optional=True contradicts min_times=1
+    severity: WARNING
+    patterns:
+      - pattern: AnyNumberOf(Ref(..., optional=True), min_times=1)

@@ -1,0 +1,8 @@
+rules:
+  - id: java-float-byte-variant
+    metadata: {"rule": "java-float-byte-variant", "evidence": ["https://github.com/apache/lucene/pull/14084#discussion_r1901958473", "https://github.com/apache/lucene/pull/14084#discussion_r1906914231"]}
+    languages:
+      - java
+    message: Float vector API or name used where the byte vector variant is required
+    severity: ERROR
+    pattern-regex: "(FloatVectorQuery|FloatVectorValues)"
